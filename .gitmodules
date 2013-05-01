@@ -1,0 +1,3 @@
+[submodule "external/chartboost"]
+	path = external/chartboost
+	url = https://github.com/wenbin1989/Chartboost-x.git
