@@ -1,0 +1,14 @@
+avalon
+=========
+
+Avalon provides various extension, helpers, libraries, classes, templates &
+functions on top of cocos2d-x. It should speed up cross-platform development
+and automate annoying tasks. Avalon is here to make the developers life easier
+to produce more apps in less time (the key to get rich fast!!!).
+
+Documentations
+--------------
+
+   * Wiki Cocos2d-x: [wiki.cocos2d-x.org][3]
+   * Wiki Reference: [Online API References][4]
+
