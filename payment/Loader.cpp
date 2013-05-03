@@ -63,7 +63,7 @@ const char* Loader::detectProductId(const char* section)
     return productId;
 }
 
-shared_ptr<Manager> Loader::getManager()
+const shared_ptr<Manager>& Loader::getManager() const
 {
     return manager;
 }

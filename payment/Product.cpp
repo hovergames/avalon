@@ -21,7 +21,7 @@ Product::~Product()
 {
 }
 
-const std::string Product::getProductId() const
+const std::string& Product::getProductId() const
 {
     return productId;
 }
