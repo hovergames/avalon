@@ -3,7 +3,6 @@
 
 #include <string>
 #include <map>
-#include "cocos2d.h"
 #include "Backend.h"
 
 namespace Avalon {

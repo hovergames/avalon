@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
-#include "Manager.h"
+
+namespace Avalon { namespace Payment { class Manager; } }
 
 @interface BackendIos : NSObject<SKProductsRequestDelegate, SKPaymentTransactionObserver>
 {

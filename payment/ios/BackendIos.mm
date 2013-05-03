@@ -1,6 +1,7 @@
 #import "BackendIos.h"
 
 #include "Product.h"
+#include "Manager.h"
 #include "ManagerDelegate.h"
 
 @implementation BackendIos

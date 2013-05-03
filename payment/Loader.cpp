@@ -4,6 +4,7 @@
 #include <boost/static_assert.hpp>
 #include "Product.h"
 #include "ProductConsumable.h"
+#include "Manager.h"
 
 namespace Avalon {
 namespace Payment {

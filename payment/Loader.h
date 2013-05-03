@@ -2,13 +2,14 @@
 #define __Avalon__Payment__Loader__
 
 #include <boost/shared_ptr.hpp>
-#include "Manager.h"
 #include "IniReader.h"
 
 using boost::shared_ptr;
 
 namespace Avalon {
 namespace Payment {
+
+class Manager;
 
 class Loader
 {
