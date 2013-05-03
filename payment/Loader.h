@@ -2,6 +2,7 @@
 #define __Avalon__Payment__Loader__
 
 #include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
 #include "IniReader.h"
 
 using boost::shared_ptr;
@@ -11,7 +12,7 @@ namespace Payment {
 
 class Manager;
 
-class Loader
+class Loader : boost::noncopyable
 {
 public:
     static shared_ptr<Manager> globalManager;

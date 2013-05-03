@@ -9,7 +9,7 @@ namespace Payment {
 
 class Manager;
 
-class Product : private boost::noncopyable
+class Product : boost::noncopyable
 {
     friend class Manager;
 

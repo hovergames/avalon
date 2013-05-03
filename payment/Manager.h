@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <boost/utility.hpp>
 #include "Backend.h"
 
 namespace Avalon {
@@ -13,7 +14,7 @@ class Product;
 class ProductConsumable;
 typedef std::map<const std::string, Product* const> ProductList;
 
-class Manager
+class Manager : boost::noncopyable
 {
 public:
     bool ignoreUnusedConsumableQuantities;

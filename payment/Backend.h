@@ -1,13 +1,15 @@
 #ifndef __Avalon__Payment__Backend__
 #define __Avalon__Payment__Backend__
 
+#include <boost/utility.hpp>
+
 namespace Avalon {
 namespace Payment {
 
 class Manager;
 class Product;
 
-class Backend
+class Backend : boost::noncopyable
 {
 public:
     Backend(const Manager& manager);
