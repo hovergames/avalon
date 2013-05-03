@@ -113,10 +113,8 @@ bool Manager::hasProduct(const char* const productIdOrAlias) const
 
 void Manager::purchase(Product* const product)
 {
-    BOOST_ASSERT_MSG(delegate, "delegate must be set first");
+    BOOST_ASSERT_MSG(isPurchaseReady(), "backend service not started yet");
     BOOST_ASSERT_MSG(product, "product must be given");
-    BOOST_ASSERT_MSG(backend.isInitialized(), "backend service not initialized");
-    BOOST_ASSERT_MSG(isPurchaseReady(), "backend isn't ready accept purchases yet");
 
     backend.purchase(product);
 }
@@ -136,13 +134,12 @@ void Manager::startService()
 
 bool Manager::isPurchaseReady() const
 {
-    return (backend.isInitialized() && backend.isPurchaseReady());
+    return (delegate && backend.isInitialized() && backend.isPurchaseReady());
 }
 
 void Manager::restorePurchases() const
 {
-    BOOST_ASSERT_MSG(delegate, "delegate must be set first");
-    BOOST_ASSERT_MSG(backend.isInitialized(), "backend service not initialized");
+    BOOST_ASSERT_MSG(isPurchaseReady(), "backend service not started yet");
 
     backend.restorePurchases();
 }
