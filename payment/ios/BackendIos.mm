@@ -58,7 +58,7 @@
                 break;
 
             default:
-                NSLog(@"[Payment] paymentQueue: UNHANDELED");
+                NSLog(@"[Payment] paymentQueue: UNHANDELED: %d", transaction.transactionState);
                 break;
 		}
 	}
@@ -137,7 +137,7 @@
             break;
 
 		default:
-            NSLog(@"[Payment] failedTransaction: UNHANDELED");
+            NSLog(@"[Payment] failedTransaction: UNHANDELED: %d", transaction.error.code);
 			break;
 	}
 
