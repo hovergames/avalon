@@ -18,8 +18,8 @@ public:
     virtual void onTransactionStart(Manager* const manager) {};
     virtual void onTransactionEnd(Manager* const manager) {};
 
-    virtual void onRestoreSucceed(Manager* const manager) = 0;
-    virtual void onRestoreFail(Manager* const manager) = 0;
+    virtual void onRestoreSucceed(Manager* const manager) {};
+    virtual void onRestoreFail(Manager* const manager) {};
 };
 
 } // namespace Payment
