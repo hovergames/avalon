@@ -52,7 +52,11 @@
             case SKPaymentTransactionStateRestored:
                 [self restoreTransaction:transaction];
                 break;
-                
+
+            case SKPaymentTransactionStatePurchasing:
+                // this state is known, fine and can be ignored
+                break;
+
             default:
                 NSLog(@"[Payment] paymentQueue: UNHANDELED");
                 break;
