@@ -20,7 +20,7 @@ public:
     bool ignoreUnusedConsumableQuantities;
     ManagerDelegate* delegate;
 
-    explicit Manager(ManagerDelegate* const delegate);
+    Manager();
     ~Manager();
     
     void addProduct(Product* const product);

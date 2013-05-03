@@ -13,9 +13,9 @@ using std::make_pair;
 namespace Avalon {
 namespace Payment {
 
-Manager::Manager(ManagerDelegate* const delegate)
+Manager::Manager()
 : ignoreUnusedConsumableQuantities(false)
-, delegate(delegate)
+, delegate()
 , backend(*this)
 , products()
 , productIdAliases()
@@ -113,6 +113,7 @@ bool Manager::hasProduct(const char* const productIdOrAlias) const
 
 void Manager::purchase(Product* const product)
 {
+    BOOST_ASSERT_MSG(delegate, "delegate must be set first");
     BOOST_ASSERT_MSG(product, "product must be given");
     BOOST_ASSERT_MSG(backend.isInitialized(), "backend service not initialized");
     BOOST_ASSERT_MSG(isPurchaseReady(), "backend isn't ready accept purchases yet");
@@ -127,6 +128,7 @@ void Manager::purchase(const char* const productIdOrAlias)
 
 void Manager::startService()
 {
+    BOOST_ASSERT_MSG(delegate, "delegate must be set first");
     BOOST_ASSERT_MSG(!backend.isInitialized(), "backend service already initialized");
     
     backend.initialize();
@@ -134,13 +136,12 @@ void Manager::startService()
 
 bool Manager::isPurchaseReady() const
 {
-    BOOST_ASSERT_MSG(backend.isInitialized(), "backend service not initialized");
-
-    return backend.isPurchaseReady();
+    return (backend.isInitialized() && backend.isPurchaseReady());
 }
 
 void Manager::restorePurchases() const
 {
+    BOOST_ASSERT_MSG(delegate, "delegate must be set first");
     BOOST_ASSERT_MSG(backend.isInitialized(), "backend service not initialized");
 
     backend.restorePurchases();
