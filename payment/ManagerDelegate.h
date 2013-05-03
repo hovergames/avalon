@@ -18,10 +18,8 @@ public:
     virtual void onTransactionStart(Manager* const manager) {};
     virtual void onTransactionEnd(Manager* const manager) {};
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     virtual void onRestoreSucceed(Manager* const manager) = 0;
     virtual void onRestoreFail(Manager* const manager) = 0;
-#endif
 };
 
 } // namespace Payment

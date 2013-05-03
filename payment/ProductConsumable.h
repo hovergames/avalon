@@ -15,7 +15,7 @@ public:
     virtual void consume() override;
     float getQuantity() const;
 
-private:
+protected:
     const float quantityPerPurchase;
 };
 

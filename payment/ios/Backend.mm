@@ -17,7 +17,6 @@ BackendIos* const __getIosBackend()
 
 Backend::Backend(const Manager& manager)
 : manager(manager)
-, initialized(false)
 {
 }
 
@@ -40,13 +39,16 @@ void Backend::initialize()
     }
 
     // configure BackendIos
-    __getIosBackend()->products = products;
     __getIosBackend()->initialized = false;
     __getIosBackend()->manager = const_cast<Manager*>(&manager);
 
-    // register observer and fetch product details
-    [__getIosBackend() startProductRequest];
-    [__getIosBackend() startTransactionObserver];
+    // fetch product details
+    SKProductsRequest* request = [[SKProductsRequest alloc] initWithProductIdentifiers:products];
+    request.delegate = __getIosBackend();
+    [request start];
+
+    // register transcationObserver
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:__getIosBackend()];
 }
 
 void Backend::purchase(Product* const product)
@@ -54,10 +56,11 @@ void Backend::purchase(Product* const product)
     manager.delegate->onTransactionStart(__getIosBackend()->manager);
 
     NSString* productId = [[[NSString alloc] initWithUTF8String:product->getProductId().c_str()] autorelease];
-    [__getIosBackend() purchase:productId];
+    SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
+    [[SKPaymentQueue defaultQueue] addPayment:payment];
 }
 
-bool Backend::canBePurchased() const
+bool Backend::isPurchaseReady() const
 {
     return [SKPaymentQueue canMakePayments];
 }

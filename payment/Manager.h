@@ -31,15 +31,12 @@ public:
     ProductConsumable* getProductConsumable(const char* const productIdOrAlias) const;
     bool hasProduct(const char* const productIdOrAlias) const;
 
-    bool canBePurchased() const;
+    bool isPurchaseReady() const;
     virtual void purchase(Product* const product);
     void purchase(const char* const productIdOrAlias);
 
     void startService();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     void restorePurchases() const;
-#endif
 
 private:
     Backend backend;

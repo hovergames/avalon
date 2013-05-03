@@ -5,29 +5,6 @@
 
 @implementation BackendIos
 
-- (void)startProductRequest
-{
-    SKProductsRequest* request = [[SKProductsRequest alloc] initWithProductIdentifiers:products];
-    request.delegate = self;
-    [request start];
-}
-
-- (void)startTransactionObserver
-{
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
-}
-
-- (void)purchase:(NSString *)productId
-{
-    SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
-    [[SKPaymentQueue defaultQueue] addPayment:payment];
-}
-
-- (void)restoreCompleteTransactions
-{
-    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
-}
-
 #pragma mark -
 #pragma mark SKProductsRequestDelegate
 
@@ -98,13 +75,13 @@
 }
 
 #pragma mark -
-#pragma mark Processing
+#pragma mark Helper
 
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
-    manager->delegate->onTransactionEnd(manager);
-
     const char* productId = [transaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
+
+    manager->delegate->onTransactionEnd(manager);
     manager->delegate->onPurchaseSucceed(manager, manager->getProduct(productId));
 
 	[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
@@ -112,10 +89,12 @@
 
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction
 {
-    manager->delegate->onTransactionEnd(manager);
-
     const char* productId = [transaction.originalTransaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
-    manager->delegate->onPurchaseSucceed(manager, manager->getProduct(productId));
+    Avalon::Payment::Product* product = manager->getProduct(productId);
+
+    product->onHasBeenPurchased();
+    manager->delegate->onTransactionEnd(manager);
+    manager->delegate->onPurchaseSucceed(manager, product);
 
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }

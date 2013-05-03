@@ -21,18 +21,18 @@ Product::~Product()
 {
 }
 
-std::string Product::getProductId() const
+const std::string Product::getProductId() const
 {
     return productId;
 }
 
 bool Product::canBePurchased() const
 {
-    if (!manager) {
+    if (!manager || !manager->isPurchaseReady()) {
         return false;
     }
 
-    return manager->canBePurchased();
+    return true;
 }
 
 void Product::purchase()

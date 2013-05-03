@@ -4,15 +4,9 @@
 
 @interface BackendIos : NSObject<SKProductsRequestDelegate, SKPaymentTransactionObserver>
 {
-    @public NSMutableSet* products;
     @public bool initialized;
     @public Avalon::Payment::Manager* manager;
 }
-
-- (void)startProductRequest;
-- (void)startTransactionObserver;
-- (void)purchase:(NSString *)productId;
-- (void)restoreCompleteTransactions;
 
 #pragma mark -
 #pragma mark SKProductsRequestDelegate
@@ -27,7 +21,7 @@
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error;
 
 #pragma mark -
-#pragma mark Processing
+#pragma mark Helper
 
 - (void)failedTransaction:(SKPaymentTransaction *)transaction;
 - (void)completeTransaction:(SKPaymentTransaction *)transaction;

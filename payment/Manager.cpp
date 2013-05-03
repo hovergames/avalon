@@ -115,7 +115,7 @@ void Manager::purchase(Product* const product)
 {
     BOOST_ASSERT_MSG(product, "product must be given");
     BOOST_ASSERT_MSG(backend.isInitialized(), "backend service not initialized");
-    BOOST_ASSERT_MSG(canBePurchased(), "backend isn't ready accept purchases yet");
+    BOOST_ASSERT_MSG(isPurchaseReady(), "backend isn't ready accept purchases yet");
 
     backend.purchase(product);
 }
@@ -132,21 +132,19 @@ void Manager::startService()
     backend.initialize();
 }
 
-bool Manager::canBePurchased() const
+bool Manager::isPurchaseReady() const
 {
     BOOST_ASSERT_MSG(backend.isInitialized(), "backend service not initialized");
 
-    return backend.canBePurchased();
+    return backend.isPurchaseReady();
 }
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
 void Manager::restorePurchases() const
 {
     BOOST_ASSERT_MSG(backend.isInitialized(), "backend service not initialized");
 
     backend.restorePurchases();
 }
-#endif
 
 
 } // namespace Payment
