@@ -1,33 +1,31 @@
-//
-//  ProductConsumable.cpp
-//  Adventures on the farm
-//
-//  Created by Jochen Heizmann on 09.04.13.
-//
-//
-
 #include "ProductConsumable.h"
 
-bool ProductConsumable::isConsumable(int quantity)
+#include <boost/assert.hpp>
+
+namespace Avalon {
+namespace Payment {
+
+ProductConsumable::ProductConsumable(const char* const productId, const float quantityPerPurchase)
+: Product(productId)
+, quantityPerPurchase(quantityPerPurchase)
 {
-    return paymentProvider->isConsumable(nativeId.c_str(), quantity);
 }
 
-bool ProductConsumable::consume(int quantity)
+ProductConsumable::~ProductConsumable()
 {
-    return paymentProvider->consume(nativeId.c_str(), quantity);
+    BOOST_ASSERT_MSG(getQuantity() == 0, "unused consumable quantity detected!");
 }
 
-int ProductConsumable::getQuantity()
+void ProductConsumable::consume()
 {
-    return paymentProvider->getQuantity(nativeId.c_str());
+    Product::consume();
+    purchasedCounter = 0;
 }
 
-int ProductConsumable::getVirtualQuantity()
+float ProductConsumable::getQuantity() const
 {
-    if (virtualQuantity == 0)
-    {
-        assert(!"THIS IS NOT YET IMPLEMENTED!!!!");
-        // TODO: Extract number from product id
-    }
+    return (purchasedCounter * quantityPerPurchase);
 }
+
+} // namespace Payment
+} // namespace Avalon

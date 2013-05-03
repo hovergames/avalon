@@ -1,43 +1,45 @@
-//
-//  Product.h
-//  Adventures on the farm
-//
-//  Created by Jochen Heizmann on 09.04.13.
-//
-//
-
-#ifndef __Adventures_on_the_farm__Product__
-#define __Adventures_on_the_farm__Product__
+#ifndef __Avalon__Payment__Product__
+#define __Avalon__Payment__Product__
 
 #include <string>
-#include "PaymentProvider.h"
-#include "cocos2d.h"
+#include <boost/utility.hpp>
 
-class Product
+namespace Avalon {
+namespace Payment {
+
+class Manager;
+
+class Product : private boost::noncopyable
 {
+    friend class Manager;
+
 public:
-    PaymentProvider *paymentProvider;
-
-    std::string internalId;
-    std::string nativeId;
-
+    float price;
+    std::string localizedPrice;
     std::string localizedName;
     std::string localizedDescription;
-    std::string localizedPrice;
 
-    float price;
+    Product(const char* const productId);
+    virtual ~Product();
 
-    Product() {}
-    virtual ~Product() {}
+    std::string getProductId() const;
 
-    virtual void setId(const char *id);
-    virtual void setNativeId(const char *id);
+    bool canBePurchased() const;
+    void purchase();
 
-    virtual void purchase();
+    void onHasBeenPurchased();
+    bool hasBeenPurchased() const;
+    virtual void consume();
 
-    virtual bool isPurchased();
-    virtual const char * getLocalizedName();
-    virtual float getPrice();
+protected:
+    int purchasedCounter;
+    Manager* manager;
+
+private:
+    const std::string productId;
 };
 
-#endif /* defined(__Adventures_on_the_farm__Product__) */
+} // namespace Payment
+} // namespace Avalon
+
+#endif /* __Avalon__Payment__Product__ */
