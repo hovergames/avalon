@@ -37,8 +37,10 @@ public:
 
     void startService();
     void restorePurchases() const;
+    bool isStarted() const;
 
 private:
+    bool started;
     Backend backend;
     mutable ProductList products;
     std::map<std::string, std::string> productIdAliases;

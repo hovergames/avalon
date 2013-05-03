@@ -19,6 +19,7 @@ Manager::Manager()
 , backend(*this)
 , products()
 , productIdAliases()
+, started(false)
 {
 }
 
@@ -130,6 +131,12 @@ void Manager::startService()
     BOOST_ASSERT_MSG(!backend.isInitialized(), "backend service already initialized");
     
     backend.initialize();
+    started = true;
+}
+
+bool Manager::isStarted() const
+{
+    return started;
 }
 
 bool Manager::isPurchaseReady() const
