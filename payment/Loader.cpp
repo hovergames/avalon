@@ -31,6 +31,8 @@ Loader::Loader(const char* iniFile)
             product = new Product(productId);
         } else if (strcmp(type, "consumable") == 0) {
             float quantity = config.getValueAsFloat(sectionName, "quantity");
+            BOOST_ASSERT_MSG(quantity > 0, "Quantity missing or set to zero");
+            
             product = new ProductConsumable(productId, quantity);
         } else {
             BOOST_ASSERT_MSG(false, "Couldn't identify product type from ini file");
