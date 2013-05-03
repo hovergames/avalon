@@ -62,7 +62,9 @@
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
-    manager->delegate->onTransactionEnd(manager);
+    if (--transactionDepth == 0) {
+        manager->delegate->onTransactionEnd(manager);
+    }
     manager->delegate->onRestoreSucceed(manager);
 }
 
@@ -70,7 +72,9 @@
 {
     NSLog(@"[Payment] restoreCompletedTransactions failed: %@", error.localizedDescription);
 
-    manager->delegate->onTransactionEnd(manager);
+    if (--transactionDepth == 0) {
+        manager->delegate->onTransactionEnd(manager);
+    }
     manager->delegate->onRestoreFail(manager);
 }
 
@@ -80,9 +84,13 @@
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
     const char* productId = [transaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
+    Avalon::Payment::Product* product = manager->getProduct(productId);
+    product->onHasBeenPurchased();
 
-    manager->delegate->onTransactionEnd(manager);
-    manager->delegate->onPurchaseSucceed(manager, manager->getProduct(productId));
+    if (--transactionDepth == 0) {
+        manager->delegate->onTransactionEnd(manager);
+    }
+    manager->delegate->onPurchaseSucceed(manager, product);
 
 	[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }
@@ -91,9 +99,11 @@
 {
     const char* productId = [transaction.originalTransaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
     Avalon::Payment::Product* product = manager->getProduct(productId);
-
     product->onHasBeenPurchased();
-    manager->delegate->onTransactionEnd(manager);
+
+    if (--transactionDepth == 0) {
+        manager->delegate->onTransactionEnd(manager);
+    }
     manager->delegate->onPurchaseSucceed(manager, product);
 
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
@@ -127,7 +137,9 @@
 			break;
 	}
 
-    manager->delegate->onTransactionEnd(manager);
+    if (--transactionDepth == 0) {
+        manager->delegate->onTransactionEnd(manager);
+    }
     manager->delegate->onPurchaseFail(manager);
     
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];

@@ -41,6 +41,7 @@ void Backend::initialize()
     // configure BackendIos
     __getIosBackend()->initialized = false;
     __getIosBackend()->manager = const_cast<Manager*>(&manager);
+    __getIosBackend()->transactionDepth = 0;
 
     // fetch product details
     SKProductsRequest* request = [[SKProductsRequest alloc] initWithProductIdentifiers:products];
@@ -53,7 +54,9 @@ void Backend::initialize()
 
 void Backend::purchase(Product* const product)
 {
-    manager.delegate->onTransactionStart(__getIosBackend()->manager);
+    if (__getIosBackend()->transactionDepth++ == 0) {
+        manager.delegate->onTransactionStart(__getIosBackend()->manager);
+    }
 
     NSString* productId = [[[NSString alloc] initWithUTF8String:product->getProductId().c_str()] autorelease];
     SKPayment *payment = [SKPayment paymentWithProductIdentifier:productId];
@@ -67,7 +70,9 @@ bool Backend::isPurchaseReady() const
 
 void Backend::restorePurchases() const
 {
-    manager.delegate->onTransactionStart(__getIosBackend()->manager);
+    if (__getIosBackend()->transactionDepth++ == 0) {
+        manager.delegate->onTransactionStart(__getIosBackend()->manager);
+    }
 
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }

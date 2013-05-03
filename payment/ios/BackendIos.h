@@ -6,6 +6,7 @@
 {
     @public bool initialized;
     @public Avalon::Payment::Manager* manager;
+    @public int transactionDepth;
 }
 
 #pragma mark -
