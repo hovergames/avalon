@@ -38,8 +38,8 @@ bool Product::canBePurchased() const
 void Product::purchase()
 {
     BOOST_ASSERT_MSG(manager, "service has to be set");
-    
-    manager->purchase(this);
+
+    manager->purchase(getProductId().c_str());
 }
 
 void Product::onHasBeenPurchased()

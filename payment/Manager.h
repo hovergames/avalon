@@ -31,7 +31,6 @@ public:
     ProductConsumable* getProductConsumable(const char* const productIdOrAlias) const;
     bool hasProduct(const char* const productIdOrAlias) const;
 
-    virtual void purchase(Product* const product);
     void purchase(const char* const productIdOrAlias);
     bool isPurchaseReady() const;
     void restorePurchases() const;

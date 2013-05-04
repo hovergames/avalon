@@ -112,17 +112,11 @@ bool Manager::hasProduct(const char* const productIdOrAlias) const
     return (products.count(aliasId) > 0);
 }
 
-void Manager::purchase(Product* const product)
-{
-    BOOST_ASSERT_MSG(isPurchaseReady(), "backend service not started yet");
-    BOOST_ASSERT_MSG(product, "product must be given");
-
-    backend.purchase(product);
-}
-
 void Manager::purchase(const char* const productIdOrAlias)
 {
-    purchase(getProduct(productIdOrAlias));
+    BOOST_ASSERT_MSG(isPurchaseReady(), "backend service not started yet");
+
+    backend.purchase(getProduct(productIdOrAlias));
 }
 
 void Manager::startService()
