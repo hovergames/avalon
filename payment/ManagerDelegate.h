@@ -1,8 +1,8 @@
-#ifndef __Avalon__Payment__ManagerDelegate__
-#define __Avalon__Payment__ManagerDelegate__
+#ifndef AVALON_PAYMENT_MANAGERDELEGATE_H
+#define AVALON_PAYMENT_MANAGERDELEGATE_H
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 class Manager;
 class Product;
@@ -22,7 +22,7 @@ public:
     virtual void onRestoreFail(Manager* const manager) {};
 };
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon
 
-#endif /* __Avalon__Payment__ManagerDelegate__ */
+#endif /* AVALON_PAYMENT_MANAGERDELEGATE_H */

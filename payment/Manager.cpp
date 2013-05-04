@@ -1,17 +1,17 @@
-#include "Manager.h"
+#include <avalon/payment/Manager.h>
 
 #include <typeinfo>
 #include <boost/assert.hpp>
 #include <boost/cast.hpp>
-#include "Product.h"
-#include "ProductConsumable.h"
+#include <avalon/payment/Product.h>
+#include <avalon/payment/ProductConsumable.h>
 
 using boost::polymorphic_downcast;
 using std::string;
 using std::make_pair;
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 Manager::Manager()
 : ignoreUnusedConsumableQuantities(false)
@@ -151,6 +151,5 @@ void Manager::restorePurchases() const
     backend.restorePurchases();
 }
 
-
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon

@@ -1,13 +1,13 @@
-#include "Loader.h"
+#include <avalon/payment/Loader.h>
 
 #include <boost/assert.hpp>
 #include <boost/static_assert.hpp>
-#include "Product.h"
-#include "ProductConsumable.h"
-#include "Manager.h"
+#include <avalon/payment/Product.h>
+#include <avalon/payment/ProductConsumable.h>
+#include <avalon/payment/Manager.h>
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 shared_ptr<Manager> Loader::globalManager;
 
@@ -68,6 +68,5 @@ const shared_ptr<Manager>& Loader::getManager() const
     return manager;
 }
 
-
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon

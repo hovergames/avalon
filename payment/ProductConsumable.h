@@ -1,10 +1,10 @@
-#ifndef __Avalon__Payment__ProductConsumable__
-#define __Avalon__Payment__ProductConsumable__
+#ifndef AVALON_PAYMENT_PRODUCTCONSUMABLE_H
+#define AVALON_PAYMENT_PRODUCTCONSUMABLE_H
 
-#include "Product.h"
+#include <avalon/payment/Product.h>
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 class ProductConsumable : public Product
 {
@@ -19,7 +19,7 @@ protected:
     const float quantityPerPurchase;
 };
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon
 
-#endif /* __Avalon__Payment__ProductConsumable__ */
+#endif /* AVALON_PAYMENT_PRODUCTCONSUMABLE_H */

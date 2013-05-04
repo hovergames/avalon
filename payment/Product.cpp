@@ -1,10 +1,10 @@
-#include "Product.h"
+#include <avalon/payment/Product.h>
 
-#include "Manager.h"
+#include <avalon/payment/Manager.h>
 #include <boost/assert.hpp>
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 Product::Product(const char* const productId)
 : price(0)
@@ -56,5 +56,5 @@ void Product::consume()
 {
 }
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon

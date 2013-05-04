@@ -1,13 +1,14 @@
-#include "Backend.h"
+#include <avalon/payment/ios/BackendIos.h>
 
 #include <StoreKit/StoreKit.h>
-#include "Manager.h"
-#include "ManagerDelegate.h"
-#include "Product.h"
-#include "BackendIos.h"
 
-namespace Avalon {
-namespace Payment {
+#include <avalon/payment/Backend.h>
+#include <avalon/payment/Manager.h>
+#include <avalon/payment/ManagerDelegate.h>
+#include <avalon/payment/Product.h>
+
+namespace avalon {
+namespace payment {
 
 BackendIos* const __getIosBackend()
 {
@@ -77,5 +78,5 @@ void Backend::restorePurchases() const
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon

@@ -1,9 +1,9 @@
-#include "ProductConsumable.h"
+#include <avalon/payment/ProductConsumable.h>
 
 #include <boost/assert.hpp>
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 ProductConsumable::ProductConsumable(const char* const productId, const float quantityPerPurchase)
 : Product(productId)
@@ -27,5 +27,5 @@ float ProductConsumable::getQuantity() const
     return (purchasedCounter * quantityPerPurchase);
 }
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon

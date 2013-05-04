@@ -1,11 +1,11 @@
-#ifndef __Avalon__Payment__Product__
-#define __Avalon__Payment__Product__
+#ifndef AVALON_PAYMENT_PRODUCT_H
+#define AVALON_PAYMENT_PRODUCT_H
 
 #include <string>
 #include <boost/utility.hpp>
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 class Manager;
 
@@ -39,7 +39,7 @@ private:
     const std::string productId;
 };
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon
 
-#endif /* __Avalon__Payment__Product__ */
+#endif /* AVALON_PAYMENT_PRODUCT_H */

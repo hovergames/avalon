@@ -1,8 +1,8 @@
-#import "BackendIos.h"
+#import <avalon/payment/ios/BackendIos.h>
 
-#include "Product.h"
-#include "Manager.h"
-#include "ManagerDelegate.h"
+#include <avalon/payment/Product.h>
+#include <avalon/payment/Manager.h>
+#include <avalon/payment/ManagerDelegate.h>
 
 @implementation BackendIos
 

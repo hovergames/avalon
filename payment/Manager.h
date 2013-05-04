@@ -1,13 +1,13 @@
-#ifndef __Avalon__Payment__Manager__
-#define __Avalon__Payment__Manager__
+#ifndef AVALON_PAYMENT_MANAGER_H
+#define AVALON_PAYMENT_MANAGER_H
 
 #include <string>
 #include <map>
 #include <boost/utility.hpp>
-#include "Backend.h"
+#include <avalon/payment/Backend.h>
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 class ManagerDelegate;
 class Product;
@@ -46,7 +46,7 @@ private:
     std::map<std::string, std::string> productIdAliases;
 };
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon
 
-#endif /* __Avalon__Payment__Manager__ */
+#endif /* AVALON_PAYMENT_MANAGER_H */

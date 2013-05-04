@@ -1,14 +1,14 @@
-#ifndef __Avalon__Payment__Loader__
-#define __Avalon__Payment__Loader__
+#ifndef AVALON_PAYMENT_LOADER_H
+#define AVALON_PAYMENT_LOADER_H
 
 #include <boost/shared_ptr.hpp>
 #include <boost/noncopyable.hpp>
-#include "IniReader.h"
+#include <avalon/io/IniReader.h>
 
 using boost::shared_ptr;
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 class Manager;
 
@@ -27,7 +27,7 @@ private:
     const char* detectProductId(const char* section);
 };
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon
 
-#endif /* __Avalon__Payment__Loader__ */
+#endif /* AVALON_PAYMENT_LOADER_H */

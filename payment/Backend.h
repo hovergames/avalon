@@ -1,10 +1,10 @@
-#ifndef __Avalon__Payment__Backend__
-#define __Avalon__Payment__Backend__
+#ifndef AVALON_PAYMENT_BACKEND_H
+#define AVALON_PAYMENT_BACKEND_H
 
 #include <boost/utility.hpp>
 
-namespace Avalon {
-namespace Payment {
+namespace avalon {
+namespace payment {
 
 class Manager;
 class Product;
@@ -27,7 +27,7 @@ private:
     const Manager& manager;
 };
 
-} // namespace Payment
-} // namespace Avalon
+} // namespace payment
+} // namespace avalon
 
-#endif /* __Avalon__Payment__Backend__ */
+#endif /* AVALON_PAYMENT_BACKEND_H */
