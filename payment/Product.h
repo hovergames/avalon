@@ -22,7 +22,7 @@ public:
     Product(const char* const productId);
     virtual ~Product();
 
-    const std::string& getProductId() const;
+    std::string getProductId() const;
 
     bool canBePurchased() const;
     void purchase();
