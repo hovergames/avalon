@@ -18,7 +18,7 @@ public:
     static shared_ptr<Manager> globalManager;
 
     Loader(const char* iniFile);
-    const shared_ptr<Manager>& getManager() const;
+    shared_ptr<Manager> getManager() const;
 
 private:
     shared_ptr<Manager> manager;

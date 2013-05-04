@@ -33,7 +33,7 @@ Loader::Loader(const char* iniFile)
         } else if (strcmp(type, "consumable") == 0) {
             float quantity = config.getValueAsFloat(sectionName, "quantity");
             BOOST_ASSERT_MSG(quantity > 0, "Quantity missing or set to zero");
-            
+
             product = new ProductConsumable(productId, quantity);
         } else {
             BOOST_ASSERT_MSG(false, "Couldn't identify product type from ini file");
@@ -63,7 +63,7 @@ const char* Loader::detectProductId(const char* section)
     return productId;
 }
 
-const shared_ptr<Manager>& Loader::getManager() const
+shared_ptr<Manager> Loader::getManager() const
 {
     return manager;
 }
