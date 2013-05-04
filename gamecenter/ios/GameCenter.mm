@@ -1,8 +1,8 @@
-#include "GameCenter.h"
+#include <avalon/GameCenter.h>
 
-#include "GameCenterIos.h"
+#include <avalon/ios/GameCenterIos.h>
 
-namespace Avalon {
+namespace avalon {
 
 void GameCenter::login()
 {
@@ -45,4 +45,4 @@ void GameCenter::clearAllScores()
     [[GameCenterIos shared] clearAllScores];
 }
 
-} // namespace Avalon
+} // namespace avalon

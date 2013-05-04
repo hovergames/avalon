@@ -1,7 +1,7 @@
-#ifndef __Avalon__GameCenter__
-#define __Avalon__GameCenter__
+#ifndef AVALON_GAMECENTER_H
+#define AVALON_GAMECENTER_H
 
-namespace Avalon {
+namespace avalon {
 
 class GameCenter
 {
@@ -17,6 +17,6 @@ public:
     void clearAllScores();
 };
 
-} // namespace Avalon
+} // namespace avalon
 
-#endif /* __Avalon__GameCenter__ */
+#endif /* AVALON_GAMECENTER_H */
