@@ -1,8 +1,8 @@
-@interface GameCenterLauncher : NSObject
+@interface GameCenterIos : NSObject
 {
 }
 
-+ (GameCenterLauncher*)shared;
++ (GameCenterIos*)shared;
 
 - (void)login;
 

@@ -1,12 +1,12 @@
 #include "GameCenter.h"
 
-#include "GameCenterLauncher.h"
+#include "GameCenterIos.h"
 
 namespace Avalon {
 
 void GameCenter::login()
 {
-    [[GameCenterLauncher shared] login];
+    [[GameCenterIos shared] login];
 }
 
 #pragma mark -
@@ -14,17 +14,17 @@ void GameCenter::login()
 
 void GameCenter::showAchievements()
 {
-    [[GameCenterLauncher shared] showAchievements];
+    [[GameCenterIos shared] showAchievements];
 }
 
 void GameCenter::postAchievement(const char* idName, int percentComplete)
 {
-    [[GameCenterLauncher shared] postAchievement:idName percent:[NSNumber numberWithInt:percentComplete]];
+    [[GameCenterIos shared] postAchievement:idName percent:[NSNumber numberWithInt:percentComplete]];
 }
 
 void GameCenter::clearAllAchievements()
 {
-    [[GameCenterLauncher shared] clearAllAchivements];
+    [[GameCenterIos shared] clearAllAchivements];
 }
 
 #pragma mark -
@@ -32,17 +32,17 @@ void GameCenter::clearAllAchievements()
 
 void GameCenter::showScores()
 {
-    [[GameCenterLauncher shared] showScores];
+    [[GameCenterIos shared] showScores];
 }
 
 void GameCenter::postScore(const char* idName, int score)
 {
-    [[GameCenterLauncher shared] postScore:idName score:[NSNumber numberWithInt:score]];
+    [[GameCenterIos shared] postScore:idName score:[NSNumber numberWithInt:score]];
 }
 
 void GameCenter::clearAllScores()
 {
-    [[GameCenterLauncher shared] clearAllScores];
+    [[GameCenterIos shared] clearAllScores];
 }
 
 } // namespace Avalon

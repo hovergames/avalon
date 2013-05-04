@@ -1,14 +1,14 @@
-#import "GameCenterLauncher.h"
+#import "GameCenterIos.h"
 
 #import <GameKit/GameKit.h>
 #import "AppController.h"
 #import "RootViewController.h"
 
-@implementation GameCenterLauncher
+@implementation GameCenterIos
 
-static GameCenterLauncher* instance = nil;
+static GameCenterIos* instance = nil;
 
-+ (GameCenterLauncher*)shared
++ (GameCenterIos*)shared
 {
 	@synchronized(self) {
         if (instance == nil) {
