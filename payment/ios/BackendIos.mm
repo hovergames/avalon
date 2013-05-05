@@ -116,9 +116,11 @@
 
 - (void)failedTransaction:(SKPaymentTransaction *)transaction
 {
+    bool reportFailure = true;
 	switch (transaction.error.code) {
 		case SKErrorPaymentCancelled:
             NSLog(@"[Payment] failedTransaction: SKErrorPaymentCancelled");
+            reportFailure = false;
             break;
 
 		case SKErrorUnknown:
@@ -145,7 +147,9 @@
     if (--transactionDepth == 0) {
         manager->delegate->onTransactionEnd(manager);
     }
-    manager->delegate->onPurchaseFail(manager);
+    if (reportFailure) {
+        manager->delegate->onPurchaseFail(manager);
+    }
     
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }
