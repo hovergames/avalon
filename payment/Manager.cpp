@@ -122,10 +122,16 @@ void Manager::purchase(const char* const productIdOrAlias)
 void Manager::startService()
 {
     BOOST_ASSERT_MSG(delegate, "delegate must be set first");
-    BOOST_ASSERT_MSG(!backend.isInitialized(), "backend service already initialized");
-    
+    BOOST_ASSERT_MSG(!isStarted(), "service already started");
+
     backend.initialize();
     started = true;
+}
+
+void Manager::stopService()
+{
+    backend.shutdown();
+    started = false;
 }
 
 bool Manager::isStarted() const

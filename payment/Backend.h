@@ -17,6 +17,7 @@ public:
 
     bool isInitialized() const;
     void initialize();
+    void shutdown();
 
     void purchase(Product* const product);
     bool isPurchaseReady() const;

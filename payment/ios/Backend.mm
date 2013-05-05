@@ -53,6 +53,16 @@ void Backend::initialize()
     [[SKPaymentQueue defaultQueue] addTransactionObserver:__getIosBackend()];
 }
 
+void Backend::shutdown()
+{
+    if (!isInitialized()) {
+        return;
+    }
+
+    [[SKPaymentQueue defaultQueue] removeTransactionObserver:__getIosBackend()];
+    __getIosBackend()->initialized = false;
+}
+
 void Backend::purchase(Product* const product)
 {
     if (__getIosBackend()->transactionDepth++ == 0) {
