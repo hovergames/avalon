@@ -1,30 +1,25 @@
-//
-//  ProductNonConsumable.h
-//  Adventures on the farm
-//
-//  Created by Jochen Heizmann on 09.04.13.
-//
-//
+#ifndef AVALON_PAYMENT_PRODUCTCONSUMABLE_H
+#define AVALON_PAYMENT_PRODUCTCONSUMABLE_H
 
-#ifndef __Adventures_on_the_farm__ProductConsumable__
-#define __Adventures_on_the_farm__ProductConsumable__
+#include <avalon/payment/Product.h>
 
-#include "Product.h"
+namespace avalon {
+namespace payment {
 
 class ProductConsumable : public Product
 {
 public:
-    int virtualQuantity;
+    ProductConsumable(const char* const productId, const float quantityPerPurchase);
+    virtual ~ProductConsumable();
 
-    ProductConsumable() : virtualQuantity(0) {}
+    virtual void consume() override;
+    float getQuantity() const;
 
-    virtual ~ProductConsumable() {}
-
-    virtual bool consume(int quantity);
-
-    virtual bool isConsumable(int quantity);
-    virtual int getQuantity();
-    virtual int getVirtualQuantity();
+protected:
+    const float quantityPerPurchase;
 };
 
-#endif /* defined(__Adventures_on_the_farm__ProductConsumable__) */
+} // namespace payment
+} // namespace avalon
+
+#endif /* AVALON_PAYMENT_PRODUCTCONSUMABLE_H */

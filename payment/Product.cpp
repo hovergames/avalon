@@ -1,43 +1,60 @@
-//
-//  Product.cpp
-//  Adventures on the farm
-//
-//  Created by Jochen Heizmann on 09.04.13.
-//
-//
+#include <avalon/payment/Product.h>
 
-#include "Product.h"
-#include <cassert>
-#include "cocos2d.h"
+#include <avalon/payment/Manager.h>
+#include <boost/assert.hpp>
 
-void Product::setId(const char *id)
+namespace avalon {
+namespace payment {
+
+Product::Product(const char* const productId)
+: price(0)
+, localizedPrice()
+, localizedName()
+, localizedDescription()
+, purchasedCounter(0)
+, manager(NULL)
+, productId(std::string(productId))
 {
-    internalId = id;
 }
 
-void Product::setNativeId(const char *id)
+Product::~Product()
 {
-    nativeId = id;
 }
 
-bool Product::isPurchased()
+std::string Product::getProductId() const
 {
-    return paymentProvider->isPurchased(nativeId.c_str());
+    return productId;
+}
+
+bool Product::canBePurchased() const
+{
+    if (!manager || !manager->isPurchaseReady()) {
+        return false;
+    }
+
+    return true;
 }
 
 void Product::purchase()
 {
-    assert(paymentProvider && "paymentProvider not set");
-    assert(!nativeId.empty() && "nativeId of Product not set!");
-    paymentProvider->purchase(internalId.c_str());
+    BOOST_ASSERT_MSG(manager, "service has to be set");
+
+    manager->purchase(getProductId().c_str());
 }
 
-const char * Product::getLocalizedName()
+void Product::onHasBeenPurchased()
 {
-    return localizedName.c_str();
+    ++purchasedCounter;
 }
 
-float Product::getPrice()
+bool Product::hasBeenPurchased() const
 {
-    return price;
+    return (purchasedCounter > 0);
 }
+
+void Product::consume()
+{
+}
+
+} // namespace payment
+} // namespace avalon
