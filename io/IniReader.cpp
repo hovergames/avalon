@@ -71,6 +71,7 @@ void IniReader::loadFile(const char *iniFile)
 
             StringHelper::trim(key);
             StringHelper::trim(value);
+            StringHelper::replace(value, "\\n", "\n");
 
             sections[currentSection][key] = value;
         }
