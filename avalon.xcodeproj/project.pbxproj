@@ -15,6 +15,13 @@
 		C8CF9B34173ECA0300F62090 /* Product.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B2B173ECA0300F62090 /* Product.cpp */; };
 		C8CF9B35173ECA0300F62090 /* ProductConsumable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B2D173ECA0300F62090 /* ProductConsumable.cpp */; };
 		C8CF9B39173ECBB100F62090 /* IniReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B37173ECBB100F62090 /* IniReader.cpp */; };
+		C8D898F2173F9DC000E890EA /* Manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D898F0173F9DC000E890EA /* Manager.cpp */; };
+		C8D89902173FA03B00E890EA /* Chartboost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D898FE173FA03B00E890EA /* Chartboost.cpp */; };
+		C8D89903173FA03B00E890EA /* Revmob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8D89900173FA03B00E890EA /* Revmob.cpp */; };
+		C8D8990A173FA16D00E890EA /* ChartboostX_ios.mm in Sources */ = {isa = PBXBuildFile; fileRef = C8D89908173FA16D00E890EA /* ChartboostX_ios.mm */; };
+		C8D8990B173FA16D00E890EA /* libChartboost.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C8D89909173FA16D00E890EA /* libChartboost.a */; };
+		C8D89913173FA27800E890EA /* Revmob_ios.mm in Sources */ = {isa = PBXBuildFile; fileRef = C8D89910173FA27800E890EA /* Revmob_ios.mm */; };
+		C8D89914173FA27800E890EA /* RevMobAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8D89911173FA27800E890EA /* RevMobAds.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,6 +55,25 @@
 		C8CF9B2F173ECA0300F62090 /* payment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = payment.h; sourceTree = "<group>"; };
 		C8CF9B37173ECBB100F62090 /* IniReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IniReader.cpp; sourceTree = "<group>"; };
 		C8CF9B38173ECBB100F62090 /* IniReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IniReader.h; sourceTree = "<group>"; };
+		C8D898F0173F9DC000E890EA /* Manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Manager.cpp; sourceTree = "<group>"; };
+		C8D898F1173F9DC000E890EA /* Manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Manager.h; sourceTree = "<group>"; };
+		C8D898FE173FA03B00E890EA /* Chartboost.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Chartboost.cpp; sourceTree = "<group>"; };
+		C8D898FF173FA03B00E890EA /* Chartboost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chartboost.h; sourceTree = "<group>"; };
+		C8D89900173FA03B00E890EA /* Revmob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Revmob.cpp; sourceTree = "<group>"; };
+		C8D89901173FA03B00E890EA /* Revmob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Revmob.h; sourceTree = "<group>"; };
+		C8D89904173FA16D00E890EA /* ChartboostX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChartboostX.h; path = "external/chartboost/Chartboost-x/ChartboostX.h"; sourceTree = "<group>"; };
+		C8D89906173FA16D00E890EA /* CBAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CBAnalytics.h; sourceTree = "<group>"; };
+		C8D89907173FA16D00E890EA /* Chartboost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chartboost.h; sourceTree = "<group>"; };
+		C8D89908173FA16D00E890EA /* ChartboostX_ios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChartboostX_ios.mm; sourceTree = "<group>"; };
+		C8D89909173FA16D00E890EA /* libChartboost.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libChartboost.a; sourceTree = "<group>"; };
+		C8D89910173FA27800E890EA /* Revmob_ios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Revmob_ios.mm; sourceTree = "<group>"; };
+		C8D89911173FA27800E890EA /* RevMobAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RevMobAds.framework; sourceTree = "<group>"; };
+		C8D89912173FA27800E890EA /* RevmobBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RevmobBridge.h; sourceTree = "<group>"; };
+		C8D89915173FA2FC00E890EA /* Banner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Banner.h; sourceTree = "<group>"; };
+		C8D89916173FA2FC00E890EA /* Fullscreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fullscreen.h; sourceTree = "<group>"; };
+		C8D89917173FA2FC00E890EA /* Link.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Link.h; sourceTree = "<group>"; };
+		C8D89918173FA2FC00E890EA /* Popup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Popup.h; sourceTree = "<group>"; };
+		C8D89919173FA2FC00E890EA /* Provider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Provider.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +82,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C8CF9AD5173EC8FF00F62090 /* Foundation.framework in Frameworks */,
+				C8D8990B173FA16D00E890EA /* libChartboost.a in Frameworks */,
+				C8D89914173FA27800E890EA /* RevMobAds.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				C8CF9AD6173EC8FF00F62090 /* avalon */,
+				C8D8990C173FA17200E890EA /* external */,
 				C8CF9AD3173EC8FF00F62090 /* Frameworks */,
 				C8CF9AD2173EC8FF00F62090 /* Products */,
 			);
@@ -90,6 +119,7 @@
 		C8CF9AD6173EC8FF00F62090 /* avalon */ = {
 			isa = PBXGroup;
 			children = (
+				C8D898DE173F9D2100E890EA /* ads */,
 				C8CF9B36173ECBB100F62090 /* io */,
 				C8CF9B20173ECA0300F62090 /* payment */,
 				C8CF9B2F173ECA0300F62090 /* payment.h */,
@@ -100,8 +130,8 @@
 		C8CF9B20173ECA0300F62090 /* payment */ = {
 			isa = PBXGroup;
 			children = (
-				C8CF9B21173ECA0300F62090 /* Backend.h */,
 				C8CF9B22173ECA0300F62090 /* ios */,
+				C8CF9B21173ECA0300F62090 /* Backend.h */,
 				C8CF9B26173ECA0300F62090 /* Loader.cpp */,
 				C8CF9B27173ECA0300F62090 /* Loader.h */,
 				C8CF9B28173ECA0300F62090 /* Manager.cpp */,
@@ -132,6 +162,81 @@
 				C8CF9B38173ECBB100F62090 /* IniReader.h */,
 			);
 			path = io;
+			sourceTree = "<group>";
+		};
+		C8D898DE173F9D2100E890EA /* ads */ = {
+			isa = PBXGroup;
+			children = (
+				C8D898F3173F9FDA00E890EA /* provider */,
+				C8D89915173FA2FC00E890EA /* Banner.h */,
+				C8D89916173FA2FC00E890EA /* Fullscreen.h */,
+				C8D89917173FA2FC00E890EA /* Link.h */,
+				C8D898F0173F9DC000E890EA /* Manager.cpp */,
+				C8D898F1173F9DC000E890EA /* Manager.h */,
+				C8D89918173FA2FC00E890EA /* Popup.h */,
+				C8D89919173FA2FC00E890EA /* Provider.h */,
+			);
+			path = ads;
+			sourceTree = "<group>";
+		};
+		C8D898F3173F9FDA00E890EA /* provider */ = {
+			isa = PBXGroup;
+			children = (
+				C8D898FE173FA03B00E890EA /* Chartboost.cpp */,
+				C8D898FF173FA03B00E890EA /* Chartboost.h */,
+				C8D89900173FA03B00E890EA /* Revmob.cpp */,
+				C8D89901173FA03B00E890EA /* Revmob.h */,
+			);
+			path = provider;
+			sourceTree = "<group>";
+		};
+		C8D89905173FA16D00E890EA /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				C8D89906173FA16D00E890EA /* CBAnalytics.h */,
+				C8D89907173FA16D00E890EA /* Chartboost.h */,
+				C8D89908173FA16D00E890EA /* ChartboostX_ios.mm */,
+				C8D89909173FA16D00E890EA /* libChartboost.a */,
+			);
+			name = ios;
+			path = "external/chartboost/Chartboost-x/ios";
+			sourceTree = "<group>";
+		};
+		C8D8990C173FA17200E890EA /* external */ = {
+			isa = PBXGroup;
+			children = (
+				C8D8990D173FA17800E890EA /* chartboost */,
+				C8D8990E173FA27800E890EA /* revmob */,
+			);
+			name = external;
+			sourceTree = "<group>";
+		};
+		C8D8990D173FA17800E890EA /* chartboost */ = {
+			isa = PBXGroup;
+			children = (
+				C8D89904173FA16D00E890EA /* ChartboostX.h */,
+				C8D89905173FA16D00E890EA /* ios */,
+			);
+			name = chartboost;
+			sourceTree = "<group>";
+		};
+		C8D8990E173FA27800E890EA /* revmob */ = {
+			isa = PBXGroup;
+			children = (
+				C8D8990F173FA27800E890EA /* ios */,
+				C8D89911173FA27800E890EA /* RevMobAds.framework */,
+				C8D89912173FA27800E890EA /* RevmobBridge.h */,
+			);
+			name = revmob;
+			path = external/revmob;
+			sourceTree = "<group>";
+		};
+		C8D8990F173FA27800E890EA /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				C8D89910173FA27800E890EA /* Revmob_ios.mm */,
+			);
+			path = ios;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -191,6 +296,11 @@
 				C8CF9B34173ECA0300F62090 /* Product.cpp in Sources */,
 				C8CF9B35173ECA0300F62090 /* ProductConsumable.cpp in Sources */,
 				C8CF9B39173ECBB100F62090 /* IniReader.cpp in Sources */,
+				C8D898F2173F9DC000E890EA /* Manager.cpp in Sources */,
+				C8D89902173FA03B00E890EA /* Chartboost.cpp in Sources */,
+				C8D89903173FA03B00E890EA /* Revmob.cpp in Sources */,
+				C8D8990A173FA16D00E890EA /* ChartboostX_ios.mm in Sources */,
+				C8D89913173FA27800E890EA /* Revmob_ios.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,7 +366,7 @@
 				DSTROOT = /tmp/avalon.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/avalon/ads/revmob\"",
+					"\"$(SRCROOT)/external/revmob\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -282,7 +392,10 @@
 					"\"$(PROJECT_DIR)/external/cocos2d-x/CocosDenshion/include/\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				LIBRARY_SEARCH_PATHS = "\"$(PROJECT_DIR)/external/cocos2d-x/platform/third_party/ios/libraries/\"";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(PROJECT_DIR)/external/cocos2d-x/platform/third_party/ios/libraries/\"",
+					"\"$(SRCROOT)/external/chartboost/Chartboost-x/ios\"",
+				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -300,7 +413,7 @@
 				DSTROOT = /tmp/avalon.dst;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/avalon/ads/revmob\"",
+					"\"$(SRCROOT)/external/revmob\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -324,7 +437,10 @@
 					"\"$(PROJECT_DIR)/external/cocos2d-x/CocosDenshion/include/\"",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
-				LIBRARY_SEARCH_PATHS = "\"$(PROJECT_DIR)/external/cocos2d-x/platform/third_party/ios/libraries/\"";
+				LIBRARY_SEARCH_PATHS = (
+					"\"$(PROJECT_DIR)/external/cocos2d-x/platform/third_party/ios/libraries/\"",
+					"\"$(SRCROOT)/external/chartboost/Chartboost-x/ios\"",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

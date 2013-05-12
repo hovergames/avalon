@@ -23,8 +23,8 @@
  ****************************************************************************/
 
 
-#ifndef ChartboostX_ChartboostX_h
-#define ChartboostX_ChartboostX_h
+#ifndef RevmobBridge_RevmobBridge_h
+#define RevmobBridge_RevmobBridge_h
 
 #include "cocos2d.h"
 
