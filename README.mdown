@@ -17,6 +17,7 @@ to produce more apps in less time (the key to get rich fast!!!).**
 ### iOS
 
 1. Just drag&drop `avalon.xcodeproj` to the desired project
+1. Add `avalon` to __Target Dependencies__ in __Build Phases__
 1. Add `libavalon.a` to __Link Binary With Libraries__ in __Build Phases__
 1. Add this directory to __Header Search Path__ in __Build Settings__
 1. Done
