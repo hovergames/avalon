@@ -18,7 +18,7 @@
     for (SKProduct* skProduct in response.products) {
         const char* productId = [[skProduct productIdentifier] cStringUsingEncoding:NSASCIIStringEncoding];
 
-        Avalon::Payment::Product* avProduct = manager->getProduct(productId);
+        avalon::payment::Product* avProduct = manager->getProduct(productId);
         avProduct->price = [[skProduct price] floatValue];
         avProduct->localizedName = [[skProduct localizedTitle] UTF8String];
         avProduct->localizedDescription = [[skProduct localizedDescription] UTF8String];
@@ -89,7 +89,7 @@
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
     const char* productId = [transaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
-    Avalon::Payment::Product* product = manager->getProduct(productId);
+    avalon::payment::Product* product = manager->getProduct(productId);
     product->onHasBeenPurchased();
 
     if (--transactionDepth == 0) {
@@ -103,7 +103,7 @@
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction
 {
     const char* productId = [transaction.originalTransaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
-    Avalon::Payment::Product* product = manager->getProduct(productId);
+    avalon::payment::Product* product = manager->getProduct(productId);
     product->onHasBeenPurchased();
 
     if (--transactionDepth == 0) {

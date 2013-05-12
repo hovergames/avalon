@@ -1,1 +1,9 @@
+# Annoying OSX
 .DS_Store
+
+# XCode userdata
+avalon.xcodeproj/xcuserdata/
+avalon.xcodeproj/project.xcworkspace/xcuserdata/
+
+# User defined symlink to cocos2d-x
+external/cocos2d-x

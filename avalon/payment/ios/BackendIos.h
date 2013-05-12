@@ -6,7 +6,7 @@ namespace avalon { namespace payment { class Manager; } }
 @interface BackendIos : NSObject<SKProductsRequestDelegate, SKPaymentTransactionObserver>
 {
     @public bool initialized;
-    @public Avalon::Payment::Manager* manager;
+    @public avalon::payment::Manager* manager;
     @public int transactionDepth;
 }
 

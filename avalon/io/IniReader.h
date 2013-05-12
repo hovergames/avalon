@@ -1,15 +1,10 @@
-//
-//  IniReader.h
-//  Adventures on the farm
-//
-//  Created by Jochen Heizmann on 09.04.13.
-//
-//
-
-#ifndef __Adventures_on_the_farm__IniReader__
-#define __Adventures_on_the_farm__IniReader__
+#ifndef AVALON_IO_INIREADER_H
+#define AVALON_IO_INIREADER_H
 
 #include <map>
+
+namespace avalon {
+namespace io {
 
 class IniReader
 {
@@ -32,4 +27,8 @@ public:
     iniKeys* getSection(const char *section);
     iniSections* getSections();
 };
-#endif /* defined(__Adventures_on_the_farm__IniReader__) */
+
+} // namespace io
+} // namespace avalon
+
+#endif /* AVALON_IO_INIREADER_H */

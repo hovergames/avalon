@@ -22,7 +22,7 @@ public:
 
 private:
     shared_ptr<Manager> manager;
-    IniReader config;
+    io::IniReader config;
 
     const char* detectProductId(const char* section);
 };

@@ -1,0 +1,360 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C8CF9AD5173EC8FF00F62090 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8CF9AD4173EC8FF00F62090 /* Foundation.framework */; };
+		C8CF9B30173ECA0300F62090 /* Backend.mm in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B23173ECA0300F62090 /* Backend.mm */; };
+		C8CF9B31173ECA0300F62090 /* BackendIos.mm in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B25173ECA0300F62090 /* BackendIos.mm */; };
+		C8CF9B32173ECA0300F62090 /* Loader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B26173ECA0300F62090 /* Loader.cpp */; };
+		C8CF9B33173ECA0300F62090 /* Manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B28173ECA0300F62090 /* Manager.cpp */; };
+		C8CF9B34173ECA0300F62090 /* Product.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B2B173ECA0300F62090 /* Product.cpp */; };
+		C8CF9B35173ECA0300F62090 /* ProductConsumable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B2D173ECA0300F62090 /* ProductConsumable.cpp */; };
+		C8CF9B39173ECBB100F62090 /* IniReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8CF9B37173ECBB100F62090 /* IniReader.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C8CF9ACF173EC8FF00F62090 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/${PRODUCT_NAME}";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		C8CF9AD1173EC8FF00F62090 /* libavalon.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libavalon.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C8CF9AD4173EC8FF00F62090 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		C8CF9B21173ECA0300F62090 /* Backend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Backend.h; sourceTree = "<group>"; };
+		C8CF9B23173ECA0300F62090 /* Backend.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Backend.mm; sourceTree = "<group>"; };
+		C8CF9B24173ECA0300F62090 /* BackendIos.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackendIos.h; sourceTree = "<group>"; };
+		C8CF9B25173ECA0300F62090 /* BackendIos.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BackendIos.mm; sourceTree = "<group>"; };
+		C8CF9B26173ECA0300F62090 /* Loader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Loader.cpp; sourceTree = "<group>"; };
+		C8CF9B27173ECA0300F62090 /* Loader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Loader.h; sourceTree = "<group>"; };
+		C8CF9B28173ECA0300F62090 /* Manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Manager.cpp; sourceTree = "<group>"; };
+		C8CF9B29173ECA0300F62090 /* Manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Manager.h; sourceTree = "<group>"; };
+		C8CF9B2A173ECA0300F62090 /* ManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManagerDelegate.h; sourceTree = "<group>"; };
+		C8CF9B2B173ECA0300F62090 /* Product.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Product.cpp; sourceTree = "<group>"; };
+		C8CF9B2C173ECA0300F62090 /* Product.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Product.h; sourceTree = "<group>"; };
+		C8CF9B2D173ECA0300F62090 /* ProductConsumable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProductConsumable.cpp; sourceTree = "<group>"; };
+		C8CF9B2E173ECA0300F62090 /* ProductConsumable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductConsumable.h; sourceTree = "<group>"; };
+		C8CF9B2F173ECA0300F62090 /* payment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = payment.h; sourceTree = "<group>"; };
+		C8CF9B37173ECBB100F62090 /* IniReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IniReader.cpp; sourceTree = "<group>"; };
+		C8CF9B38173ECBB100F62090 /* IniReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IniReader.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C8CF9ACE173EC8FF00F62090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C8CF9AD5173EC8FF00F62090 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C8CF9AC8173EC8FF00F62090 = {
+			isa = PBXGroup;
+			children = (
+				C8CF9AD6173EC8FF00F62090 /* avalon */,
+				C8CF9AD3173EC8FF00F62090 /* Frameworks */,
+				C8CF9AD2173EC8FF00F62090 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C8CF9AD2173EC8FF00F62090 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C8CF9AD1173EC8FF00F62090 /* libavalon.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C8CF9AD3173EC8FF00F62090 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C8CF9AD4173EC8FF00F62090 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C8CF9AD6173EC8FF00F62090 /* avalon */ = {
+			isa = PBXGroup;
+			children = (
+				C8CF9B36173ECBB100F62090 /* io */,
+				C8CF9B20173ECA0300F62090 /* payment */,
+				C8CF9B2F173ECA0300F62090 /* payment.h */,
+			);
+			path = avalon;
+			sourceTree = "<group>";
+		};
+		C8CF9B20173ECA0300F62090 /* payment */ = {
+			isa = PBXGroup;
+			children = (
+				C8CF9B21173ECA0300F62090 /* Backend.h */,
+				C8CF9B22173ECA0300F62090 /* ios */,
+				C8CF9B26173ECA0300F62090 /* Loader.cpp */,
+				C8CF9B27173ECA0300F62090 /* Loader.h */,
+				C8CF9B28173ECA0300F62090 /* Manager.cpp */,
+				C8CF9B29173ECA0300F62090 /* Manager.h */,
+				C8CF9B2A173ECA0300F62090 /* ManagerDelegate.h */,
+				C8CF9B2B173ECA0300F62090 /* Product.cpp */,
+				C8CF9B2C173ECA0300F62090 /* Product.h */,
+				C8CF9B2D173ECA0300F62090 /* ProductConsumable.cpp */,
+				C8CF9B2E173ECA0300F62090 /* ProductConsumable.h */,
+			);
+			path = payment;
+			sourceTree = "<group>";
+		};
+		C8CF9B22173ECA0300F62090 /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				C8CF9B23173ECA0300F62090 /* Backend.mm */,
+				C8CF9B24173ECA0300F62090 /* BackendIos.h */,
+				C8CF9B25173ECA0300F62090 /* BackendIos.mm */,
+			);
+			path = ios;
+			sourceTree = "<group>";
+		};
+		C8CF9B36173ECBB100F62090 /* io */ = {
+			isa = PBXGroup;
+			children = (
+				C8CF9B37173ECBB100F62090 /* IniReader.cpp */,
+				C8CF9B38173ECBB100F62090 /* IniReader.h */,
+			);
+			path = io;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C8CF9AD0173EC8FF00F62090 /* avalon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C8CF9ADF173EC8FF00F62090 /* Build configuration list for PBXNativeTarget "avalon" */;
+			buildPhases = (
+				C8CF9ACD173EC8FF00F62090 /* Sources */,
+				C8CF9ACE173EC8FF00F62090 /* Frameworks */,
+				C8CF9ACF173EC8FF00F62090 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = avalon;
+			productName = avalon;
+			productReference = C8CF9AD1173EC8FF00F62090 /* libavalon.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C8CF9AC9173EC8FF00F62090 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+			};
+			buildConfigurationList = C8CF9ACC173EC8FF00F62090 /* Build configuration list for PBXProject "avalon" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = C8CF9AC8173EC8FF00F62090;
+			productRefGroup = C8CF9AD2173EC8FF00F62090 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C8CF9AD0173EC8FF00F62090 /* avalon */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C8CF9ACD173EC8FF00F62090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C8CF9B30173ECA0300F62090 /* Backend.mm in Sources */,
+				C8CF9B31173ECA0300F62090 /* BackendIos.mm in Sources */,
+				C8CF9B32173ECA0300F62090 /* Loader.cpp in Sources */,
+				C8CF9B33173ECA0300F62090 /* Manager.cpp in Sources */,
+				C8CF9B34173ECA0300F62090 /* Product.cpp in Sources */,
+				C8CF9B35173ECA0300F62090 /* ProductConsumable.cpp in Sources */,
+				C8CF9B39173ECBB100F62090 /* IniReader.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C8CF9ADD173EC8FF00F62090 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		C8CF9ADE173EC8FF00F62090 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C8CF9AE0173EC8FF00F62090 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				DSTROOT = /tmp/avalon.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/avalon/ads/revmob\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					USE_FILE32API,
+					CC_TARGET_OS_IPHONE,
+					CC_ENABLE_CHIPMUNK_INTEGRATION,
+					"DEBUG=1",
+					"COCOS2D_DEBUG=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					"\"$(PROJECT_DIR)/\"",
+					"\"$(PROJECT_DIR)/external/boost/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/include/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/platform/ios/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/platform/ios/Simulation/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/platform/third_party/ios/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/kazmath/include/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/extensions/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/external/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/external/chipmunk/include/constraints/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/external/chipmunk/include/chipmunk/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/CocosDenshion/include/\"",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = "\"$(PROJECT_DIR)/external/cocos2d-x/platform/third_party/ios/libraries/\"";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = all;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		C8CF9AE1173EC8FF00F62090 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
+				DSTROOT = /tmp/avalon.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/avalon/ads/revmob\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					USE_FILE32API,
+					CC_TARGET_OS_IPHONE,
+					CC_ENABLE_CHIPMUNK_INTEGRATION,
+				);
+				HEADER_SEARCH_PATHS = (
+					"\"$(PROJECT_DIR)/\"",
+					"\"$(PROJECT_DIR)/external/boost/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/include/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/platform/ios/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/platform/ios/Simulation/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/platform/third_party/ios/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/cocos2dx/kazmath/include/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/extensions/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/external/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/external/chipmunk/include/constraints/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/external/chipmunk/include/chipmunk/\"",
+					"\"$(PROJECT_DIR)/external/cocos2d-x/CocosDenshion/include/\"",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = "\"$(PROJECT_DIR)/external/cocos2d-x/platform/third_party/ios/libraries/\"";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = all;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C8CF9ACC173EC8FF00F62090 /* Build configuration list for PBXProject "avalon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C8CF9ADD173EC8FF00F62090 /* Debug */,
+				C8CF9ADE173EC8FF00F62090 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C8CF9ADF173EC8FF00F62090 /* Build configuration list for PBXNativeTarget "avalon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C8CF9AE0173EC8FF00F62090 /* Debug */,
+				C8CF9AE1173EC8FF00F62090 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C8CF9AC9173EC8FF00F62090 /* Project object */;
+}

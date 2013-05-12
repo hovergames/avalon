@@ -1,23 +1,18 @@
-//
-//  IniReader.cpp
-//  Adventures on the farm
-//
-//  Created by Jochen Heizmann on 09.04.13.
-//
-//
-
 #include "IniReader.h"
 
 #include <string>
-#include "cocos2d.h";
 #include <iostream>
-#include "StringHelper.h"
-#include "Helpers.h"
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/replace.hpp>
+#include "cocos2d.h"
 
-void IniReader::loadFile(const char *iniFile)
+namespace avalon {
+namespace io {
+
+void IniReader::loadFile(const char* iniFile)
 {
     unsigned long fileSize = 0;
-    unsigned char * fileContents = NULL;
+    unsigned char* fileContents = NULL;
     std::string line, fullPath, contents;
 
     fullPath = cocos2d::CCFileUtils::sharedFileUtils()->fullPathForFilename(iniFile);
@@ -52,7 +47,7 @@ void IniReader::loadFile(const char *iniFile)
             {
                 line.erase(0, pos + 1);
                 line.erase(sectionEnd - 1, line.length());
-                StringHelper::trim(line);
+                boost::trim(line);
                 currentSection = line;
                 continue;
             }
@@ -69,54 +64,56 @@ void IniReader::loadFile(const char *iniFile)
             std::string value(line);
             value.erase(0, pos + 1);
 
-            StringHelper::trim(key);
-            StringHelper::trim(value);
-            StringHelper::replace(value, "\\n", "\n");
+            boost::trim(key);
+            boost::trim(value);
+            boost::replace_all(value, "\\n", "\n");
 
             sections[currentSection][key] = value;
         }
     }
+
     if (fileContents != NULL) {
-        Helpers::safeDeleteArray(fileContents);
+        delete[] fileContents;
+        fileContents = NULL;
     }
 }
 
-int IniReader::getValueAsInt(const char *section, const char *key)
+int IniReader::getValueAsInt(const char* section, const char* key)
 {
     std::string val = getValue(section, key);
     return atoi(val.c_str());
 }
 
-double IniReader::getValueAsDouble(const char *section, const char *key)
+double IniReader::getValueAsDouble(const char* section, const char* key)
 {
     std::string val = getValue(section, key);
     return atof(val.c_str());
 }
 
-float IniReader::getValueAsFloat(const char *section, const char *key)
+float IniReader::getValueAsFloat(const char* section, const char* key)
 {
     return float(getValueAsDouble(section, key));
 }
 
-const char * IniReader::getValue(const char *section, const char *key)
+const char* IniReader::getValue(const char* section, const char* key)
 {
     return sections[section][key].c_str();
 }
 
-IniReader::iniKeys* IniReader::getSection(const char *section)
+IniReader::iniKeys* IniReader::getSection(const char* section)
 {
     return &(sections[section]);
 }
 
-bool IniReader::doesSectionExist(const char *section)
+bool IniReader::doesSectionExist(const char* section)
 {
     return sections.find(section) != sections.end();
 }
-
 
 IniReader::iniSections* IniReader::getSections()
 {
     return &sections;
 }
 
-
+} // namespace io
+} // namespace avalon
