@@ -1,12 +1,30 @@
 # Avalon
 
 Avalon provides various extension, helpers, libraries, classes, templates &
-functions on top of cocos2d-x. It should speed up cross-platform development
-and automate annoying tasks. 
+functions on top of [cocos2d-x][]. It should speed up cross-platform development
+and automate annoying tasks.
 
 **Avalon is here to make the developers life easier
 to produce more apps in less time (the key to get rich fast!!!).**
 
+## Installation
+
+### General
+
+1. Don't forget `git submodule update --init` or [boost][] will be missing
+1. Symlink your local [cocos2d-x][] folder to `external/cocos2d-x`
+
+### iOS
+
+1. Just drag&drop `avalon.xcodeproj` to the desired project
+1. Add `libavalon.a` to __Link Binary With Libraries__ in __Build Phases__
+1. Add this directory to __Header Search Path__ in __Build Settings__
+1. Done
+
 ## Documentations
+
 * [Wiki Cocos2d-x](http://wiki.cocos2d-x.org)
 * [Cocos2d-x API Reference](http://www.cocos2d-x.org/reference/native-cpp/index.html)
+
+  [cocos2d-x]: http://cocos2d-x.org/
+  [boost]: http://www.boost.org/
