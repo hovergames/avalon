@@ -20,10 +20,10 @@ void Chartboost::init()
     assert((appId != "") && "appId is empty!");
     assert((appSignature != "") && "appSignature is empty!");
 
-    ChartboostX::sharedChartboostX()->startSession();
     ChartboostX::sharedChartboostX()->setAppId(appId.c_str());
     ChartboostX::sharedChartboostX()->setAppSignature(appSignature.c_str());
     ChartboostX::sharedChartboostX()->setDelegate(this);
+    ChartboostX::sharedChartboostX()->startSession();
 
     ChartboostX::sharedChartboostX()->cacheInterstitial();
     ChartboostX::sharedChartboostX()->cacheMoreApps();
@@ -43,6 +43,12 @@ void Chartboost::showFullscreenAd()
 {
     ChartboostX::sharedChartboostX()->hasCachedInterstitial();
     ChartboostX::sharedChartboostX()->showInterstitial();
+}
+
+void Chartboost::openAdLink()
+{
+    ChartboostX::sharedChartboostX()->showMoreApps();
+    ChartboostX::sharedChartboostX()->cacheMoreApps();
 }
 
 bool Chartboost::shouldDisplayInterstitial(const char* location)

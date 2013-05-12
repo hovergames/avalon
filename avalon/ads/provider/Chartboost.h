@@ -4,7 +4,8 @@
 #include <string>
 #include <avalon/ads/Provider.h>
 #include <avalon/ads/Fullscreen.h>
-#include "ChartboostX.h"
+#include <avalon/ads/Link.h>
+#include <external/chartboost/Chartboost-x/ChartboostX.h>
 
 namespace avalon {
 namespace ads {
@@ -14,6 +15,7 @@ class Chartboost
 : public ChartboostXDelegate
 , public Fullscreen
 , public Provider
+, public Link
 {
 public:
     int weight;
@@ -29,7 +31,10 @@ public:
 
     // Fullscreen
     virtual void showFullscreenAd();
-    
+
+    // Link
+    virtual void openAdLink();
+
     // ChartboostXDelegate method
     virtual bool shouldDisplayInterstitial(const char* location);
     virtual void didCacheInterstitial(const char* location);
