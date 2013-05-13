@@ -1,6 +1,3 @@
-[submodule "boost"]
-	path = boost
-	url = ssh://git@bitbucket.org/MichaelContento/boost-mirror.git
 [submodule "vendors/Chartboost-x"]
 	path = vendors/Chartboost-x
 	url = git@github.com:wenbin1989/Chartboost-x.git
