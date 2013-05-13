@@ -1,0 +1,3 @@
+[submodule "boost"]
+	path = boost
+	url = ssh://git@bitbucket.org/MichaelContento/boost-mirror.git
