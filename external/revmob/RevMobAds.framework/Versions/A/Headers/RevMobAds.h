@@ -16,6 +16,12 @@ typedef enum {
     RevMobAdsTestingModeWithoutAds
 } RevMobAdsTestingMode;
 
+typedef enum {
+    RevMobUserGenderUndefined = 0,
+    RevMobUserGenderMale,
+    RevMobUserGenderFemale
+} RevMobUserGender;
+
 
 /**
  This is the main class to start using RevMob Ads.
@@ -26,8 +32,89 @@ typedef enum {
 }
 
 @property (nonatomic, assign) id<RevMobAdsDelegate> delegate;
-@property (nonatomic, assign) RevMobAdsTestingMode testingMode;
 @property (nonatomic, assign) NSUInteger connectionTimeout;
+
+
+/**
+ This property is used to put the SDK in testing mode, there are 3 possible states.
+ 
+ - RevMobAdsTestingModeOff - Turn off the testing mode;
+ 
+ - RevMobAdsTestingModeWithAds - Testing mode that always shows ads;
+ 
+ - RevMobAdsTestingModeWithoutAds- Testing mode that never shows ads.
+
+ 
+ **Important note**: You **can't** submmit your app to Apple with testing mode turned on, this will show test ads that don't monetize.
+
+ */
+@property (nonatomic, assign) RevMobAdsTestingMode testingMode;
+
+/**
+ This property is used to set the user gender in order to get targeted ads with higher eCPM.
+ There are two options: RevMobUserGenderFemale and RevMobUserGenderMale.
+
+ Example of usage:
+ 
+     [RevMobAds session].userGender = RevMobUserGenderFemale;
+
+ */
+@property (nonatomic, assign) RevMobUserGender userGender;
+
+/**
+ This property is used to set the minumum of user age range in order to get targeted ads with higher eCPM.
+ You should set also set userAgeRangeMax or alternatively set userBirthday.
+ 
+ Example of usage:
+
+     [RevMobAds session].userAgeRangeMin = 18;
+
+ */
+@property (nonatomic, assign) NSUInteger userAgeRangeMin;
+
+/**
+ This property is used to set the maximum of user age range in order to get targeted ads with higher eCPM.
+ You should set also set userAgeRangeMin or alternatively set userBirthday.
+
+ Example of usage:
+
+     [RevMobAds session].userAgeRangeMax = 21;
+
+ */
+@property (nonatomic, assign) NSUInteger userAgeRangeMax;
+
+/**
+ This property is used to set user age in order to get targeted ads with higher eCPM.
+ Alternatively you can set userAgeRangeMin and userAgeRangeMin.
+
+ Example of usage:
+
+     [RevMobAds session].userBirthday = userBirthday;
+
+ */
+@property (nonatomic, strong) NSDate *userBirthday;
+
+/**
+ This property is used to set user insterests in order to get targeted ads with higher eCPM.
+ You should pass an NSArray with NSStrings.
+
+ Example of usage:
+
+     [RevMobAds session].userInterests = @[@"games", @"mobile", @"advertising"];
+
+ */
+@property (nonatomic, strong) NSArray *userInterests;
+
+/**
+ This property is used to set user page in order to get targeted ads with higher eCPM.
+ You should pass an NSStrings for a user page.
+
+ Example of usage:
+
+     [RevMobAds session].userPage = @"http://www.facebook.com/revmob";
+
+ */
+@property (nonatomic, strong) NSString *userPage;
 
 #pragma mark - Alternative use
 
@@ -114,47 +201,10 @@ typedef enum {
  */
 - (void)openAdLinkWithDelegate:(id<RevMobAdsDelegate>)adelegate;
 
-/**
- With this method you can create a Local Notification Ad. The created notification will be scheduled as soon the application enter to the background.
- 
- To this ad unit works properly, you MUST call the readLocalNotification: method too. Check its documentation for more details.
- 
- Note: You may call this method as soon as you want, after you start the RevMob session. Just be aware that it will consume an amount of memory
- for each local notification, until the application enter to the background, where the memory will be released.
- 
- Example of Usage:
- 
-     NSDate *today = [NSDate date];
-     [[RevMobAds session] scheduleLocalNotification:[today dateByAddingTimeInterval:5]];
- 
- */
-- (void)scheduleLocalNotification:(NSDate *)fireDate;
-
-/**
- This method is similar to scheduleLocalNotification:, except the RevMob will decide when to show the local notification.
- 
- Example of Usage:
- 
-     [[RevMobAds session] scheduleLocalNotification];
- 
- */
-- (void)scheduleLocalNotification;
-
-/**
- This method is responsible to read the local notification previously created by the method scheduleLocalNotification: (Check its documentation for more details).
- 
- Important: You MUST call this method inside of the application:didReceiveLocalNotification: method of your application delegate (UIApplicationDelegate).
- 
- Note: Do not worry about the notifications of your application, because RevMob will only process its own notifications.
- 
- Example of Usage:
- 
-    - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
-        [[RevMobAds session] processLocalNotification:notification];
-    }
- 
- */
-- (void)processLocalNotification:(UILocalNotification *)notification;
+- (void)scheduleLocalNotification:(NSDate *)fireDate __attribute__((deprecated));
+- (void)scheduleLocalNotification __attribute__((deprecated));
+- (void)cancelAllLocalNotifications __attribute__((deprecated));
+- (void)processLocalNotification:(UILocalNotification *)notification __attribute__((deprecated));
 
 #pragma mark - Advanced mode
 
@@ -164,10 +214,17 @@ typedef enum {
  Example of Usage:
 
      RevMobFullscreen *ad = [[RevMobAds session] fullscreen]; // you must retain this object
-     ad.delegate = self;
-     [ad loadAd];
-     [ad showAd];
- 
+     [ad loadWithSuccessHandler:^(RevMobFullscreen *fs) {
+       [fs showAd];
+       NSLog(@"Ad loaded");
+     } andLoadFailHandler:^(RevMobFullscreen *fs, NSError *error) {
+       NSLog(@"Ad error: %@",error);
+     } onClickHandler:^{
+       NSLog(@"Ad clicked");
+     } onCloseHandler:^{
+       NSLog(@"Ad closed");
+     }];
+
  @return RevMobFullscreen object.
 */
 - (RevMobFullscreen *)fullscreen;
@@ -178,9 +235,16 @@ typedef enum {
  Example of Usage:
 
      RevMobFullscreen *ad = [[RevMobAds session] fullscreenWithPlacementId:@"your RevMob placementId"]; // you must retain this object
-     ad.delegate = self;
-     [ad loadAd];
-     [ad showAd];
+     [ad loadWithSuccessHandler:^(RevMobFullscreen *fs) {
+       [fs showAd];
+       NSLog(@"Ad loaded");
+     } andLoadFailHandler:^(RevMobFullscreen *fs, NSError *error) {
+       NSLog(@"Ad error: %@",error);
+     } onClickHandler:^{
+       NSLog(@"Ad clicked");
+     } onCloseHandler:^{
+       NSLog(@"Ad closed");
+     }];
 
 
  @param placementId: Optional parameter that identify the placement of your ad,
@@ -195,15 +259,19 @@ typedef enum {
  Example of Usage:
  
       RevMobBannerView *ad = [[RevMobAds session] bannerView]; // you must retain this object
-      ad.delegate = self;
-      [ad loadAd];
-      if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        ad.frame = CGRectMake(0, 0, 768, 114);
-      } else {
-        ad.frame = CGRectMake(0, 0, 320, 50);
-      }
-
-      [self.view addSubView:ad];
+      [ad loadWithSuccessHandler:^(RevMobBannerView *banner) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+          banner.frame = CGRectMake(0, 0, 768, 114);
+        } else {
+          banner.frame = CGRectMake(0, 0, 320, 50);
+        }
+        [self.view addSubview:banner];
+        NSLog(@"Ad loaded");
+      } andLoadFailHandler:^(RevMobBannerView *banner, NSError *error) {
+        NSLog(@"Ad error: %@",error);
+      } onClickHandler:^(RevMobBannerView *banner) {
+        NSLog(@"Ad clicked");
+      }];
  
   @return RevMobBannerView object. 
 */
@@ -214,16 +282,20 @@ typedef enum {
 
  Example of Usage:
 
-      RevMobBannerView *ad = [[RevMobAds session] bannerViewWithPlacementId:@"your RevMob placementId"]; // you must retain this object
-      ad.delegate = self;
-      [ad loadAd];
+    RevMobBannerView *ad = [[RevMobAds session] bannerViewWithPlacementId:@"your RevMob placementId"]; // you must retain this object
+    [ad loadWithSuccessHandler:^(RevMobBannerView *banner) {
       if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        ad.frame = CGRectMake(0, 0, 768, 114);
-      } else {
-        ad.frame = CGRectMake(0, 0, 320, 50);
-      }
-
-      [self.view addSubView:ad];
+      banner.frame = CGRectMake(0, 0, 768, 114);
+    } else {
+      banner.frame = CGRectMake(0, 0, 320, 50);
+    }
+      [self.view addSubview:banner];
+      NSLog(@"Ad loaded");
+    } andLoadFailHandler:^(RevMobBannerView *banner, NSError *error) {
+      NSLog(@"Ad error: %@",error);
+    } onClickHandler:^(RevMobBannerView *banner) {
+      NSLog(@"Ad clicked");
+    }];
 
  @param placementId: Optional parameter that identify the placement of your ad,
  you can collect your ids at http://revmob.com by looking up your apps. Can be nil.
@@ -238,10 +310,15 @@ typedef enum {
  Example of Usage:
  
       RevMobBanner *ad = [[RevMobAds session] banner]; // you must retain this object
-      ad.delegate = self;
-      [ad loadAd];
-      [ad showAd];
- 
+      [ad loadWithSuccessHandler:^(RevMobBanner *banner) {
+        [banner showAd];
+        NSLog(@"Ad loaded");
+      } andLoadFailHandler:^(RevMobBanner *banner, NSError *error) {
+        NSLog(@"Ad error: %@",error);
+      } onClickHandler:^(RevMobBanner *banner) {
+        NSLog(@"Ad clicked");
+      }];
+
   @return RevMobBanner object.
 */
 - (RevMobBanner *)banner;
@@ -252,9 +329,14 @@ typedef enum {
  Example of Usage:
 
       RevMobBanner *ad = [[RevMobAds session] bannerWithPlacementId:@"your RevMob placementId"]; // you must retain this object
-      ad.delegate = self;
-      [ad loadAd];
-      [ad showAd];
+      [ad loadWithSuccessHandler:^(RevMobBanner *banner) {
+        [banner showAd];
+        NSLog(@"Ad loaded");
+      } andLoadFailHandler:^(RevMobBanner *banner, NSError *error) {
+        NSLog(@"Ad error: %@",error);
+      } onClickHandler:^(RevMobBanner *banner) {
+        NSLog(@"Ad clicked");
+      }];
 
  @param placementId: Optional parameter that identify the placement of your ad,
  you can collect your ids at http://revmob.com by looking up your apps. Can be nil.
@@ -264,28 +346,42 @@ typedef enum {
 
 
 /**
- This is the factory of button ad object
+ This is the factory of button ad object already loaded
 
  Example of Usage:
 
-       UIButton *button = [[RevMobAds session] button]; // you must retain this object
-       [button setFrame:CGRectMake(0, 0, 200, 50)];
-       [self.view addSubview:button];
-       [button setTitle:@"Free Games" forState:UIControlStateNormal];
- 
+       UIButton *button = [[RevMobAds session] button];
+       [button loadWithSuccessHandler:^(RevMobButton *button) {
+         [button setFrame:CGRectMake(10, yCoordinateControl, 300, 40)];
+         [button setTitle:@"Free Games" forState:UIControlStateNormal];
+         [self.view addSubview:button];
+         NSLog(@"Ad received");
+       } andLoadFailHandler:^(RevMobButton *button, NSError *error) {
+         NSLog(@"Burron error: %@",error);
+       } onClickHandler:^(RevMobButton *button) {
+         NSLog(@"Button clicked!");
+       }];
+
   @return RevMobButton object.
 */
 - (RevMobButton *)button;
 
 /**
- This is the factory of button ad object
+ This is the factory of button ad object already loaded
 
  Example of Usage:
 
-     UIButton *button = [[RevMobAds session] buttonWithPlacementId:@"your RevMob placementId"]; // you must retain this object
-     [button setFrame:CGRectMake(0, 0, 320, 50)];
-     [self.view addSubview:button];
-     [button setTitle:@"Free Games" forState:UIControlStateNormal];
+     UIButton *button = [[RevMobAds session] buttonWithPlacementId:@"your RevMob placementId"];
+     [button loadWithSuccessHandler:^(RevMobButton *button) {
+       [button setFrame:CGRectMake(10, yCoordinateControl, 300, 40)];
+       [button setTitle:@"Free Games" forState:UIControlStateNormal];
+       [self.view addSubview:button];
+       NSLog(@"Ad received");
+     } andLoadFailHandler:^(RevMobButton *button, NSError *error) {
+       NSLog(@"Burron error: %@",error);
+     } onClickHandler:^(RevMobButton *button) {
+       NSLog(@"Button clicked!");
+     }];
 
  @param placementId: Optional parameter that identify the placement of your ad,
  you can collect your ids at http://revmob.com by looking up your apps. Can be nil.
@@ -295,15 +391,62 @@ typedef enum {
 
 
 /**
+ This is the factory of button ad object not loaded
+
+ Example of Usage:
+
+     UIButton *button = [[RevMobAds session] buttonUnloaded];
+     [button setFrame:CGRectMake(0, 0, 200, 50)];
+     [button setTitle:@"Free Games" forState:UIControlStateNormal];
+
+     [button loadWithSuccessHandler:^(RevMobButton *button) {
+       [self.view addSubview:button];
+     } andLoadFailHandler:^(RevMobButton *button, NSError *error) {
+       NSLog(@"Button error: %@",erro);
+     } onClickHandler:^(RevMobButton *button) {
+       NSLog(@"Button clicked!");
+     }];
+ 
+ @return RevMobButton object.
+ */
+- (RevMobButton *)buttonUnloaded;
+
+/**
+ This is the factory of button ad object not loaded
+
+ Example of Usage:
+
+     UIButton *button = [[RevMobAds session] buttonUnloadedWithPlacementId:@"your RevMob placementId"];
+     [button setFrame:CGRectMake(0, 0, 200, 50)];
+     [button setTitle:@"Free Games" forState:UIControlStateNormal];
+
+     [button loadWithSuccessHandler:^(RevMobButton *button) {
+       [self.view addSubview:button];
+     } andLoadFailHandler:^(RevMobButton *button, NSError *error) {
+       NSLog(@"Button error: %@",erro);
+     } onClickHandler:^(RevMobButton *button) {
+       NSLog(@"Button clicked!");
+     }];
+
+ @param placementId: Optional parameter that identify the placement of your ad,
+ you can collect your ids at http://revmob.com by looking up your apps. Can be nil.
+ @return RevMobButton object.
+ */
+- (RevMobButton *)buttonUnloadedWithPlacementId:(NSString *)placementId;
+
+/**
  This is the factory of adLink object
 
  Example of Usage:
  
      RevMobAdLink *ad = [[RevMobAds session] adLink]; // you must retain this object
-     ad.delegate = self;
-     [ad loadAd];
-     [ad openLink];
- 
+     [link loadWithSuccessHandler:^(RevMobAdLink *link) {
+       [link openLink];
+       NSLog(@"Ad loaded");
+     } andLoadFailHandler:^(RevMobAdLink *link, NSError *error) {
+       NSLog(@"Ad error: %@",error);
+     }];
+
   @return RevMobAdLink object.
 */
 - (RevMobAdLink *)adLink;
@@ -314,9 +457,12 @@ typedef enum {
  Example of Usage:
 
       RevMobAdLink *ad = [[RevMobAds session] adLinkWithPlacementId:@"your RevMob placementId"]; // you must retain this object
-      ad.delegate = self;
-      [ad loadAd];
-      [ad openLink];
+      [link loadWithSuccessHandler:^(RevMobAdLink *link) {
+        [link openLink];
+        NSLog(@"Ad loaded");
+      } andLoadFailHandler:^(RevMobAdLink *link, NSError *error) {
+        NSLog(@"Ad error: %@",error);
+      }];
 
  @param placementId: Optional parameter that identify the placement of your ad,
  you can collect your ids at http://revmob.com by looking up your apps. Can be nil.
@@ -330,9 +476,15 @@ typedef enum {
  Example of Usage:
  
       RevMobPopup *ad = [[RevMobAds session] popup]; // you must retain this object
-      ad.delegate = self;
-      [ad showAd];
- 
+      [ad loadWithSuccessHandler:^(RevMobPopup *popup) {
+        [popup showAd];
+        NSLog(@"Popup loaded");
+      } andLoadFailHandler:^(RevMobPopup *popup, NSError *error) {
+        NSLog(@"Popup error: %@",error);
+      } onClickHandler:^(RevMobPopup *popup) {
+        NSLog(@"Popup clicked");
+      }];
+
   @return RevMobPopup object.
 */
 - (RevMobPopup *)popup;
@@ -343,8 +495,14 @@ typedef enum {
  Example of Usage:
 
       RevMobPopup *ad = [[RevMobAds session] popupWithPlacementId:@"your RevMob placementId"]; // you must retain this object
-      ad.delegate = self;
-      [ad showAd];
+      [ad loadWithSuccessHandler:^(RevMobPopup *popup) {
+        [popup showAd];
+        NSLog(@"Popup loaded");
+      } andLoadFailHandler:^(RevMobPopup *popup, NSError *error) {
+        NSLog(@"Popup error: %@",error);
+      } onClickHandler:^(RevMobPopup *popup) {
+        NSLog(@"Popup clicked");
+      }];
 
  @param placementId: Optional parameter that identify the placement of your ad,
  you can collect your ids at http://revmob.com by looking up your apps. Can be nil.

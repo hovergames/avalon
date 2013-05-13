@@ -26,13 +26,45 @@
 
 /**
  Use this method to load the ad.
+
+ @see loadWithSuccessHandler:andLoadFailHandler:onClickHandler:onCloseHandler:
  */
 - (void)loadAd;
 
+/**
+ Use this method to load the ad.
 
+ @see loadWithSuccessHandler:andLoadFailHandler:onClickHandler:onCloseHandler:
+ */
 - (void) loadWithSuccessHandler:(void(^)(RevMobFullscreen* fs)) onAdLoadedHandler
          andLoadFailHandler:(void(^)(RevMobFullscreen* fs, NSError *error)) onAdFailedHandler;
 
+/**
+ Use this method to load the ad.
+ 
+ 
+ Example of usage:
+ 
+     [fs loadWithSuccessHandler:^(RevMobFullscreen *fs) {
+       [fs showAd];
+       NSLog(@"Ad loaded");
+     } andLoadFailHandler:^(RevMobFullscreen *fs, NSError *error) {
+       NSLog(@"Ad error: %@",error);
+     } onClickHandler:^{      
+       NSLog(@"Ad clicked");
+     } onCloseHandler:^{
+       NSLog(@"Ad closed");
+     }];
+
+ @param onAdLoadedHandler: A block that will be executed once the ad is loaded, can be nil.
+ 
+ @param onAdFailedHandler: A block that will be executed once any error happen, can be nil.
+
+ @param onClickHandler: A block that will be executed once the user click on the ad, can be nil.
+ 
+ @param onCloseHandler: A block that will be executed once the user close the ad, can be nil.
+
+ */
 - (void) loadWithSuccessHandler:(void(^)(RevMobFullscreen* fs)) onAdLoadedHandler
              andLoadFailHandler:(void(^)(RevMobFullscreen* fs, NSError *error)) onAdFailedHandler
                  onClickHandler:(void(^)())onClickHandler

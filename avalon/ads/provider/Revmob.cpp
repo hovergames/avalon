@@ -1,5 +1,8 @@
 #include <avalon/ads/provider/Revmob.h>
 
+#include <boost/assert.hpp>
+#include <avalon/ads/provider/RevmobBridge.h>
+
 namespace avalon {
 namespace ads {
 namespace provider {
@@ -12,9 +15,8 @@ Revmob::Revmob()
 
 void Revmob::init()
 {
-    assert("revmob init");
-    assert((appId != "") && "appId is empty!");
-    
+    BOOST_ASSERT_MSG(appId != "", "appId must be set first");
+
     RevmobBridge::startSession(appId.c_str());
 }
 

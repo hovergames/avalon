@@ -4,7 +4,6 @@
 #include <string>
 #include <avalon/ads/Provider.h>
 #include <avalon/ads/Fullscreen.h>
-#include "RevmobBridge.h"
 
 namespace avalon {
 namespace ads {
