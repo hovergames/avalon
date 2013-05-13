@@ -5,7 +5,7 @@
 #include <avalon/ads/Provider.h>
 #include <avalon/ads/Fullscreen.h>
 #include <avalon/ads/Link.h>
-#include <external/chartboost/Chartboost-x/ChartboostX.h>
+#include <avalon/ads/provider/ChartboostX.h>
 
 namespace avalon {
 namespace ads {
