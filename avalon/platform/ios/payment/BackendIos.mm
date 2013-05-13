@@ -1,4 +1,4 @@
-#import <avalon/payment/ios/BackendIos.h>
+#import <avalon/platform/ios/payment/BackendIos.h>
 
 #include <avalon/payment/Product.h>
 #include <avalon/payment/Manager.h>

@@ -1,4 +1,4 @@
-#import <avalon/ios/GameCenterIos.h>
+#import <avalon/platform/ios/gamecenter/GameCenterIos.h>
 
 #import <GameKit/GameKit.h>
 #import "AppController.h"

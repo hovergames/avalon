@@ -1,6 +1,6 @@
 #include <avalon/GameCenter.h>
 
-#include <avalon/ios/GameCenterIos.h>
+#include <avalon/platform/ios/gamecenter/GameCenterIos.h>
 
 namespace avalon {
 
