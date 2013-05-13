@@ -8,18 +8,18 @@ and automate annoying tasks.
 > to produce more apps in less time (the key to get rich fast!!!).
 - [JoeManaco](https://bitbucket.org/joemanaco)
 
-## Installation
+# Installation
 
-### General
+## General
 
-#### iOS
+## iOS
 
 1. Don't forget `git submodule update --init`
 1. Add this directory to __Header Search Path__ in __Build Settings__
 1. Add all sources files from `avalon/` to your project
 1. But choose the right platform stuff from `avalon/platform/`
 
-## Documentations
+# Documentations
 
 * [Wiki Cocos2d-x](http://wiki.cocos2d-x.org)
 * [Cocos2d-x API Reference](http://www.cocos2d-x.org/reference/native-cpp/index.html)
