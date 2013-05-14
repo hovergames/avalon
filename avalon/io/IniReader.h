@@ -2,6 +2,7 @@
 #define AVALON_IO_INIREADER_H
 
 #include <map>
+#include <string>
 
 namespace avalon {
 namespace io {
