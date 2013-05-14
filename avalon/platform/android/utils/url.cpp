@@ -1,7 +1,6 @@
 #include <avalon/utils/url.h>
 
 #include <jni.h>
-#include "cocos2d.h"
 #include "platform/android/jni/JniHelper.h"
 
 namespace avalon {
