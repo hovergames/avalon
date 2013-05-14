@@ -19,6 +19,32 @@ and automate annoying tasks.
 1. Add all sources files from `avalon/` to your project
 1. But choose the right platform stuff from `avalon/platform/`
 
+## Android
+
+1. Don't forget `git submodule update --init`
+1. **TODO: IMPORT COCOS2D-X PROJECT INTO WORKSPACE**
+1. Add `LOCAL_WHOLE_STATIC_LIBRARIES += avalon_static` to `jni/Android.mk`
+1. Add `$(call import-module,$AVALON_PATH)` to `jni/Android.mk`
+    * Please change `$AVALON_PATH` to the right path on your disk
+    * **Warning** Keep in mind that all module imports are relative to `$NDKROOT`
+    * **Warning** This line must be _below_ `include $(BUILD_SHARED_LIBRARY)`
+1. **Optional** Declare additional features with `AVALON_FEATURES`
+    * They could require third-party libs so please read the feature section too
+
+### Features
+
+#### Payment
+
+**TBD**
+
+#### Ads
+
+**TBD**
+
+#### GameCenter
+
+**TBD**
+
 # Documentations
 
 * [Wiki Cocos2d-x](http://wiki.cocos2d-x.org)
