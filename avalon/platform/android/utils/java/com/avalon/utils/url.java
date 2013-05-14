@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import org.cocos2dx.lib.Cocos2dxActivity;
 
-abstract class url
+abstract class Url
 {
     static void open(String url)
     {
