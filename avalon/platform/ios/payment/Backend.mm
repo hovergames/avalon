@@ -16,13 +16,14 @@ BackendIos* const __getIosBackend()
     return instance;
 }
 
-Backend::Backend(const Manager& manager)
+Backend::Backend(Manager& manager)
 : manager(manager)
 {
 }
 
 Backend::~Backend()
 {
+    shutdown();
 }
 
 bool Backend::isInitialized() const
@@ -41,7 +42,7 @@ void Backend::initialize()
 
     // configure BackendIos
     __getIosBackend()->initialized = false;
-    __getIosBackend()->manager = const_cast<Manager*>(&manager);
+    __getIosBackend()->manager = &manager;
     __getIosBackend()->transactionDepth = 0;
 
     // fetch product details

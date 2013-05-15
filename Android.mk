@@ -1,6 +1,10 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
+ifeq (,$(AVALON_FLAVOR))
+$(error ERROR: variable AVALON_FLAVOR not set)
+endif
+
 LOCAL_MODULE := avalon_static
 LOCAL_MODULE_FILENAME := libavalon
 
@@ -28,7 +32,7 @@ LOCAL_SRC_FILES += \
 	avalon/payment/Manager.cpp \
 	avalon/payment/Product.cpp \
 	avalon/payment/ProductConsumable.cpp \
-	avalon/platform/android-amazon/payment/Backend.cpp
+	avalon/platform/android-$(AVALON_FLAVOR)/payment/Backend.cpp
 endif
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)

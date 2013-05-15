@@ -12,7 +12,7 @@ class Product;
 class Backend : boost::noncopyable
 {
 public:
-    Backend(const Manager& manager);
+    Backend(Manager& manager);
     ~Backend();
 
     bool isInitialized() const;
