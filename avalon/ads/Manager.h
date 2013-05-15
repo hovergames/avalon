@@ -22,9 +22,6 @@ public:
     static time_t lastAdShownAt;
     static bool enabled;
 
-    Manager() {}
-    ~Manager() {}
-
     static Manager *adManager;
 
     static void initWithIniFile(const char *iniFile);
@@ -72,6 +69,10 @@ public:
 
         return selectedProvider;
     }
+
+private:
+    Manager() {}
+    ~Manager() {}
 };
 
 } // namespace ads
