@@ -35,9 +35,43 @@ and automate annoying tasks.
 
 #### Payment
 
+##### Amazon
+
+1. Set `AVALON_FLAVOR` to `amazon` in your `jni/Android.mk`
+1. Add `payment` to `AVALON_FEATURES` in your `jni/Android.mk`
+1. Copy the `com` folder from `avalon/platform/android-amazon/java/` to the
+   `src/` folder of you project
+1. Is there a `libs/` folder next to `src/`? No? Create it. Now.
+1. Copy `avalon/platform/android-amazon/java/in-app-purchasing-$VERSION.jar`
+   into `libs/`
+1. Ensure the internet permission in your `AndroidManifest.xml`
+
+        <uses-permission android:name="android.permission.INTERNET"/>
+
+1. Ensure the following receiver configuration in your `AndroidManifest.xml`
+
+        <receiver android:name="com.amazon.inapp.purchasing.ResponseReceiver" >
+            <intent-filter>
+                <action android:name="com.amazon.inapp.purchasing.NOTIFY"
+                        android:permission="com.amazon.inapp.purchasing.Permission.NOTIFY" />
+            </intent-filter>
+        </receiver>
+
+##### Google
+
+**TBD**
+
+##### Samsung
+
 **TBD**
 
 #### Ads
+
+##### Revmob
+
+**TBD**
+
+##### Chartboost
 
 **TBD**
 
