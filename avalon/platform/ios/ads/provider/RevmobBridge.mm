@@ -1,4 +1,4 @@
-#include <avalon/ads/provider/RevmobBridge.h>
+#include <avalon/platform/ios/ads/provider/RevmobBridge.h>
 
 #import <RevMobAds/RevMobAds.h>
 

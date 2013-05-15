@@ -4,6 +4,9 @@
 #include <string>
 #include <avalon/ads/Provider.h>
 #include <avalon/ads/Fullscreen.h>
+#include <avalon/ads/Banner.h>
+#include <avalon/ads/Link.h>
+#include <avalon/ads/Popup.h>
 
 namespace avalon {
 namespace ads {
@@ -12,6 +15,9 @@ namespace provider {
 class Revmob
 : public Fullscreen
 , public Provider
+, public Banner
+, public Link
+, public Popup
 {
 public:
     int weight;
@@ -26,6 +32,15 @@ public:
 
     // Fullscreen
     virtual void showFullscreenAd();
+
+    // Link
+    virtual void openAdLink();
+
+    // Banner
+    virtual void showBanner();
+
+    // Popup
+    virtual void showPopupAd();
 };
 
 } // namespace provider

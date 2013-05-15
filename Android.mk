@@ -23,7 +23,9 @@ ifneq (,$(findstring ads,$(AVALON_FEATURES)))
 LOCAL_SRC_FILES += \
 	avalon/ads/Manager.cpp \
 	avalon/ads/provider/Chartboost.cpp \
-	avalon/ads/provider/Revmob.cpp
+	avalon/platform/android/ads/provider/ChartboostXJni.cpp \
+	avalon/platform/android/ads/provider/ChartboostX_android.cpp \
+	avalon/platform/android/ads/provider/Revmob.cpp
 endif
 
 ifneq (,$(findstring payment,$(AVALON_FEATURES)))
