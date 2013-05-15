@@ -18,7 +18,6 @@ class Chartboost
 , public Link
 {
 public:
-    int weight;
     std::string appId;
     std::string appSignature;
 
@@ -27,7 +26,6 @@ public:
     // Provider
     virtual void init();
     virtual void hideAds();
-    virtual int getWeight();
 
     // Fullscreen
     virtual void showFullscreenAd();

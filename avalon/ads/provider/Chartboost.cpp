@@ -9,8 +9,7 @@ namespace ads {
 namespace provider {
 
 Chartboost::Chartboost()
-: weight(1)
-, appId()
+: appId()
 , appSignature()
 {
 }
@@ -32,11 +31,6 @@ void Chartboost::init()
 
 void Chartboost::hideAds()
 {
-}
-
-int Chartboost::getWeight()
-{
-    return weight;
 }
 
 void Chartboost::showFullscreenAd()

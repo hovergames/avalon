@@ -20,15 +20,13 @@ class Revmob
 , public Popup
 {
 public:
-    int weight;
     std::string appId;
-
+    
     Revmob();
 
     // Provider
     virtual void init();
     virtual void hideAds();
-    virtual int getWeight();
 
     // Fullscreen
     virtual void showFullscreenAd();

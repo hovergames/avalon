@@ -45,16 +45,16 @@ void Manager::initWithIniFile(const char *iniFile)
 
     if (config.doesSectionExist("chartboost")) {
         provider::Chartboost *p = new provider::Chartboost();
+        p->setWeight(config.getValueAsInt("chartboost", "weight"));
         p->appId = config.getValue("chartboost", (prefix + "AppId").c_str());
         p->appSignature = config.getValue("chartboost", (prefix + "AppSignature").c_str());
-        p->weight = config.getValueAsInt("chartboost", "weight");
         adProviders.push_back(p);
     }
 
     if (config.doesSectionExist("revmob")) {
         provider::Revmob *p = new provider::Revmob();
+        p->setWeight(config.getValueAsInt("revmob", "weight"));
         p->appId = config.getValue("revmob", (prefix + "AppId").c_str());
-        p->weight = config.getValueAsInt("revmob", "weight");
         adProviders.push_back(p);
     }
 }

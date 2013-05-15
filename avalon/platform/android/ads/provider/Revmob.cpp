@@ -40,14 +40,8 @@ namespace ads {
 namespace provider {
 
 Revmob::Revmob()
-: weight(1)
-, appId()
+: appId()
 {
-}
-
-int Revmob::getWeight()
-{
-    return weight;
 }
 
 void Revmob::init()

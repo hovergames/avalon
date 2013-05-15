@@ -7,9 +7,17 @@ namespace ads {
 class Provider
 {
 public:
+    Provider() : weight(1) {}
+    virtual ~Provider() {}
+
     virtual void init() = 0;
     virtual void hideAds() = 0;
-    virtual int getWeight() = 0;
+
+    virtual int getWeight() { return weight; }
+    virtual void setWeight(const int newWeight) { weight = newWeight; }
+
+private:
+    int weight;
 };
 
 } // namespace ads
