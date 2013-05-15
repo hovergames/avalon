@@ -8,6 +8,7 @@
 #include <avalon/ads/Link.h>
 #include <avalon/ads/provider/Chartboost.h>
 #include <avalon/ads/provider/Revmob.h>
+#include <avalon/utils/platform.h>
 
 using namespace cocos2d;
 
@@ -38,17 +39,21 @@ void Manager::initWithIniFile(const char *iniFile)
     dontShowFirstAdOnAppStart = config.getValueAsInt("general", "dontShowFirstAdOnAppStart");
     adCount = onlyShowEveryNThAd - 1;
 
+    auto flavor = avalon::utils::platform::getFlavor();
+    flavor[0] = std::toupper(flavor[0]);
+    auto prefix = avalon::utils::platform::getName() + flavor;
+
     if (config.doesSectionExist("chartboost")) {
         provider::Chartboost *p = new provider::Chartboost();
-        p->appId = config.getValue("chartboost", "iosAppId");
-        p->appSignature = config.getValue("chartboost", "iosAppSignature");
+        p->appId = config.getValue("chartboost", (prefix + "AppId").c_str());
+        p->appSignature = config.getValue("chartboost", (prefix + "AppSignature").c_str());
         p->weight = config.getValueAsInt("chartboost", "weight");
         adProviders.push_back(p);
     }
 
     if (config.doesSectionExist("revmob")) {
         provider::Revmob *p = new provider::Revmob();
-        p->appId = config.getValue("revmob", "iosAppId");
+        p->appId = config.getValue("revmob", (prefix + "AppId").c_str());
         p->weight = config.getValueAsInt("revmob", "weight");
         adProviders.push_back(p);
     }

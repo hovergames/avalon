@@ -12,7 +12,8 @@ LOCAL_SRC_FILES := \
 	avalon/i18n/Language.cpp \
 	avalon/i18n/LanguageKey.cpp \
 	avalon/i18n/Localization.cpp \
-	avalon/io/IniReader.cpp
+	avalon/io/IniReader.cpp \
+	avalon/platform/android-$(AVALON_FLAVOR)/utils/platform.cpp
 
 ifneq (,$(findstring utils,$(AVALON_FEATURES)))
 LOCAL_SRC_FILES += \
