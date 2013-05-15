@@ -19,6 +19,8 @@ package com.avalon.payment;
  *   and there. It looked good in a first rough test but this should be
  *   verified with more care. Hint: Please test a unstable / lost internet
  *   connection too!
+ *
+ * - (#REF3) Extract float price from localized itemDate price
  */
 
 import android.content.Context;
@@ -26,11 +28,16 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.util.HashSet;
+import java.util.Map;
+
 import com.amazon.inapp.purchasing.BasePurchasingObserver;
 import com.amazon.inapp.purchasing.GetUserIdResponse;
 import com.amazon.inapp.purchasing.GetUserIdResponse.GetUserIdRequestStatus;
 import com.amazon.inapp.purchasing.Offset;
+import com.amazon.inapp.purchasing.Item;
 import com.amazon.inapp.purchasing.Item.ItemType;
+import com.amazon.inapp.purchasing.ItemDataResponse;
 import com.amazon.inapp.purchasing.PurchaseResponse;
 import com.amazon.inapp.purchasing.PurchaseUpdatesResponse;
 import com.amazon.inapp.purchasing.PurchaseUpdatesResponse.PurchaseUpdatesRequestStatus;
@@ -68,6 +75,12 @@ public class PurchasingObserver extends BasePurchasingObserver
         if (++taskCount == 1) {
             Backend.delegateOnTransactionStart();
         }
+    }
+
+    public void startItemDataRequest(HashSet<String> productIds)
+    {
+        Log.v(TAG, "initiateItemDataRequest");
+        PurchasingManager.initiateItemDataRequest(productIds);
     }
 
     /**
@@ -139,6 +152,23 @@ public class PurchasingObserver extends BasePurchasingObserver
         new PurchaseUpdatesAsyncTask().execute(purchaseUpdatesResponse);
     }
 
+    /**
+     * Invoked once the call from initiateItemDataRequest is completed.
+     * On a successful response, a response object is passed which contains the request id, request status, and a set of
+     * item data for the requested skus. Items that have been suppressed or are unavailable will be returned in a
+     * set of unavailable skus.
+     *
+     * @param itemDataResponse
+     *            Response object containing a set of purchasable/non-purchasable items
+     */
+    @Override
+    public void onItemDataResponse(final ItemDataResponse itemDataResponse) {
+        Log.v(TAG, "onItemDataResponse recieved");
+        Log.v(TAG, "ItemDataRequestStatus" + itemDataResponse.getItemDataRequestStatus());
+        Log.v(TAG, "ItemDataRequestId" + itemDataResponse.getRequestId());
+        new ItemDataAsyncTask().execute(itemDataResponse);
+    }
+
     /*
      * Helper method to print out relevant receipt information to the log.
      */
@@ -195,6 +225,43 @@ public class PurchasingObserver extends BasePurchasingObserver
                 final SharedPreferences settings = getSharedPreferencesForCurrentUser();
                 PurchasingManager.initiatePurchaseUpdatesRequest(Offset.fromString(settings.getString(OFFSET, Offset.BEGINNING.toString())));
             }
+        }
+    }
+
+    /*
+     * Started when the observer receives an Item Data Response.
+     * Takes the items and display them in the logs. You can use this
+     * information to display an in game storefront for your IAP items.
+     */
+    private class ItemDataAsyncTask extends AsyncTask<ItemDataResponse, Void, Void> {
+        @Override
+        protected Void doInBackground(final ItemDataResponse... params) {
+            final ItemDataResponse itemDataResponse = params[0];
+
+            switch (itemDataResponse.getItemDataRequestStatus()) {
+            case SUCCESSFUL_WITH_UNAVAILABLE_SKUS:
+                // Skus that you can not purchase will be here.
+                for (final String s : itemDataResponse.getUnavailableSkus()) {
+                    Log.v(TAG, "Unavailable SKU:" + s);
+                    Backend.onItemData(s, "", "", "", 0.0f);
+                }
+            case SUCCESSFUL:
+                // Information you'll want to display about your IAP items is here
+                // In this example we'll simply log them.
+                final Map<String, Item> items = itemDataResponse.getItemData();
+                for (final String key : items.keySet()) {
+                    Item i = items.get(key);
+                    // TODO (#REF3): Parse real price
+                    Backend.onItemData(key, i.getTitle(), i.getDescription(), i.getPrice(), 0.0f);
+                    Log.v(TAG, String.format("Item: %s\n Type: %s\n SKU: %s\n Price: %s\n Description: %s\n", i.getTitle(), i.getItemType(), i.getSku(), i.getPrice(), i.getDescription()));
+                }
+                break;
+            case FAILED:
+                // On failed responses will fail gracefully.
+                break;
+            }
+
+            return null;
         }
     }
 
