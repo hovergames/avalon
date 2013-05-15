@@ -1,28 +1,5 @@
 package com.avalon.payment;
 
-/**
- * Open TODO's
- * ===========
- *
- * - (#REF1) We should send all stored SKU's to the backend. Why? Because
- *           this is the way sync already purchased items with the app! It
- *           should be safe to simply forward all stored SKU's, as we don't keep
- *           track of consumables (that's the job of the app anyway).
- *
- * - (#REF2) The whole "user has changed!"-handling is more or less untested.
- *           We should, IMHO, clear the local store of SKU'si, if we detect a
- *           missmatch. But is it safe to clear the whole shared preferences?
- *           Isn't it the same backend as in CCUserDefaults?
- *
- * - Check if both supported item types (consumable and non-consumable) work
- *   as expected. This code is simply copied from Monkey/bono and trimmed here
- *   and there. It looked good in a first rough test but this should be
- *   verified with more care. Hint: Please test a unstable / lost internet
- *   connection too!
- *
- * - (#REF3) Extract float price from localized itemDate price
- */
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -30,6 +7,7 @@ import android.util.Log;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.HashMap;
 
 import com.amazon.inapp.purchasing.BasePurchasingObserver;
 import com.amazon.inapp.purchasing.GetUserIdResponse;
@@ -58,29 +36,48 @@ public class PurchasingObserver extends BasePurchasingObserver
     private static final String OFFSET = "offset";
     private static final String TAG = "avalon.payment.PurchasingObserver";
     private String userId;
+    public Map<String, String> requestIds;
     public Integer taskCount = 0;
 
+    /**
+     * Creates new instance of the PurchasingObserver class.
+     */
     public PurchasingObserver()
     {
         super(Cocos2dxActivity.getContext());
         PurchasingManager.registerObserver(this);
+        requestIds = new HashMap<String, String>();
     }
 
+    /**
+     * Interface method for com.avalon.payment.Backend
+     *
+     * @param productId
+     */
     public void purchase(String productId)
     {
         Log.v(TAG, "purchase started: SKU - " + productId);
         final String requestId = PurchasingManager.initiatePurchaseRequest(productId);
-        Log.v(TAG, "RequestId: " + requestId);
+        requestIds.put(requestId, productId);
 
         if (++taskCount == 1) {
             Backend.delegateOnTransactionStart();
         }
     }
 
+    /**
+     * Inteface method for com.avalon.payment.Backend
+     *
+     * @param productIds
+     */
     public void startItemDataRequest(HashSet<String> productIds)
     {
-        Log.v(TAG, "initiateItemDataRequest");
-        PurchasingManager.initiateItemDataRequest(productIds);
+        if (productIds.isEmpty()) {
+            sendStoresProductsAndStartService();
+        } else {
+            Log.v(TAG, "initiateItemDataRequest");
+            PurchasingManager.initiateItemDataRequest(productIds);
+        }
     }
 
     /**
@@ -110,9 +107,22 @@ public class PurchasingObserver extends BasePurchasingObserver
     public void onGetUserIdResponse(final GetUserIdResponse getUserIdResponse)
     {
         Log.v(TAG, "onGetUserIdResponse recieved: Response - " + getUserIdResponse);
-        Log.v(TAG, "RequestId: " + getUserIdResponse.getRequestId());
-        Log.v(TAG, "UserIdRequestStatus: " + getUserIdResponse.getUserIdRequestStatus());
         new GetUserIdAsyncTask().execute(getUserIdResponse);
+    }
+
+    /**
+     * Invoked once the call from initiateItemDataRequest is completed.
+     * On a successful response, a response object is passed which contains the request id, request status, and a set of
+     * item data for the requested skus. Items that have been suppressed or are unavailable will be returned in a
+     * set of unavailable skus.
+     *
+     * @param itemDataResponse
+     *            Response object containing a set of purchasable/non-purchasable items
+     */
+    @Override
+    public void onItemDataResponse(final ItemDataResponse itemDataResponse) {
+        Log.v(TAG, "onItemDataResponse recieved: Response - " + itemDataResponse);
+        new ItemDataAsyncTask().execute(itemDataResponse);
     }
 
     /**
@@ -127,8 +137,6 @@ public class PurchasingObserver extends BasePurchasingObserver
     public void onPurchaseResponse(final PurchaseResponse purchaseResponse)
     {
         Log.v(TAG, "onPurchaseResponse recieved: Response - " + purchaseResponse);
-        Log.v(TAG, "PurchaseRequestStatus: " + purchaseResponse.getPurchaseRequestStatus());
-        Log.v(TAG, "RequestID: " + purchaseResponse.getRequestId());
         new PurchaseAsyncTask().execute(purchaseResponse);
     }
 
@@ -146,27 +154,8 @@ public class PurchasingObserver extends BasePurchasingObserver
     @Override
     public void onPurchaseUpdatesResponse(final PurchaseUpdatesResponse purchaseUpdatesResponse)
     {
-        Log.v(TAG, "onPurchaseUpdatesRecived recieved: Response -" + purchaseUpdatesResponse);
-        Log.v(TAG, "PurchaseUpdatesRequestStatus: " + purchaseUpdatesResponse.getPurchaseUpdatesRequestStatus());
-        Log.v(TAG, "RequestID: " + purchaseUpdatesResponse.getRequestId());
+        Log.v(TAG, "onPurchaseUpdatesResponse recieved: Response -" + purchaseUpdatesResponse);
         new PurchaseUpdatesAsyncTask().execute(purchaseUpdatesResponse);
-    }
-
-    /**
-     * Invoked once the call from initiateItemDataRequest is completed.
-     * On a successful response, a response object is passed which contains the request id, request status, and a set of
-     * item data for the requested skus. Items that have been suppressed or are unavailable will be returned in a
-     * set of unavailable skus.
-     *
-     * @param itemDataResponse
-     *            Response object containing a set of purchasable/non-purchasable items
-     */
-    @Override
-    public void onItemDataResponse(final ItemDataResponse itemDataResponse) {
-        Log.v(TAG, "onItemDataResponse recieved");
-        Log.v(TAG, "ItemDataRequestStatus" + itemDataResponse.getItemDataRequestStatus());
-        Log.v(TAG, "ItemDataRequestId" + itemDataResponse.getRequestId());
-        new ItemDataAsyncTask().execute(itemDataResponse);
     }
 
     /*
@@ -188,6 +177,21 @@ public class PurchasingObserver extends BasePurchasingObserver
     public SharedPreferences getSharedPreferencesForCurrentUser()
     {
         return Cocos2dxActivity.getContext().getSharedPreferences(userId, Context.MODE_PRIVATE);
+    }
+
+    /*
+     * Helper method that sends all stored SKUs for the current user to the
+     * backend and - after that's done - flag the service as started.
+     */
+    public void sendStoresProductsAndStartService()
+    {
+        Backend.delegateOnServiceStarted();
+        for (Map.Entry<String,?> entry : getSharedPreferencesForCurrentUser().getAll().entrySet()) {
+            if (entry.getKey().equals(OFFSET)) {
+                continue;
+            }
+            Backend.delegateOnPurchaseSucceed(entry.getKey());
+        }
     }
 
     /*
@@ -216,14 +220,14 @@ public class PurchasingObserver extends BasePurchasingObserver
             super.onPostExecute(result);
 
             if (result) {
-                Backend.delegateOnServiceStarted();
-
-                // TODO (#REF1): See file header
+                Backend.onInitialized();
 
                 // Call initiatePurchaseUpdatesRequest for the returned user
                 // to sync purchases that are not yet fulfilled.
                 final SharedPreferences settings = getSharedPreferencesForCurrentUser();
-                PurchasingManager.initiatePurchaseUpdatesRequest(Offset.fromString(settings.getString(OFFSET, Offset.BEGINNING.toString())));
+                PurchasingManager.initiatePurchaseUpdatesRequest(Offset.fromString(
+                    settings.getString(OFFSET, Offset.BEGINNING.toString())
+                ));
             }
         }
     }
@@ -239,28 +243,33 @@ public class PurchasingObserver extends BasePurchasingObserver
             final ItemDataResponse itemDataResponse = params[0];
 
             switch (itemDataResponse.getItemDataRequestStatus()) {
-            case SUCCESSFUL_WITH_UNAVAILABLE_SKUS:
-                // Skus that you can not purchase will be here.
-                for (final String s : itemDataResponse.getUnavailableSkus()) {
-                    Log.v(TAG, "Unavailable SKU:" + s);
-                    Backend.onItemData(s, "", "", "", 0.0f);
-                }
-            case SUCCESSFUL:
-                // Information you'll want to display about your IAP items is here
-                // In this example we'll simply log them.
-                final Map<String, Item> items = itemDataResponse.getItemData();
-                for (final String key : items.keySet()) {
-                    Item i = items.get(key);
-                    // TODO (#REF3): Parse real price
-                    Backend.onItemData(key, i.getTitle(), i.getDescription(), i.getPrice(), 0.0f);
-                    Log.v(TAG, String.format("Item: %s\n Type: %s\n SKU: %s\n Price: %s\n Description: %s\n", i.getTitle(), i.getItemType(), i.getSku(), i.getPrice(), i.getDescription()));
-                }
-                break;
-            case FAILED:
-                // On failed responses will fail gracefully.
-                break;
+                case SUCCESSFUL_WITH_UNAVAILABLE_SKUS:
+                    // Skus that you can not purchase will be here.
+                    for (final String s : itemDataResponse.getUnavailableSkus()) {
+                        Log.v(TAG, "onItemDataResponse: Unavailable SKU: " + s);
+                        Backend.onItemData(s, "", "", "", 0.0f);
+                    }
+
+                case SUCCESSFUL:
+                    // Information you'll want to display about your IAP items is here
+                    // In this example we'll simply log them.
+                    final Map<String, Item> items = itemDataResponse.getItemData();
+                    for (final String key : items.keySet()) {
+                        Item i = items.get(key);
+                        Backend.onItemData(key, i.getTitle(), i.getDescription(), i.getPrice(), 0.0f);
+                        Log.v(TAG, String.format(
+                            "onItemDataResponse: Item\n  Title: %s\n  Type: %s\n  SKU: %s\n  Price: %s\n  Description: %s\n",
+                            i.getTitle(), i.getItemType(), i.getSku(), i.getPrice(), i.getDescription()
+                        ));
+                    }
+                    break;
+
+                case FAILED:
+                    // On failed responses will fail gracefully.
+                    break;
             }
 
+            sendStoresProductsAndStartService();
             return null;
         }
     }
@@ -275,40 +284,57 @@ public class PurchasingObserver extends BasePurchasingObserver
         protected Boolean doInBackground(final PurchaseResponse... params)
         {
             final PurchaseResponse purchaseResponse = params[0];
-            final SharedPreferences settings = getSharedPreferencesForCurrentUser();
-            final SharedPreferences.Editor editor = settings.edit();
 
-            // currently logged in user is different than what we have so
-            // update the state
+            // currently logged in user is different than what we have so update the state
             if (!purchaseResponse.getUserId().equals(userId)) {
                 userId = purchaseResponse.getUserId();
-                // TODO (#REF2): editor.clear(); editor.commit(); ??
-                PurchasingManager.initiatePurchaseUpdatesRequest(Offset.BEGINNING);
+                final SharedPreferences settings = getSharedPreferencesForCurrentUser();
+                PurchasingManager.initiatePurchaseUpdatesRequest(Offset.fromString(
+                    settings.getString(OFFSET, Offset.BEGINNING.toString())
+                ));
                 return false;
             }
 
+            final SharedPreferences settings = getSharedPreferencesForCurrentUser();
+            final SharedPreferences.Editor editor = settings.edit();
+            String sku;
+
             switch (purchaseResponse.getPurchaseRequestStatus()) {
-            case SUCCESSFUL:
-            case ALREADY_ENTITLED:
-                final Receipt receipt = purchaseResponse.getReceipt();
-                printReceipt(receipt);
+                case SUCCESSFUL:
+                    final Receipt receipt = purchaseResponse.getReceipt();
+                    printReceipt(receipt);
 
-                Backend.delegateOnPurchaseSucceed(receipt.getSku());
-                if (receipt.getItemType() == ItemType.ENTITLED) {
-                    editor.putBoolean(receipt.getSku(), true);
+                    Backend.delegateOnPurchaseSucceed(receipt.getSku());
+                    if (receipt.getItemType() == ItemType.ENTITLED) {
+                        editor.putBoolean(receipt.getSku(), true);
+                        editor.commit();
+                    }
+                    return true;
+
+                case ALREADY_ENTITLED:
+                    sku = requestIds.get(purchaseResponse.getRequestId());
+                    requestIds.remove(purchaseResponse.getRequestId());
+
+                    Backend.delegateOnPurchaseSucceed(sku);
+                    editor.putBoolean(sku, true);
                     editor.commit();
-                }
-                return true;
+                    return true;
 
-            case FAILED:
-                Backend.delegateOnPurchaseFail();
-                Log.v(TAG, "Failed purchase for requestId: " + purchaseResponse.getRequestId());
-                return false;
+                case FAILED:
+                    sku = requestIds.get(purchaseResponse.getRequestId());
+                    requestIds.remove(purchaseResponse.getRequestId());
 
-            case INVALID_SKU:
-                Backend.delegateOnPurchaseFail();
-                Log.v(TAG, "Invalid SKU for requestId: " + purchaseResponse.getRequestId());
-                return false;
+                    Backend.delegateOnPurchaseFail();
+                    Log.v(TAG, "onPurchaseResponse: Failed SKU: " + sku);
+                    return false;
+
+                case INVALID_SKU:
+                    sku = requestIds.get(purchaseResponse.getRequestId());
+                    requestIds.remove(purchaseResponse.getRequestId());
+                    
+                    Backend.delegateOnPurchaseFail();
+                    Log.v(TAG, "onPurchaseResponse: Invalid SKU: " + sku);
+                    return false;
             }
 
             return false;
@@ -328,44 +354,62 @@ public class PurchasingObserver extends BasePurchasingObserver
      * Started when the observer receives a Purchase Updates Response. Once the
      * AsyncTask returns successfully, we'll update the UI.
      */
-    private class PurchaseUpdatesAsyncTask extends AsyncTask<PurchaseUpdatesResponse, Void, Boolean>
+    private class PurchaseUpdatesAsyncTask extends AsyncTask<PurchaseUpdatesResponse, Void, Void>
     {
         @Override
-        protected Boolean doInBackground(final PurchaseUpdatesResponse... params)
+        protected Void doInBackground(final PurchaseUpdatesResponse... params)
         {
             final PurchaseUpdatesResponse purchaseUpdatesResponse = params[0];
-            final SharedPreferences prefs = getSharedPreferencesForCurrentUser();
-            final SharedPreferences.Editor editor = prefs.edit();
 
             // currently logged in user is different than what we have so update the state
             if (!purchaseUpdatesResponse.getUserId().equals(userId)) {
-                return false;
+                return null;
             }
 
+            final SharedPreferences prefs = getSharedPreferencesForCurrentUser();
+            final SharedPreferences.Editor editor = prefs.edit();
+
+            /*
+             * If the customer for some reason had items revoked, the skus for these items will be contained in the
+             * revoked skus set.
+             */
             for (final String sku : purchaseUpdatesResponse.getRevokedSkus()) {
-                Log.v(TAG, "Revoked SKU: " + sku);
-                editor.putBoolean(sku, false);
+                Log.v(TAG, "onPurchaseUpdatesResponse: Revoked SKU: " + sku);
+                editor.remove(sku);
                 editor.commit();
             }
 
-            if (purchaseUpdatesResponse.getPurchaseUpdatesRequestStatus() == PurchaseUpdatesRequestStatus.SUCCESSFUL) {
-                for (final Receipt receipt : purchaseUpdatesResponse.getReceipts()) {
-                    printReceipt(receipt);
-                    if (receipt.getItemType() == ItemType.ENTITLED) {
-                        Backend.delegateOnPurchaseSucceed(receipt.getSku());
-                        editor.putBoolean(receipt.getSku(), true);
-                        editor.commit();
-                    }
-                }
+            /*
+             * On failed responses the application will ignore the request.
+             */
+            if (purchaseUpdatesResponse.getPurchaseUpdatesRequestStatus() == PurchaseUpdatesRequestStatus.FAILED) {
+            	return null;
             }
 
-            return false;
-        }
+            for (final Receipt receipt : purchaseUpdatesResponse.getReceipts()) {
+                printReceipt(receipt);
 
-        @Override
-        protected void onPostExecute(final Boolean success)
-        {
-            super.onPostExecute(success);
+                if (receipt.getItemType() == ItemType.ENTITLED) {
+                    Backend.delegateOnPurchaseSucceed(receipt.getSku());
+                    editor.putBoolean(receipt.getSku(), true);
+                    editor.commit();
+                }
+            }
+            
+            /*
+             * Store the offset into shared preferences. If there has been more purchases since the
+             * last time our application updated, another initiatePurchaseUpdatesRequest is called with the new
+             * offset.
+             */
+            final Offset newOffset = purchaseUpdatesResponse.getOffset();
+            editor.putString(OFFSET, newOffset.toString());
+            editor.commit();
+            if (purchaseUpdatesResponse.isMore()) {
+                Log.v(TAG, "onPurchaseUpdatesResponse: Initiating Another Purchase Updates with offset: " + newOffset.toString());
+                PurchasingManager.initiatePurchaseUpdatesRequest(newOffset);
+            }
+
+            return null;
         }
     }
 }

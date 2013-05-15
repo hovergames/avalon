@@ -51,4 +51,5 @@ public class Backend
     public static native void delegateOnTransactionStart();
     public static native void delegateOnTransactionEnd();
     public static native void onItemData(String productId, String name, String desc, String priceStr, float price);
+    public static native void onInitialized();
 }

@@ -36,9 +36,20 @@ bool callStaticBoolMethod(const char* name)
     }
 }
 
+void callStaticVoidMethodWithString(const char* name, const char* argument)
+{
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, name, "(Ljava/lang/String;)V")) {
+        jstring jProductId = t.env->NewStringUTF(argument);
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, jProductId);
+        t.env->DeleteLocalRef(t.classID);
+        t.env->DeleteLocalRef(jProductId);
+    }
+}
+
 /**
  * Java -->> C++
- */
+ */ 
 
 extern "C" {
 
@@ -49,18 +60,6 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnServiceStarted(
     if (globalManager->delegate) {
         globalManager->delegate->onServiceStarted(globalManager);
     }
-
-    cocos2d::JniMethodInfo t;
-    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "addItemDataRequest", "(Ljava/lang/String;)V")) {
-        for (auto row : globalManager->getProducts()) {
-            auto product = row.second;
-            jstring jProductId = t.env->NewStringUTF(product->getProductId().c_str());
-            t.env->CallStaticVoidMethod(t.classID, t.methodID, jProductId);
-            t.env->DeleteLocalRef(t.classID);
-            t.env->DeleteLocalRef(jProductId);
-        }
-    }
-    callStaticVoidMethod("startItemDataRequest");
 }
 
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed(JNIEnv* env, jclass clazz, jstring jProductId)
@@ -69,7 +68,10 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed
 
     if (globalManager->delegate) {
         std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
-        globalManager->delegate->onPurchaseSucceed(globalManager, globalManager->getProduct(productId.c_str()));
+        auto product = globalManager->getProduct(productId.c_str());
+        if (product) {
+            globalManager->delegate->onPurchaseSucceed(globalManager, product);
+        }
     }
 }
 
@@ -100,22 +102,35 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionEnd(
     }
 }
 
+JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env, jclass clazz)
+{
+    BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
+
+    for (auto row : globalManager->getProducts()) {
+        callStaticVoidMethodWithString("addItemDataRequest", row.second->getProductId().c_str());
+    }
+    callStaticVoidMethod("startItemDataRequest");
+}
+
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onItemData(JNIEnv* env, jclass clazz, jstring jProductId, jstring jName, jstring jDesc, jstring jPriceStr, jfloat jprice)
 {
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
 
     std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
+    auto product = globalManager->getProduct(productId.c_str());
+
+    if (!product) {
+        return;
+    }
+
     std::string localizedName = cocos2d::JniHelper::jstring2string(jName);
     std::string localizedDescription = cocos2d::JniHelper::jstring2string(jDesc);
     std::string localizedPrice = cocos2d::JniHelper::jstring2string(jPriceStr);
 
-    auto product = globalManager->getProduct(productId.c_str());
-    if (product) {
-        product->localizedName = localizedName;
-        product->localizedDescription = localizedDescription;
-        product->localizedPrice = localizedPrice;
-        product->price = (float)jprice;
-    }
+    product->localizedName = localizedName;
+    product->localizedDescription = localizedDescription;
+    product->localizedPrice = localizedPrice;
+    product->price = (float)jprice;
 }
 
 
@@ -162,13 +177,7 @@ bool Backend::isPurchaseReady() const
 
 void Backend::purchase(Product* const product)
 {
-    cocos2d::JniMethodInfo t;
-    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, "purchase", "(Ljava/lang/String;)V")) {
-        jstring jProductId = t.env->NewStringUTF(product->getProductId().c_str());
-        t.env->CallStaticVoidMethod(t.classID, t.methodID, jProductId);
-        t.env->DeleteLocalRef(t.classID);
-        t.env->DeleteLocalRef(jProductId);
-    }
+    callStaticVoidMethodWithString("purchase", product->getProductId().c_str());
 }
 
 void Backend::restorePurchases() const
