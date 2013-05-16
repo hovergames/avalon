@@ -17,14 +17,35 @@
 
     for (SKProduct* skProduct in response.products) {
         const char* productId = [[skProduct productIdentifier] cStringUsingEncoding:NSASCIIStringEncoding];
-
         avalon::payment::Product* avProduct = manager->getProduct(productId);
+        if (avProduct == NULL) {
+            continue;
+        }
+        
         avProduct->price = [[skProduct price] floatValue];
-        avProduct->localizedName = [[skProduct localizedTitle] UTF8String];
-        avProduct->localizedDescription = [[skProduct localizedDescription] UTF8String];
-
-		[numberFormatter setLocale:skProduct.priceLocale];
+        [numberFormatter setLocale:skProduct.priceLocale];
         avProduct->localizedPrice = [[numberFormatter stringFromNumber:skProduct.price] UTF8String];
+
+        // I once got rejected because the app has crashed here. Strange, huh?
+        // Afer a little investigation it's rather simple. You _DON'T_ receive
+        // the name and description for the product if (!!) apple has rejected
+        // your product.
+        //
+        // In my case the guy responsible for my review simply had a small
+        // question on how to use the consumables in the game. But to get
+        // in contact we me he had to flag something in the app with the
+        // "Developer Action Needed" stamp. Guess what he has flagged. Right.
+        // All consumables and -- after he read me explanation -- he tried the
+        // app again and now it crashes all the time. Rejected. Weee. I love it.
+        // -- Michael (Crashlytics ID: 519409611610bcbef3330d08)
+        NSString* localizedName = [skProduct localizedTitle];
+        if (localizedName != NULL) {
+            avProduct->localizedName = [localizedName UTF8String];
+        }
+        NSString* localizedDescription = [skProduct localizedDescription];
+        if (localizedDescription != NULL) {
+            avProduct->localizedDescription = [localizedDescription UTF8String];
+        }
     }
 
     for (NSString* productId in response.invalidProductIdentifiers) {
