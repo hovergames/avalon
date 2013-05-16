@@ -24,21 +24,21 @@ public:
     Chartboost();
 
     // Provider
-    virtual void init();
-    virtual void hideAds();
+    virtual void init() override;
+    virtual void hideAds() override;
 
     // Fullscreen
-    virtual void showFullscreenAd();
+    virtual void showFullscreenAd() override;
 
     // Link
-    virtual void openAdLink();
+    virtual void openAdLink() override;
 
     // ChartboostXDelegate method
-    virtual bool shouldDisplayInterstitial(const char* location);
-    virtual void didCacheInterstitial(const char* location);
-    virtual void didFailToLoadInterstitial(const char* location);
-    virtual void didCloseInterstitial(const char* location);
-    virtual void didClickInterstitial(const char* location);
+    virtual bool shouldDisplayInterstitial(const char* location) override;
+    virtual void didCacheInterstitial(const char* location) override;
+    virtual void didFailToLoadInterstitial(const char* location) override;
+    virtual void didCloseInterstitial(const char* location) override;
+    virtual void didClickInterstitial(const char* location) override;
 };
 
 } // namespace provider

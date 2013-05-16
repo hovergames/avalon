@@ -25,20 +25,20 @@ public:
     Revmob();
 
     // Provider
-    virtual void init();
-    virtual void hideAds();
+    virtual void init() override;
+    virtual void hideAds() override;
 
     // Fullscreen
-    virtual void showFullscreenAd();
+    virtual void showFullscreenAd() override;
 
     // Link
-    virtual void openAdLink();
+    virtual void openAdLink() override;
 
     // Banner
-    virtual void showBanner();
+    virtual void showBanner() override;
 
     // Popup
-    virtual void showPopupAd();
+    virtual void showPopupAd() override;
 };
 
 } // namespace provider
