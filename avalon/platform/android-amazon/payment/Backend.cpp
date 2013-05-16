@@ -8,6 +8,9 @@
 #include "platform/android/jni/JniHelper.h"
 #include <boost/assert.hpp>
 
+namespace avalon {
+namespace payment {
+
 const char* const CLASS_NAME = "com/avalon/payment/Backend";
 static avalon::payment::Manager* globalManager = NULL;
 
@@ -139,9 +142,6 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onItemData(JNIEnv* env, j
 /**
  * Public API
  */
-
-namespace avalon {
-namespace payment {
 
 Backend::Backend(Manager& manager)
 : manager(manager)

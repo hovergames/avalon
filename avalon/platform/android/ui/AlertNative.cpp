@@ -4,10 +4,10 @@
 #include <jni.h>
 #include "platform/android/jni/JniHelper.h"
 
-const char* const CLASS_NAME = "com/avalon/ui/Alert";
-
 namespace avalon {
 namespace ui {
+
+const char* const CLASS_NAME = "com/avalon/ui/Alert";
 
 void showAlert(const std::string& title, const std::string& message, const ButtonList& buttons, AlertDelegate* delegate)
 {

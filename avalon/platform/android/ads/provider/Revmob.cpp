@@ -5,6 +5,10 @@
 #include "platform/android/jni/JniHelper.h"
 #include <boost/assert.hpp>
 
+namespace avalon {
+namespace ads {
+namespace provider {
+
 const char* const CLASS_NAME = "com/avalon/ads/RevmobBridge";
 
 /**
@@ -34,10 +38,6 @@ void callStaticVoidMethodWithString(const char* name, const char* argument)
 /**
  * Public API
  */
- 
-namespace avalon {
-namespace ads {
-namespace provider {
 
 Revmob::Revmob()
 : appId()
