@@ -13,12 +13,10 @@ LOCAL_SRC_FILES := \
 	avalon/i18n/LanguageKey.cpp \
 	avalon/i18n/Localization.cpp \
 	avalon/io/IniReader.cpp \
-	avalon/platform/android-$(AVALON_FLAVOR)/utils/platform.cpp
-
-ifneq (,$(findstring utils,$(AVALON_FEATURES)))
-LOCAL_SRC_FILES += \
+	avalon/ui/Alert.cpp \
+	avalon/platform/android/ui/AlertNative.cpp \
+	avalon/platform/android-$(AVALON_FLAVOR)/utils/platform.cpp \
 	avalon/platform/android/utils/url.cpp
-endif
 
 ifneq (,$(findstring ads,$(AVALON_FEATURES)))
 LOCAL_SRC_FILES += \
