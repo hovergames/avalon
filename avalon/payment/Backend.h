@@ -25,7 +25,7 @@ public:
     void restorePurchases() const;
 
 private:
-    const Manager& manager;
+    Manager& manager;
 };
 
 } // namespace payment
