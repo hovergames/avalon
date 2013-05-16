@@ -31,7 +31,7 @@ typedef enum {
 @interface RevMobAds : NSObject {
 }
 
-@property (nonatomic, assign) id<RevMobAdsDelegate> delegate;
+@property (nonatomic, assign) id<RevMobAdsDelegate> delegate __attribute__((deprecated));
 @property (nonatomic, assign) NSUInteger connectionTimeout;
 
 
