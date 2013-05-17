@@ -3,13 +3,13 @@ package com.avalon.ads;
 import org.cocos2dx.lib.Cocos2dxActivity;
 
 import android.app.Activity;
-import android.widget.LinearLayout;
+//import android.widget.LinearLayout;
 
 import com.revmob.RevMob;
 import com.revmob.RevMobTestingMode;
-import com.revmob.ads.banner.RevMobBanner;
+//import com.revmob.ads.banner.RevMobBanner;
 
-class RevmobBridge
+abstract class RevmobBridge
 {
     private static RevMob revmob;
 
