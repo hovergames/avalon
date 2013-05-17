@@ -247,7 +247,7 @@ public class PurchasingObserver extends BasePurchasingObserver
                     // Skus that you can not purchase will be here.
                     for (final String s : itemDataResponse.getUnavailableSkus()) {
                         Log.v(TAG, "onItemDataResponse: Unavailable SKU: " + s);
-                        Backend.onItemData(s, "", "", "", 0.0f);
+                        Backend.delegateOnItemData(s, "", "", "", 0.0f);
                     }
 
                 case SUCCESSFUL:
@@ -256,7 +256,7 @@ public class PurchasingObserver extends BasePurchasingObserver
                     final Map<String, Item> items = itemDataResponse.getItemData();
                     for (final String key : items.keySet()) {
                         Item i = items.get(key);
-                        Backend.onItemData(key, i.getTitle(), i.getDescription(), i.getPrice(), 0.0f);
+                        Backend.delegateOnItemData(key, i.getTitle(), i.getDescription(), i.getPrice(), 0.0f);
                         Log.v(TAG, String.format(
                             "onItemDataResponse: Item\n  Title: %s\n  Type: %s\n  SKU: %s\n  Price: %s\n  Description: %s\n",
                             i.getTitle(), i.getItemType(), i.getSku(), i.getPrice(), i.getDescription()
