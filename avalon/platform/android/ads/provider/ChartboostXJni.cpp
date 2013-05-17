@@ -193,7 +193,16 @@ extern "C"
         
         return true;
     }
-    
+
+    jboolean Java_com_wenbin_ChartboostX_ChartboostXBridge_shouldRequestInterstitialsInFirstSession(JNIEnv*  env, jobject thiz)
+    {
+        if (ChartboostXDelegate* delegate = ChartboostX::sharedChartboostX()->getDelegate()) {
+            return delegate->shouldRequestInterstitialsInFirstSession();
+        }
+
+        return true;
+    }
+
     void Java_com_wenbin_ChartboostX_ChartboostXBridge_didCacheInterstitial(JNIEnv*  env, jobject thiz, jstring location)
     {
         if (ChartboostXDelegate* delegate = ChartboostX::sharedChartboostX()->getDelegate()) {
