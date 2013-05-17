@@ -257,9 +257,9 @@ public class PurchasingObserver extends BasePurchasingObserver
      * Takes the items and display them in the logs. You can use this
      * information to display an in game storefront for your IAP items.
      */
-    private class ItemDataAsyncTask extends AsyncTask<ItemDataResponse, Void, Void> {
+    private class ItemDataAsyncTask extends AsyncTask<ItemDataResponse, Void, Boolean> {
         @Override
-        protected Void doInBackground(final ItemDataResponse... params) {
+        protected Boolean doInBackground(final ItemDataResponse... params) {
             final ItemDataResponse itemDataResponse = params[0];
             Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
 
@@ -274,6 +274,9 @@ public class PurchasingObserver extends BasePurchasingObserver
                             }
                         });
                     }
+
+                    // no return here as we process the SUCESSFUL-branch too!
+                    // return true;
 
                 case SUCCESSFUL:
                     // Information you'll want to display about your IAP items is here
@@ -291,15 +294,24 @@ public class PurchasingObserver extends BasePurchasingObserver
                             }
                         });
                     }
-                    break;
+                    return true;
 
                 case FAILED:
                     // On failed responses will fail gracefully.
-                    break;
+                    return false;
             }
 
-            sendStoresProductsAndStartService();
-            return null;
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success)
+        {
+            super.onPostExecute(success);
+            
+            if (success) {
+                sendStoresProductsAndStartService();
+            }
         }
     }
 
