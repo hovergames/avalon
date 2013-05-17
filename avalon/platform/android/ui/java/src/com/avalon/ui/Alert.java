@@ -25,7 +25,12 @@ class OnClick implements DialogInterface.OnClickListener
 
     public void onClick(DialogInterface dialog, int id)
     {
-        Alert.onClick(delegatePtr, index, label);
+        final Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
+        activity.runOnGLThread(new Runnable() {
+            public void run() {
+                Alert.onClick(delegatePtr, index, label);
+            }
+        });
     }
 }
 
