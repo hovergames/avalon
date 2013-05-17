@@ -73,6 +73,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed
         std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
         auto product = globalManager->getProduct(productId.c_str());
         if (product) {
+            product->onHasBeenPurchased();
             globalManager->delegate->onPurchaseSucceed(globalManager, product);
         }
     }
