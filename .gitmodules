@@ -3,4 +3,4 @@
 	url = git@github.com:michaelcontento/Chartboost-x.git
 [submodule "vendors/boost"]
 	path = vendors/boost
-	url = ssh://git@bitbucket.org/MichaelContento/boost-mirror.git
+	url = git@github.com:michaelcontento/boost-mirror.git
