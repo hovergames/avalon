@@ -53,8 +53,9 @@ public class PurchasingObserver extends BasePurchasingObserver
      * Interface method for com.avalon.payment.Backend
      *
      * @param productId
+     * @param isConsumable
      */
-    public void purchase(String productId)
+    public void purchase(String productId, boolean isConsumable)
     {
         Log.v(TAG, "purchase started: SKU - " + productId);
         final String requestId = PurchasingManager.initiatePurchaseRequest(productId);

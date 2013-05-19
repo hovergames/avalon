@@ -3,6 +3,7 @@
 #include <avalon/payment/Manager.h>
 #include <avalon/payment/ManagerDelegate.h>
 #include <avalon/payment/Product.h>
+#include <avalon/payment/ProductConsumable.h>
 #include <jni.h>
 #include "cocos2d.h"
 #include "platform/android/jni/JniHelper.h"
@@ -45,6 +46,17 @@ void callStaticVoidMethodWithString(const char* name, const char* argument)
     if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, name, "(Ljava/lang/String;)V")) {
         jstring jProductId = t.env->NewStringUTF(argument);
         t.env->CallStaticVoidMethod(t.classID, t.methodID, jProductId);
+        t.env->DeleteLocalRef(t.classID);
+        t.env->DeleteLocalRef(jProductId);
+    }
+}
+
+void callStaticVoidMethodWithStringAndBool(const char* name, const char* argument, const bool flag)
+{
+    cocos2d::JniMethodInfo t;
+    if (cocos2d::JniHelper::getStaticMethodInfo(t, CLASS_NAME, name, "(Ljava/lang/String;Z)V")) {
+        jstring jProductId = t.env->NewStringUTF(argument);
+        t.env->CallStaticVoidMethod(t.classID, t.methodID, jProductId, flag);
         t.env->DeleteLocalRef(t.classID);
         t.env->DeleteLocalRef(jProductId);
     }
@@ -178,7 +190,8 @@ bool Backend::isPurchaseReady() const
 
 void Backend::purchase(Product* const product)
 {
-    callStaticVoidMethodWithString("purchase", product->getProductId().c_str());
+    bool isConsumable = (dynamic_cast<ProductConsumable* const>(product) != NULL);
+    callStaticVoidMethodWithStringAndBool("purchase", product->getProductId().c_str(), isConsumable);
 }
 
 void Backend::restorePurchases() const

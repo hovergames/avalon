@@ -34,9 +34,9 @@ public class Backend
     {
     }
 
-    public static void purchase(String productId)
+    public static void purchase(String productId, boolean isConsumable)
     {
-        mPurchaseObserver.purchase(productId);
+        mPurchaseObserver.purchase(productId, isConsumable);
     }
 
     public static boolean isPurchaseReady()

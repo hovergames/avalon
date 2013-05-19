@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
 import java.util.List;
+import java.util.ArrayList;
 
 import com.example.android.trivialdrivesample.util.IabHelper;
 import com.example.android.trivialdrivesample.util.IabResult;
@@ -22,6 +24,7 @@ public class PurchasingObserver
     Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
     public static String base64EncodedPublicKey;
     IabHelper mHelper;
+    List<String> consumableSkus = new ArrayList<String>();
     private Integer taskCount = 0;
     boolean checkTaskCountOnConsumeFinished = false;
 
@@ -50,7 +53,7 @@ public class PurchasingObserver
 
     private boolean isConsumable(String sku)
     {
-        return true;
+        return consumableSkus.contains(sku);
     }
 
     private String clearTitle(String title)
@@ -202,6 +205,17 @@ public class PurchasingObserver
         }
     }
 
+    private void threadIncrementTaskCounter()
+    {
+        if (++taskCount == 1) {
+            activity.runOnGLThread(new Runnable() {
+                public void run() {
+                    Backend.delegateOnTransactionStart();
+                }
+            });
+        }
+    }
+
     private void threadDelegateItemData(Inventory inventory)
     {
         for (String sku : inventory.getAllDetailsSkus()) {
@@ -227,16 +241,15 @@ public class PurchasingObserver
      *
      */
 
-    public void purchase(String sku)
+    public void purchase(String sku, boolean isConsumable)
     {
-        if (++taskCount == 1) {
-            activity.runOnGLThread(new Runnable() {
-                public void run() {
-                    Backend.delegateOnTransactionStart();
-                }
-            });
+        if (isConsumable) {
+            consumableSkus.add(sku);
+        } else {
+            consumableSkus.remove(sku);
         }
 
+        threadIncrementTaskCounter();
         mHelper.launchPurchaseFlow(activity, sku, RC_REQUEST, mPurchaseFinishedListener);
     }
 
