@@ -34,7 +34,7 @@ LOCAL_SRC_FILES += \
 	avalon/payment/Manager.cpp \
 	avalon/payment/Product.cpp \
 	avalon/payment/ProductConsumable.cpp \
-	avalon/platform/android-$(AVALON_FLAVOR)/payment/Backend.cpp
+	avalon/platform/android/payment/Backend.cpp
 endif
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
