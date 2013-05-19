@@ -13,7 +13,7 @@ typedef std::map<unsigned int, std::string> ButtonList;
 class Alert
 {
 public:
-    Alert(AlertDelegate* delegate = NULL);
+    explicit Alert(AlertDelegate* delegate = NULL);
     Alert(const char* title, const char* message, const char* dismissButton, AlertDelegate* delegate = NULL);
     ~Alert();
 

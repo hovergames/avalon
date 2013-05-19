@@ -19,7 +19,7 @@ public:
     std::string localizedName;
     std::string localizedDescription;
 
-    Product(const char* const productId);
+    explicit Product(const char* const productId);
     virtual ~Product();
 
     std::string getProductId() const;

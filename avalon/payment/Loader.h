@@ -17,7 +17,7 @@ class Loader : boost::noncopyable
 public:
     static shared_ptr<Manager> globalManager;
 
-    Loader(const char* iniFile);
+    explicit Loader(const char* iniFile);
     shared_ptr<Manager> getManager() const;
 
 private:
