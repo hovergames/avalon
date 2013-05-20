@@ -37,7 +37,7 @@ and automate annoying tasks.
 
 ##### Amazon
 
-1. Set `AVALON_FLAVOR` to `amazon` in your `jni/Android.mk`
+1. Set `AVALON_PLATFORM_FLAVOR` to `amazon` in your `jni/Android.mk`
 1. Add `payment` to `AVALON_FEATURES` in your `jni/Android.mk`
 1. Copy the `com` folder from `avalon/platform/android-amazon/java/` to the
    `src/` folder of you project

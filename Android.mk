@@ -1,8 +1,19 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-ifeq (,$(AVALON_FLAVOR))
-$(error ERROR: variable AVALON_FLAVOR not set)
+# inject the used flavor into the c++ preprocessor. please keep this block
+# up to date with <avalon/utils/platform.h> and <avalon/utils/platform.cpp>!
+ifeq (amazon, $(AVALON_PLATFORM_FLAVOR))
+    LOCAL_CFLAGS += -DAVALON_PLATFORM_FLAVOR=1
+    LOCAL_EXPORT_CFLAGS += -DAVALON_PLATFORM_FLAVOR=1
+else ifeq (google, $(AVALON_PLATFORM_FLAVOR))
+    LOCAL_CFLAGS += -DAVALON_PLATFORM_FLAVOR=2
+    LOCAL_EXPORT_CFLAGS += -DAVALON_PLATFORM_FLAVOR=2
+else ifeq (samsung, $(AVALON_PLATFORM_FLAVOR))
+    LOCAL_CFLAGS += -DAVALON_PLATFORM_FLAVOR=3
+    LOCAL_EXPORT_CFLAGS += -DAVALON_PLATFORM_FLAVOR=3
+else
+    $(error ERROR: variable AVALON_PLATFORM_FLAVOR not set)
 endif
 
 LOCAL_MODULE := avalon_static
@@ -13,7 +24,7 @@ LOCAL_SRC_FILES := \
 	avalon/i18n/LanguageKey.cpp \
 	avalon/i18n/Localization.cpp \
 	avalon/io/IniReader.cpp \
-	avalon/platform/android-$(AVALON_FLAVOR)/utils/platform.cpp \
+	avalon/utils/platform.cpp \
 	avalon/platform/android/GameCenter.cpp \
 	avalon/platform/android/ui/AlertNative.cpp \
 	avalon/platform/android/utils/url.cpp \
