@@ -6,9 +6,17 @@
 #include <avalon/ads/Banner.h>
 #include <avalon/ads/Popup.h>
 #include <avalon/ads/Link.h>
-#include <avalon/ads/provider/Chartboost.h>
-#include <avalon/ads/provider/Revmob.h>
 #include <avalon/utils/platform.h>
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    #include <avalon/ads/provider/SamsungAdHub.h>
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_SAMSUNG)
+    // Only Samsung AdHub is allowed on the Samsung Apps store ...
+#else
+    #include <avalon/ads/provider/Chartboost.h>
+    #include <avalon/ads/provider/Revmob.h>
+#endif
 
 using namespace cocos2d;
 
@@ -43,8 +51,19 @@ void Manager::initWithIniFile(const char *iniFile)
     flavor[0] = std::toupper(flavor[0]);
     auto prefix = avalon::utils::platform::getName() + flavor;
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+    if (config.doesSectionExist("samsungadhub")) {
+        auto *p = new provider::SamsungAdHub();
+        p->setWeight(config.getValueAsInt("samsungadhub", "weight"));
+        p->inventoryId = config.getValue("samsungadhub", "inventoryId");
+        adProviders.push_back(p);
+    }
+#endif
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_SAMSUNG)
+    // Only Samsung AdHub is allowed on the Samsung Apps store ...
+#else
     if (config.doesSectionExist("chartboost")) {
-        provider::Chartboost *p = new provider::Chartboost();
+        auto *p = new provider::Chartboost();
         p->setWeight(config.getValueAsInt("chartboost", "weight"));
         p->appId = config.getValue("chartboost", (prefix + "AppId").c_str());
         p->appSignature = config.getValue("chartboost", (prefix + "AppSignature").c_str());
@@ -52,11 +71,12 @@ void Manager::initWithIniFile(const char *iniFile)
     }
 
     if (config.doesSectionExist("revmob")) {
-        provider::Revmob *p = new provider::Revmob();
+        auto *p = new provider::Revmob();
         p->setWeight(config.getValueAsInt("revmob", "weight"));
         p->appId = config.getValue("revmob", (prefix + "AppId").c_str());
         adProviders.push_back(p);
     }
+#endif
 }
 
 void Manager::startService()
