@@ -8,9 +8,7 @@
 #include <avalon/ads/Link.h>
 #include <avalon/utils/platform.h>
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-    #include <avalon/ads/provider/SamsungAdHub.h>
-#endif
+#include <avalon/ads/provider/SamsungAdHub.h>
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_SAMSUNG)
     // Only Samsung AdHub is allowed on the Samsung Apps store ...
 #else
@@ -51,14 +49,12 @@ void Manager::initWithIniFile(const char *iniFile)
     flavor[0] = std::toupper(flavor[0]);
     auto prefix = avalon::utils::platform::getName() + flavor;
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
     if (config.doesSectionExist("samsungadhub")) {
         auto *p = new provider::SamsungAdHub();
         p->setWeight(config.getValueAsInt("samsungadhub", "weight"));
-        p->inventoryId = config.getValue("samsungadhub", "inventoryId");
+        p->inventoryId = config.getValue("samsungadhub", (prefix + "InventoryId").c_str());
         adProviders.push_back(p);
     }
-#endif
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_SAMSUNG)
     // Only Samsung AdHub is allowed on the Samsung Apps store ...
 #else

@@ -1,0 +1,1 @@
+../../../../../../vendors/samsungadhub/ios/include/SADAdTargeting.h
