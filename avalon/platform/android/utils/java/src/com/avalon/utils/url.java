@@ -8,8 +8,11 @@ abstract class Url
 {
     static void open(String url)
     {
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(url));
-        Cocos2dxActivity.getContext().startActivity(i);
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            Cocos2dxActivity.getContext().startActivity(i);
+        } catch (Exception e) {
+        }
     }
 }
