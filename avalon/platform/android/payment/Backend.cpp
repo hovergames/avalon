@@ -12,12 +12,15 @@
 namespace avalon {
 namespace payment {
 
-const char* const CLASS_NAME = "com/avalon/payment/Backend";
-static avalon::payment::Manager* globalManager = NULL;
-
 /**
  * C++ -->> Java
  */
+
+namespace backend {
+namespace helper {
+
+const char* const CLASS_NAME = "com/avalon/payment/Backend";
+static avalon::payment::Manager* globalManager = NULL;
 
 void callStaticVoidMethod(const char* name)
 {
@@ -62,6 +65,9 @@ void callStaticVoidMethodWithStringAndBool(const char* name, const char* argumen
     }
 }
 
+} // namespace helper
+} // namespace backend
+
 /**
  * Java -->> C++
  */ 
@@ -70,6 +76,7 @@ extern "C" {
 
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnServiceStarted(JNIEnv* env, jclass clazz)
 {
+    using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
 
     if (globalManager && globalManager->delegate) {
@@ -79,6 +86,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnServiceStarted(
 
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed(JNIEnv* env, jclass clazz, jstring jProductId)
 {
+    using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
     
     if (globalManager && globalManager->delegate) {
@@ -93,6 +101,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed
 
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseFail(JNIEnv* env, jclass clazz)
 {
+    using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
     
     if (globalManager && globalManager->delegate) {
@@ -102,6 +111,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseFail(JN
 
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionStart(JNIEnv* env, jclass clazz)
 {
+    using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
     
     if (globalManager && globalManager->delegate) {
@@ -111,6 +121,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionStar
 
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionEnd(JNIEnv* env, jclass clazz)
 {
+    using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
     
     if (globalManager && globalManager->delegate) {
@@ -120,6 +131,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionEnd(
 
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env, jclass clazz)
 {
+    using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
 
     if (globalManager) {
@@ -130,11 +142,12 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env
             );
         }
     }
-    callStaticVoidMethod("startItemDataRequest");
+    backend::helper::callStaticVoidMethod("startItemDataRequest");
 }
 
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onItemData(JNIEnv* env, jclass clazz, jstring jProductId, jstring jName, jstring jDesc, jstring jPriceStr, jfloat jprice)
 {
+    using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
     if (!globalManager) {
         return;
@@ -167,39 +180,39 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onItemData(JNIEnv* env, j
 Backend::Backend(Manager& manager)
 : manager(manager)
 {
-    globalManager = &manager;
+    backend::helper::globalManager = &manager;
 }
 
 Backend::~Backend()
 {
     shutdown();
-    globalManager = NULL;
+    backend::helper::globalManager = NULL;
 }
 
 void Backend::shutdown()
 {
-    callStaticVoidMethod("shutdown");
+    backend::helper::callStaticVoidMethod("shutdown");
 }
 
 void Backend::initialize()
 {
-    callStaticVoidMethod("initialize");
+    backend::helper::callStaticVoidMethod("initialize");
 }
 
 bool Backend::isInitialized() const
 {
-    return callStaticBoolMethod("isInitialized");
+    return backend::helper::callStaticBoolMethod("isInitialized");
 }
 
 bool Backend::isPurchaseReady() const
 {
-    return callStaticBoolMethod("isPurchaseReady");
+    return backend::helper::callStaticBoolMethod("isPurchaseReady");
 }
 
 void Backend::purchase(Product* const product)
 {
     bool isConsumable = (dynamic_cast<ProductConsumable* const>(product) != NULL);
-    callStaticVoidMethodWithStringAndBool("purchase", product->getProductId().c_str(), isConsumable);
+    backend::helper::callStaticVoidMethodWithStringAndBool("purchase", product->getProductId().c_str(), isConsumable);
 }
 
 void Backend::restorePurchases() const
