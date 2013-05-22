@@ -120,21 +120,7 @@ static GameCenterIos* instance = nil;
 
 - (void)clearAllScores
 {
-    // this is important or we would later create tons of login attempts
-    if (![GKLocalPlayer localPlayer].isAuthenticated) {
-        return;
-    }
-
-    [GKLeaderboard loadCategoriesWithCompletionHandler:^(NSArray* categories, NSArray* titles, NSError* error) {
-        if (error) {
-            NSLog(@"[GameCenter] clearAllScores failed: %@", error.localizedDescription);
-            return;
-        }
-
-        for (NSString* categoryName in categories) {
-            [self postScore:[categoryName cStringUsingEncoding:NSASCIIStringEncoding] score:[NSNumber numberWithInt:0]];
-        }
-    }];
+    // it's simply not possible to do this :/
 }
 
 @end
