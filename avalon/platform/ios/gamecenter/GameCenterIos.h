@@ -1,16 +1,17 @@
 @interface GameCenterIos : NSObject
 {
+    BOOL isAuthenticated;
 }
 
 + (GameCenterIos*)shared;
 
 - (void)login;
 
-- (void)showAchievements;
+- (BOOL)showAchievements;
 - (void)postAchievement:(const char*)idName percent:(NSNumber*)percentComplete;
 - (void)clearAllAchivements;
 
-- (void)showScores;
+- (BOOL)showScores;
 - (void)postScore:(const char*)idName score:(NSNumber*)score;
 - (void)clearAllScores;
 
