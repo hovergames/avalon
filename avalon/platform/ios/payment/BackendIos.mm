@@ -53,7 +53,9 @@
     }
 
     initialized = true;
-    manager->delegate->onServiceStarted(manager);
+    if (manager && manager->delegate) {
+        manager->delegate->onServiceStarted(manager);
+    }
 }
 
 #pragma mark -
@@ -89,9 +91,14 @@
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
     if (--transactionDepth == 0) {
-        manager->delegate->onTransactionEnd(manager);
+        if (manager && manager->delegate) {
+            manager->delegate->onTransactionEnd(manager);
+        }
     }
-    manager->delegate->onRestoreSucceed(manager);
+
+    if (manager && manager->delegate) {
+        manager->delegate->onRestoreSucceed(manager);
+    }
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
@@ -99,9 +106,14 @@
     NSLog(@"[Payment] restoreCompletedTransactions failed: %@", error.localizedDescription);
 
     if (--transactionDepth == 0) {
-        manager->delegate->onTransactionEnd(manager);
+        if (manager && manager->delegate) {
+            manager->delegate->onTransactionEnd(manager);
+        }
     }
-    manager->delegate->onRestoreFail(manager);
+    
+    if (manager && manager->delegate) {
+        manager->delegate->onRestoreFail(manager);
+    }
 }
 
 #pragma mark -
@@ -114,9 +126,14 @@
     product->onHasBeenPurchased();
 
     if (--transactionDepth == 0) {
-        manager->delegate->onTransactionEnd(manager);
+        if (manager && manager->delegate) {
+            manager->delegate->onTransactionEnd(manager);
+        }
     }
-    manager->delegate->onPurchaseSucceed(manager, product);
+    
+    if (manager && manager->delegate) {
+        manager->delegate->onPurchaseSucceed(manager, product);
+    }
 
 	[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }
@@ -128,9 +145,14 @@
     product->onHasBeenPurchased();
 
     if (--transactionDepth == 0) {
-        manager->delegate->onTransactionEnd(manager);
+        if (manager && manager->delegate) {
+            manager->delegate->onTransactionEnd(manager);
+        }
     }
-    manager->delegate->onPurchaseSucceed(manager, product);
+
+    if (manager && manager->delegate) {
+        manager->delegate->onPurchaseSucceed(manager, product);
+    }
 
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }
@@ -166,10 +188,14 @@
 	}
 
     if (--transactionDepth == 0) {
-        manager->delegate->onTransactionEnd(manager);
+        if (manager && manager->delegate) {
+            manager->delegate->onTransactionEnd(manager);
+        }
     }
     if (reportFailure) {
-        manager->delegate->onPurchaseFail(manager);
+        if (manager && manager->delegate ) {
+            manager->delegate->onPurchaseFail(manager);
+        }
     }
     
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];

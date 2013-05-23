@@ -62,12 +62,15 @@ void Backend::shutdown()
 
     [[SKPaymentQueue defaultQueue] removeTransactionObserver:__getIosBackend()];
     __getIosBackend()->initialized = false;
+    __getIosBackend()->manager = NULL;
 }
 
 void Backend::purchase(Product* const product)
 {
     if (__getIosBackend()->transactionDepth++ == 0) {
-        manager.delegate->onTransactionStart(__getIosBackend()->manager);
+        if (manager.delegate) {
+            manager.delegate->onTransactionStart(&manager);
+        }
     }
 
     NSString* productId = [[[NSString alloc] initWithUTF8String:product->getProductId().c_str()] autorelease];
@@ -83,7 +86,9 @@ bool Backend::isPurchaseReady() const
 void Backend::restorePurchases() const
 {
     if (__getIosBackend()->transactionDepth++ == 0) {
-        manager.delegate->onTransactionStart(__getIosBackend()->manager);
+        if (manager.delegate) {
+            manager.delegate->onTransactionStart(&manager);
+        }
     }
 
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
