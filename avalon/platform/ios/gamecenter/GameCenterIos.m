@@ -159,7 +159,7 @@ static GameCenterIos* instance = nil;
     [[NSFileManager defaultManager] removeItemAtPath:savePath error:&error];
 
     // clear remote scores
-    // ... is not possible :/
+    NSLog(@"[GameCenter] WARNING! clearAllScores is not supported on this platform");
 }
 
 #pragma mark -
