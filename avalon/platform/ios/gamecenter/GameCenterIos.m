@@ -20,12 +20,14 @@
 @implementation GameCenterIos
 
 static NSString* scoresArchiveKey = @"scores";
+static NSString* scoresArchiveKeyLow = @"low";
+static NSString* scoresArchiveKeyHigh = @"high";
 static NSString* achievementsArchiveKey = @"achievements";
 static GameCenterIos* instance = nil;
 
 + (GameCenterIos*)shared
 {
-	@synchronized(self) {
+    @synchronized(self) {
         if (instance == nil) {
             instance = [[self alloc] init];
         }
@@ -98,7 +100,7 @@ static GameCenterIos* instance = nil;
 - (void)clearAllAchivements
 {
     // clear cached achievements
-	NSString* savePath = [self getGameCenterSavePath:achievementsArchiveKey];
+    NSString* savePath = [self getGameCenterSavePath:achievementsArchiveKey];
     NSError* error;
     [[NSFileManager defaultManager] removeItemAtPath:savePath error:&error];
 
@@ -152,8 +154,8 @@ static GameCenterIos* instance = nil;
 - (void)clearAllScores
 {
     // clear cached scores
-	NSString* savePath = [self getGameCenterSavePath:scoresArchiveKey];
-    NSError* error;
+    NSString* savePath = [self getGameCenterSavePath:scoresArchiveKey];
+    NSError* error = nil;
     [[NSFileManager defaultManager] removeItemAtPath:savePath error:&error];
 
     // clear remote scores
@@ -165,35 +167,40 @@ static GameCenterIos* instance = nil;
 
 - (void)saveAchievementToDevice:(GKAchievement*)achievement
 {
-	NSString* savePath = [self getGameCenterSavePath:achievementsArchiveKey];
-	NSMutableDictionary* data;
+    NSString* key = achievement.identifier;
+    NSNumber* newValue = [NSNumber numberWithDouble:achievement.percentComplete];
+    NSString* savePath = [self getGameCenterSavePath:achievementsArchiveKey];
 
-	if ([[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
+    NSMutableDictionary* data = nil;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
         data = [[[NSMutableDictionary alloc] initWithContentsOfFile:savePath] autorelease];
-	} else {
+    } else {
         data = [[[NSMutableDictionary alloc] init] autorelease];
-	}
+    }
 
-    [data setObject:[NSNumber numberWithDouble:achievement.percentComplete] forKey:achievement.identifier];
-	[data writeToFile:savePath atomically:YES];
+    NSNumber* oldValue = [data objectForKey:key];
+    if (oldValue == nil || [oldValue doubleValue] < [newValue doubleValue]) {
+        [data setObject:newValue forKey:key];
+        [data writeToFile:savePath atomically:YES];
+    }
 }
 
 - (void)retrieveAchievementsFromDevice
 {
-	NSString* savePath = [self getGameCenterSavePath:achievementsArchiveKey];
-	if (![[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
-		return;
-	}
+    NSString* savePath = [self getGameCenterSavePath:achievementsArchiveKey];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
+        return;
+    }
 
-	NSMutableDictionary* data = [NSMutableDictionary dictionaryWithContentsOfFile:savePath];
-	if (!data) {
-		return;
-	}
+    NSMutableDictionary* data = [NSMutableDictionary dictionaryWithContentsOfFile:savePath];
+    if (!data) {
+        return;
+    }
 
-    NSError* error;
+    NSError* error = nil;
     [[NSFileManager defaultManager] removeItemAtPath:savePath error:&error];
 
-	for (NSString* key in data) {
+    for (NSString* key in data) {
         NSNumber* number = [data objectForKey:key];
 
         GKAchievement* achievement = [[[GKAchievement alloc] init] autorelease];
@@ -201,11 +208,11 @@ static GameCenterIos* instance = nil;
         achievement.percentComplete = [number doubleValue];
         achievement.showsCompletionBanner = YES;
 
-		[achievement reportAchievementWithCompletionHandler:^(NSError* error){
-			if (error) {
-				[self saveAchievementToDevice:achievement];
-			}
-		}];
+        [achievement reportAchievementWithCompletionHandler:^(NSError* error){
+            if (error) {
+                [self saveAchievementToDevice:achievement];
+            }
+        }];
     }
 }
 
@@ -214,47 +221,86 @@ static GameCenterIos* instance = nil;
 
 - (void)saveScoreToDevice:(GKScore*)score
 {
-	NSString* savePath = [self getGameCenterSavePath:scoresArchiveKey];
-	NSMutableDictionary* data;
+    NSString* key = score.category;
+    NSNumber* newValue = [NSNumber numberWithLongLong:score.value];
+    NSString* savePath = [self getGameCenterSavePath:scoresArchiveKey];
 
-	if ([[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
+    NSMutableDictionary* data = nil;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
         data = [[[NSMutableDictionary alloc] initWithContentsOfFile:savePath] autorelease];
-	} else {
+    } else {
         data = [[[NSMutableDictionary alloc] init] autorelease];
-	}
+    }
 
-    [data setObject:[NSNumber numberWithLongLong:score.value] forKey:score.category];
-	[data writeToFile:savePath atomically:YES];
+    NSNumber* lowValue = nil;
+    NSMutableDictionary* lowData = nil;
+    if ([data objectForKey:scoresArchiveKeyLow]) {
+        lowData = [data objectForKey:scoresArchiveKeyLow];
+        lowValue = [lowData objectForKey:key];
+    } else {
+        lowData = [[[NSMutableDictionary alloc] init] autorelease];
+    }
+
+    NSNumber* highValue = nil;
+    NSMutableDictionary* highData = nil;
+    if ([data objectForKey:scoresArchiveKeyHigh]) {
+        highData = [data objectForKey:scoresArchiveKeyHigh];
+        highValue = [highData objectForKey:key];
+    } else {
+        highData = [[[NSMutableDictionary alloc] init] autorelease];
+    }
+
+    // we don't have anything cached yet => cache as new high
+    // or there is something cached and the new score is a new high
+    if ((lowValue == nil && highValue == nil)
+    ||  (highValue == nil || [highValue longLongValue] < [newValue longLongValue])) {
+        [highData setObject:newValue forKey:key];
+        [data setObject:highData forKey:scoresArchiveKeyHigh];
+        [data writeToFile:savePath atomically:YES];
+        return;
+    }
+
+    // there is something cached and the new score is a new low
+    if (lowValue == nil || [lowValue longLongValue] > [newValue longLongValue]) {
+        [lowData setObject:newValue forKey:key];
+        [data setObject:lowData forKey:scoresArchiveKeyLow];
+        [data writeToFile:savePath atomically:YES];
+        return;
+    }
 }
 
 - (void)retrieveScoresFromDevice
 {
-	NSString* savePath = [self getGameCenterSavePath:scoresArchiveKey];
-	if (![[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
-		return;
-	}
-	
-	NSMutableDictionary* data = [NSMutableDictionary dictionaryWithContentsOfFile:savePath];
-	if (!data) {
-		return;
-	}
+    NSString* savePath = [self getGameCenterSavePath:scoresArchiveKey];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
+        return;
+    }
+    
+    NSMutableDictionary* data = [NSMutableDictionary dictionaryWithContentsOfFile:savePath];
+    if (!data) {
+        return;
+    }
 
-    NSError* error;
+    NSError* error = nil;
     [[NSFileManager defaultManager] removeItemAtPath:savePath error:&error];
-	
-	for (NSString* key in data) {
-        NSNumber* number = [data objectForKey:key];
+
+    for (NSString* lowOrHighKey in [NSArray arrayWithObjects:scoresArchiveKeyLow,scoresArchiveKeyHigh,nil]) {
+        NSMutableDictionary* lowOrHighData = [data objectForKey:lowOrHighKey];
         
-        GKScore* gkScore = [[[GKScore alloc] init] autorelease];
-        gkScore.category = key;
-        gkScore.value = [number longLongValue];
-        gkScore.shouldSetDefaultLeaderboard = YES;
-        
-		[gkScore reportScoreWithCompletionHandler:^(NSError* error) {
-			if (error) {
-				[self saveScoreToDevice:gkScore];
-            }
-		}];
+        for (NSString* key in lowOrHighData) {
+            NSNumber* number = [lowOrHighData objectForKey:key];
+            
+            GKScore* gkScore = [[[GKScore alloc] init] autorelease];
+            gkScore.category = key;
+            gkScore.value = [number longLongValue];
+            gkScore.shouldSetDefaultLeaderboard = YES;
+
+            [gkScore reportScoreWithCompletionHandler:^(NSError* error) {
+                if (error) {
+                    [self saveScoreToDevice:gkScore];
+                }
+            }];
+        }
     }
 }
 
@@ -263,23 +309,23 @@ static GameCenterIos* instance = nil;
 
 - (NSString*)getGameCenterSavePath:(NSString*)postfix
 {
-	NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	return [NSString stringWithFormat:@"%@/avalon.gamecenter.%@.cache",[paths objectAtIndex:0],postfix];
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    return [NSString stringWithFormat:@"%@/avalon.gamecenter.%@.cache",[paths objectAtIndex:0],postfix];
 }
 
 - (void)registerForAuthenticationNotification
 {
-	NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
-	[nc addObserver: self selector:@selector(authenticationChanged) name:GKPlayerAuthenticationDidChangeNotificationName object:nil];
+    NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver: self selector:@selector(authenticationChanged) name:GKPlayerAuthenticationDidChangeNotificationName object:nil];
 }
 
 - (void)authenticationChanged
 {
-	if ([GKLocalPlayer localPlayer].isAuthenticated) {
-		isAuthenticated = YES;
-		[self retrieveScoresFromDevice];
-		[self retrieveAchievementsFromDevice];
-	} else {
+    if ([GKLocalPlayer localPlayer].isAuthenticated) {
+        isAuthenticated = YES;
+        [self retrieveScoresFromDevice];
+        [self retrieveAchievementsFromDevice];
+    } else {
         isAuthenticated = NO;
     }
 }
