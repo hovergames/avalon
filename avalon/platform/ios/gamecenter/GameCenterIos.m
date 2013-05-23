@@ -120,7 +120,7 @@ static GameCenterIos* instance = nil;
 
 - (void)clearAllScores
 {
-    // it's simply not possible to do this :/
+    NSLog(@"[GameCenter] WARNING! clearAllScores is not supported on this platform");
 }
 
 @end
