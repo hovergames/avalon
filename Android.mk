@@ -25,7 +25,6 @@ LOCAL_SRC_FILES := \
     avalon/i18n/Localization.cpp \
     avalon/io/IniReader.cpp \
     avalon/utils/platform.cpp \
-    avalon/platform/android/GameCenter.cpp \
     avalon/platform/android/ui/AlertNative.cpp \
     avalon/platform/android/utils/url.cpp \
     avalon/ui/Alert.cpp
@@ -46,6 +45,11 @@ ifneq (,$(findstring payment,$(AVALON_FEATURES)))
         avalon/payment/Product.cpp \
         avalon/payment/ProductConsumable.cpp \
         avalon/platform/android/payment/Backend.cpp
+endif
+
+ifneq (,$(findstring gamecenter,$(AVALON_FEATURES)))
+    LOCAL_SRC_FILES += \
+        avalon/platform/android-$(AVALON_PLATFORM_FLAVOR)/gamecenter/GameCenter.cpp
 endif
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
