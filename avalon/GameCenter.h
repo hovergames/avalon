@@ -8,11 +8,11 @@ class GameCenter
 public:
     void login();
 
-    void showAchievements();
+    bool showAchievements();
     void postAchievement(const char* idName, int percentComplete);
     void clearAllAchievements();
 
-    void showScores();
+    bool showScores();
     void postScore(const char* idName, int score);
     void clearAllScores();
 };
