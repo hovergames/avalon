@@ -6,23 +6,23 @@ namespace platform {
 
 std::string getName()
 {
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+#if   AVALON_PLATFORM_IS_IOS
     return std::string("ios");
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#elif AVALON_PLATFORM_IS_ANDROID
     return std::string("android");
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#elif AVALON_PLATFORM_IS_WIN32
     return std::string("win32");
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_MARMALADE)
+#elif AVALON_PLATFORM_IS_MARMALADE
     return std::string("marmalade");
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+#elif AVALON_PLATFORM_IS_LINUX
     return std::string("linux");
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_BADA)
+#elif AVALON_PLATFORM_IS_BADA
     return std::string("bada");
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_BLACKBERRY)
+#elif AVALON_PLATFORM_IS_BLACKBERRY
     return std::string("blackberry");
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_MAC)
+#elif AVALON_PLATFORM_IS_MAC
     return std::string("mac");
-#elif (CC_TARGET_PLATFORM == CC_PLATFORM_NACL)
+#elif AVALON_PLATFORM_IS_NACL
     return std::string("nacl");
 #else
     #error "No name defined for current used CC_TARGET_PLATFORM"
@@ -31,18 +31,14 @@ std::string getName()
 
 std::string getFlavor()
 {
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_ANDROID)
-    return std::string();
+#if   AVALON_PLATFORM_IS_ANDROID_AMAZON
+    return std::string("amazon");
+#elif AVALON_PLATFORM_IS_ANDROID_GOOGLE
+    return std::string("google");
+#elif AVALON_PLATFORM_IS_ANDROID_SAMSUNG
+    return std::string("samsung");
 #else
-    #if (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_AMAZON)
-        return std::string("amazon");
-    #elif (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_GOOGLE)
-        return std::string("google");
-    #elif (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_SAMSUNG)
-        return std::string("samsung");
-    #else
-        #error "No name defined for current used AVALON_PLATFORM_FLAVOR"
-    #endif
+    return std::string();
 #endif
 }
 
