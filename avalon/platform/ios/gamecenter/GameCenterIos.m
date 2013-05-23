@@ -65,7 +65,6 @@ static GameCenterIos* instance = nil;
 - (BOOL)showAchievements
 {
     if (![GKLocalPlayer localPlayer].isAuthenticated) {
-        [self login];
         return NO;
     }
 
@@ -118,7 +117,6 @@ static GameCenterIos* instance = nil;
 - (BOOL)showScores
 {
     if (![GKLocalPlayer localPlayer].isAuthenticated) {
-        [self login];
         return NO;
     }
 
