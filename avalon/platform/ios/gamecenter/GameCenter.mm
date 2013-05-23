@@ -12,9 +12,9 @@ void GameCenter::login()
 #pragma mark -
 #pragma mark Achievements
 
-void GameCenter::showAchievements()
+bool GameCenter::showAchievements()
 {
-    [[GameCenterIos shared] showAchievements];
+    return [[GameCenterIos shared] showAchievements];
 }
 
 void GameCenter::postAchievement(const char* idName, int percentComplete)
@@ -30,9 +30,9 @@ void GameCenter::clearAllAchievements()
 #pragma mark -
 #pragma mark Leaderboard
 
-void GameCenter::showScores()
+bool GameCenter::showScores()
 {
-    [[GameCenterIos shared] showScores];
+    return [[GameCenterIos shared] showScores];
 }
 
 void GameCenter::postScore(const char* idName, int score)
