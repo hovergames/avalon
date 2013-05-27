@@ -72,7 +72,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnServiceStarted(
 {
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
 
-    if (globalManager->delegate) {
+    if (globalManager && globalManager->delegate) {
         globalManager->delegate->onServiceStarted(globalManager);
     }
 }
@@ -80,8 +80,8 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnServiceStarted(
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed(JNIEnv* env, jclass clazz, jstring jProductId)
 {
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-
-    if (globalManager->delegate) {
+    
+    if (globalManager && globalManager->delegate) {
         std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
         auto product = globalManager->getProduct(productId.c_str());
         if (product) {
@@ -94,8 +94,8 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseFail(JNIEnv* env, jclass clazz)
 {
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-
-    if (globalManager->delegate) {
+    
+    if (globalManager && globalManager->delegate) {
         globalManager->delegate->onPurchaseFail(globalManager);
     }
 }
@@ -103,8 +103,8 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseFail(JN
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionStart(JNIEnv* env, jclass clazz)
 {
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-
-    if (globalManager->delegate) {
+    
+    if (globalManager && globalManager->delegate) {
         globalManager->delegate->onTransactionStart(globalManager);
     }
 }
@@ -112,8 +112,8 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionStar
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionEnd(JNIEnv* env, jclass clazz)
 {
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-
-    if (globalManager->delegate) {
+    
+    if (globalManager && globalManager->delegate) {
         globalManager->delegate->onTransactionEnd(globalManager);
     }
 }
@@ -122,8 +122,13 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env
 {
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
 
-    for (auto row : globalManager->getProducts()) {
-        callStaticVoidMethodWithString("addItemDataRequest", row.second->getProductId().c_str());
+    if (globalManager) {
+        for (auto row : globalManager->getProducts()) {
+            callStaticVoidMethodWithString(
+                "addItemDataRequest",
+                row.second->getProductId().c_str()
+            );
+        }
     }
     callStaticVoidMethod("startItemDataRequest");
 }
@@ -131,7 +136,10 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env
 JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onItemData(JNIEnv* env, jclass clazz, jstring jProductId, jstring jName, jstring jDesc, jstring jPriceStr, jfloat jprice)
 {
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-
+    if (!globalManager) {
+        return;
+    }
+    
     std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
     auto product = globalManager->getProduct(productId.c_str());
 
