@@ -47,6 +47,7 @@ Loader::Loader(const char* iniFile)
             product = new ProductConsumable(productId, quantity);
         } else {
             BOOST_ASSERT_MSG(false, "Couldn't identify product type from ini file");
+            continue;
         }
 
         manager->addProduct(product, sectionName);
