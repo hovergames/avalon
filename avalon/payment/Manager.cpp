@@ -116,7 +116,10 @@ void Manager::purchase(const char* const productIdOrAlias)
 {
     BOOST_ASSERT_MSG(isPurchaseReady(), "backend service not started yet");
 
-    backend.purchase(getProduct(productIdOrAlias));
+    auto product = getProduct(productIdOrAlias);
+    if (product) {
+        backend.purchase(product);
+    }
 }
 
 void Manager::startService()
