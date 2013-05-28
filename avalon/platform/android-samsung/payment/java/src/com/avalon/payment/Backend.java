@@ -1,15 +1,14 @@
 package com.avalon.payment;
 
-import java.util.List;
-import java.util.ArrayList;
-import android.content.Intent;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.avalon.payment.PurchasingObserver;
 
 public class Backend
 {
     private static PurchasingObserver mPurchaseObserver = null;
-    private static List<String> pendingItemData = new ArrayList<String>();
+    private static Map<String, Boolean> pendingItemData = new HashMap<String, Boolean>();
     private static int itemDataReturned = 0;
 
     /**
@@ -44,9 +43,9 @@ public class Backend
         return isInitialized() && itemDataReturned > 0;
     }
 
-    public static void addItemDataRequest(String productId)
+    public static void addItemDataRequest(String productId, boolean isConsumable)
     {
-        pendingItemData.add(productId);
+        pendingItemData.put(productId, isConsumable);
     }
 
     public static void startItemDataRequest()

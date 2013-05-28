@@ -1,13 +1,21 @@
 package com.avalon.payment;
 
-import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
+
 import com.avalon.payment.PurchasingObserver;
 
 public class Backend
 {
     private static PurchasingObserver mPurchaseObserver = null;
-    private static HashSet<String> pendingItemData = new HashSet<String>();
+    private static Map<String, Boolean> pendingItemData = new HashMap<String, Boolean>();
     private static int itemDataReturned = 0;
+
+    /**
+     *
+     * Methods called from the C++ side
+     *
+     */
 
     public static boolean isInitialized()
     {
@@ -35,22 +43,28 @@ public class Backend
         return isInitialized() && itemDataReturned > 0;
     }
 
-    public static void addItemDataRequest(String productId)
+    public static void addItemDataRequest(String productId, boolean isConsumable)
     {
-        pendingItemData.add(productId);
+        pendingItemData.put(productId, isConsumable);
     }
 
     public static void startItemDataRequest()
     {
         mPurchaseObserver.startItemDataRequest(pendingItemData);
-        pendingItemData.clear();
     }
 
     public static void delegateOnItemData(String productId, String name, String desc, String priceStr, float price)
     {
+        pendingItemData.clear();
         ++itemDataReturned;
         onItemData(productId, name, desc, priceStr, price);
     }
+
+    /**
+     *
+     * Methods to call back into the C++ side
+     *
+     */
 
     public static native void delegateOnServiceStarted();
     public static native void delegateOnPurchaseSucceed(String productId);

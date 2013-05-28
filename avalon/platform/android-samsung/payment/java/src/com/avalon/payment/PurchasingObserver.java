@@ -1,6 +1,7 @@
 package com.avalon.payment;
 
 import android.util.Log;
+import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -17,6 +18,7 @@ public class PurchasingObserver implements PlasmaListener
     private Plasma plasma = null;
     private int transactionId = 0;
     private int taskCount = 0;
+    private Map<String, Boolean> productIds;
     public static String itemGroupId;
 
     public PurchasingObserver()
@@ -36,8 +38,9 @@ public class PurchasingObserver implements PlasmaListener
         threadOnInitialized();
     }
 
-    public void startItemDataRequest(List<String> productIds)
+    public void startItemDataRequest(Map<String, Boolean> productIds)
     {
+        this.productIds = productIds;
         final PurchasingObserver self = this;
         activity.runOnUiThread(new Runnable() {
             public void run() {
@@ -104,7 +107,9 @@ public class PurchasingObserver implements PlasmaListener
         // yes -- a second loop -- but OnPurchaseSucceed() must be called after
         // all products are filled with their metadata!
         for (PurchasedItemInformation purchaseItemInformation : purchasedItemInformationList) {
-            threadDelegateOnPurchaseSucceed(purchaseItemInformation);
+            if (!isConsumable(purchaseItemInformation)) {
+                threadDelegateOnPurchaseSucceed(purchaseItemInformation);
+            }
         }
     }
 
@@ -209,5 +214,11 @@ public class PurchasingObserver implements PlasmaListener
                 Backend.delegateOnPurchaseFail();
             }
         });
+    }
+
+    private boolean isConsumable(ItemInformation itemInformation)
+    {
+        String productId = itemInformation.getItemId();
+        return (productIds.containsKey(productId) && productIds.get(productId));
     }
 }

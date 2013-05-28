@@ -124,9 +124,11 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env
 
     if (globalManager) {
         for (auto row : globalManager->getProducts()) {
-            callStaticVoidMethodWithString(
+            bool isConsumable = (dynamic_cast<ProductConsumable* const>(row.second) != NULL);
+            callStaticVoidMethodWithStringAndBool(
                 "addItemDataRequest",
-                row.second->getProductId().c_str()
+                row.second->getProductId().c_str(),
+                isConsumable
             );
         }
     }
