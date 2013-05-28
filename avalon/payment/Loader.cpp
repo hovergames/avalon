@@ -5,6 +5,7 @@
 #include <avalon/payment/Product.h>
 #include <avalon/payment/ProductConsumable.h>
 #include <avalon/payment/Manager.h>
+#include <avalon/utils/platform.h>
 
 namespace avalon {
 namespace payment {
@@ -29,9 +30,14 @@ Loader::Loader(const char* iniFile)
             continue;
         }
         const char* type = config.getValue(sectionName, "type");
-        const char* productId = detectProductId(sectionName);
-        Product *product = NULL;
 
+        const char* productId = detectProductId(sectionName);
+        if (productId == NULL) {
+            BOOST_ASSERT_MSG(false, "Product has no productId set for this platform");
+            continue;
+        }
+        
+        Product *product = NULL;
         if (strcmp(type, "non-consumable") == 0) {
             product = new Product(productId);
         } else if (strcmp(type, "consumable") == 0) {
@@ -49,20 +55,20 @@ Loader::Loader(const char* iniFile)
 
 const char* Loader::detectProductId(const char* section)
 {
-    const char* productId = NULL;
+    auto flavor = avalon::utils::platform::getFlavor();
+    flavor[0] = std::toupper(flavor[0]);
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+    auto prefix = avalon::utils::platform::getName() + flavor;
+    auto key = (prefix + "Id").c_str();
 
-    productId = config.getValue(section, "iosId");
-    if (!productId || strlen(productId) == 0) {
-        BOOST_ASSERT_MSG(false, "iosId for product missing");
+    if (!config.getSection(section)->count(key)) {
+        return NULL;
     }
-
-#else
-
-    BOOST_STATIC_ASSERT_MSG(false, "unsupported platform");
-
-#endif
+    
+    const char* productId = config.getValue(section, key);
+    if (!productId || strlen(productId) == 0) {
+        return NULL;
+    }
 
     return productId;
 }
