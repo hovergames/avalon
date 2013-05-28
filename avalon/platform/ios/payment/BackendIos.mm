@@ -11,6 +11,10 @@
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
+    if (!manager) {
+        return;
+    }
+
     NSNumberFormatter* numberFormatter = [[[NSNumberFormatter alloc] init] autorelease];
     [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
     [numberFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
@@ -19,6 +23,7 @@
         const char* productId = [[skProduct productIdentifier] cStringUsingEncoding:NSASCIIStringEncoding];
         avalon::payment::Product* avProduct = manager->getProduct(productId);
         if (avProduct == NULL) {
+            NSLog(@"[Payment] productsRequest: Product not found on our side - productId: %s", productId);
             continue;
         }
         
@@ -49,11 +54,11 @@
     }
 
     for (NSString* productId in response.invalidProductIdentifiers) {
-        NSLog(@"[Payment] productsRequest: Invalid productId: %@", productId);
+        NSLog(@"[Payment] productsRequest: Product not found on apple side - productId: %@", productId);
     }
 
     initialized = true;
-    if (manager && manager->delegate) {
+    if (manager->delegate) {
         manager->delegate->onServiceStarted(manager);
     }
 }
@@ -90,10 +95,13 @@
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
+    bool callOnTransactionEnd = false;
     if (--transactionDepth == 0) {
-        if (manager && manager->delegate) {
-            manager->delegate->onTransactionEnd(manager);
-        }
+        callOnTransactionEnd = true;
+    }
+
+    if (manager && manager->delegate && callOnTransactionEnd) {
+        manager->delegate->onTransactionEnd(manager);
     }
 
     if (manager && manager->delegate) {
@@ -105,10 +113,13 @@
 {
     NSLog(@"[Payment] restoreCompletedTransactions failed: %@", error.localizedDescription);
 
+    bool callOnTransactionEnd = false;
     if (--transactionDepth == 0) {
-        if (manager && manager->delegate) {
-            manager->delegate->onTransactionEnd(manager);
-        }
+        callOnTransactionEnd = true;
+    }
+    
+    if (manager && manager->delegate && callOnTransactionEnd) {
+        manager->delegate->onTransactionEnd(manager);
     }
     
     if (manager && manager->delegate) {
@@ -121,36 +132,73 @@
 
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
+    bool callOnTransactionEnd = false;
+    if (--transactionDepth == 0) {
+        callOnTransactionEnd = true;
+    }
+
+    // it's important to NOT CALL finishTransaction in this case! because we
+    // were unable to process this transaction in the user application. apple
+    // will try to deliver this transaction again.
+    if (!manager) {
+        NSLog(@"[Payment] completeTransaction failed: no manager set");
+        return;
+    }
+
     const char* productId = [transaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
     avalon::payment::Product* product = manager->getProduct(productId);
-    product->onHasBeenPurchased();
+    if (product) {
+        product->onHasBeenPurchased();
+    } else {
+        NSLog(@"[Payment] completeTransaction failed: invalid productId: %s", productId);
+    }
 
-    if (--transactionDepth == 0) {
-        if (manager && manager->delegate) {
-            manager->delegate->onTransactionEnd(manager);
+    if (manager->delegate && callOnTransactionEnd) {
+        manager->delegate->onTransactionEnd(manager);
+    }
+
+    // roughly the same reason as the return above. this is a real transaction and
+    // the product was valid a few moments ago. seems to be a bug in the
+    // application? nevermind. it's important to try this transaction again
+    // and NOT to discard it!
+    if (product) {
+        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+
+        if (manager->delegate) {
+            manager->delegate->onPurchaseSucceed(manager, product);
         }
     }
-    
-    if (manager && manager->delegate) {
-        manager->delegate->onPurchaseSucceed(manager, product);
-    }
-
-	[[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }
 
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction
 {
-    const char* productId = [transaction.originalTransaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
-    avalon::payment::Product* product = manager->getProduct(productId);
-    product->onHasBeenPurchased();
-
+    bool callOnTransactionEnd = false;
     if (--transactionDepth == 0) {
-        if (manager && manager->delegate) {
-            manager->delegate->onTransactionEnd(manager);
-        }
+        callOnTransactionEnd = true;
     }
 
-    if (manager && manager->delegate) {
+    // we can return early in this case. and we're allowed to finish this
+    // transaction too. why? because it's just a restoreTransaction and not
+    // a important purchase transaction that must reach the users application
+    // as in completeTransaction().
+    if (!manager) {
+        [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+        return;
+    }
+
+    const char* productId = [transaction.originalTransaction.payment.productIdentifier cStringUsingEncoding:NSASCIIStringEncoding];
+    avalon::payment::Product* product = manager->getProduct(productId);
+    if (product) {
+        product->onHasBeenPurchased();
+    } else {
+        NSLog(@"[Payment] restoreTransaction invalid productId: %s", productId);
+    }
+
+    if (manager->delegate && callOnTransactionEnd) {
+        manager->delegate->onTransactionEnd(manager);
+    }
+
+    if (manager->delegate && product) {
         manager->delegate->onPurchaseSucceed(manager, product);
     }
 
@@ -187,15 +235,17 @@
 			break;
 	}
 
+    bool callOnTransactionEnd = false;
     if (--transactionDepth == 0) {
-        if (manager && manager->delegate) {
-            manager->delegate->onTransactionEnd(manager);
-        }
+        callOnTransactionEnd = true;
     }
-    if (reportFailure) {
-        if (manager && manager->delegate ) {
-            manager->delegate->onPurchaseFail(manager);
-        }
+    
+    if (manager && manager->delegate && callOnTransactionEnd) {
+        manager->delegate->onTransactionEnd(manager);
+    }
+    
+    if (manager && manager->delegate && reportFailure) {
+        manager->delegate->onPurchaseFail(manager);
     }
     
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
