@@ -24,6 +24,10 @@ Loader::Loader(const char* iniFile)
             continue;
         }
 
+        if (!config.getSection(sectionName)->count("type")) {
+            BOOST_ASSERT_MSG(false, "Product has no type defined");
+            continue;
+        }
         const char* type = config.getValue(sectionName, "type");
         const char* productId = detectProductId(sectionName);
         Product *product = NULL;
