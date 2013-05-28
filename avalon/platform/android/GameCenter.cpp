@@ -6,8 +6,9 @@ void GameCenter::login()
 {
 }
 
-void GameCenter::showAchievements()
+bool GameCenter::showAchievements()
 {
+    return false;
 }
 
 void GameCenter::postAchievement(const char* idName, int percentComplete)
@@ -18,8 +19,9 @@ void GameCenter::clearAllAchievements()
 {
 }
 
-void GameCenter::showScores()
+bool GameCenter::showScores()
 {
+    return false;
 }
 
 void GameCenter::postScore(const char* idName, int score)
