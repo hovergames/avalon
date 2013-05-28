@@ -20,32 +20,36 @@ LOCAL_MODULE := avalon_static
 LOCAL_MODULE_FILENAME := libavalon
 
 LOCAL_SRC_FILES := \
-	avalon/i18n/Language.cpp \
-	avalon/i18n/LanguageKey.cpp \
-	avalon/i18n/Localization.cpp \
-	avalon/io/IniReader.cpp \
-	avalon/utils/platform.cpp \
-	avalon/platform/android/GameCenter.cpp \
-	avalon/platform/android/ui/AlertNative.cpp \
-	avalon/platform/android/utils/url.cpp \
-	avalon/ui/Alert.cpp
+    avalon/i18n/Language.cpp \
+    avalon/i18n/LanguageKey.cpp \
+    avalon/i18n/Localization.cpp \
+    avalon/io/IniReader.cpp \
+    avalon/utils/platform.cpp \
+    avalon/platform/android/ui/AlertNative.cpp \
+    avalon/platform/android/utils/url.cpp \
+    avalon/ui/Alert.cpp
 
 ifneq (,$(findstring ads,$(AVALON_FEATURES)))
-LOCAL_SRC_FILES += \
-	avalon/ads/Manager.cpp \
-	avalon/ads/provider/Chartboost.cpp \
-	avalon/platform/android/ads/provider/ChartboostXJni.cpp \
-	avalon/platform/android/ads/provider/ChartboostX_android.cpp \
-	avalon/platform/android/ads/provider/Revmob.cpp
+    LOCAL_SRC_FILES += \
+        avalon/ads/Manager.cpp \
+        avalon/ads/provider/Chartboost.cpp \
+        avalon/platform/android/ads/provider/ChartboostXJni.cpp \
+        avalon/platform/android/ads/provider/ChartboostX_android.cpp \
+        avalon/platform/android/ads/provider/Revmob.cpp
 endif
 
 ifneq (,$(findstring payment,$(AVALON_FEATURES)))
-LOCAL_SRC_FILES += \
-	avalon/payment/Loader.cpp \
-	avalon/payment/Manager.cpp \
-	avalon/payment/Product.cpp \
-	avalon/payment/ProductConsumable.cpp \
-	avalon/platform/android/payment/Backend.cpp
+    LOCAL_SRC_FILES += \
+        avalon/payment/Loader.cpp \
+        avalon/payment/Manager.cpp \
+        avalon/payment/Product.cpp \
+        avalon/payment/ProductConsumable.cpp \
+        avalon/platform/android/payment/Backend.cpp
+endif
+
+ifneq (,$(findstring gamecenter,$(AVALON_FEATURES)))
+    LOCAL_SRC_FILES += \
+        avalon/platform/android-$(AVALON_PLATFORM_FLAVOR)/gamecenter/GameCenter.cpp
 endif
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
