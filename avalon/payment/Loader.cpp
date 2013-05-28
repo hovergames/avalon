@@ -58,15 +58,13 @@ const char* Loader::detectProductId(const char* section)
 {
     auto flavor = avalon::utils::platform::getFlavor();
     flavor[0] = std::toupper(flavor[0]);
+    auto prefix = avalon::utils::platform::getName() + flavor + "Id";
 
-    auto prefix = avalon::utils::platform::getName() + flavor;
-    auto key = (prefix + "Id").c_str();
-
-    if (!config.getSection(section)->count(key)) {
+    if (!config.getSection(section)->count(prefix.c_str())) {
         return NULL;
     }
     
-    const char* productId = config.getValue(section, key);
+    const char* productId = config.getValue(section, prefix.c_str());
     if (!productId || strlen(productId) == 0) {
         return NULL;
     }
