@@ -1,6 +1,5 @@
 @interface GameCenterIos : NSObject
 {
-    BOOL isAuthenticated;
 }
 
 + (GameCenterIos*)shared;

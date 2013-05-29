@@ -53,7 +53,6 @@ static GameCenterIos* instance = nil;
             return;
         }
 
-        isAuthenticated = YES;
         [self retrieveScoresFromDevice];
         [self retrieveAchievementsFromDevice];
     }];
@@ -320,11 +319,8 @@ static GameCenterIos* instance = nil;
 - (void)authenticationChanged
 {
     if ([GKLocalPlayer localPlayer].isAuthenticated) {
-        isAuthenticated = YES;
         [self retrieveScoresFromDevice];
         [self retrieveAchievementsFromDevice];
-    } else {
-        isAuthenticated = NO;
     }
 }
 
