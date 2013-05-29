@@ -30,6 +30,7 @@ static GameCenterIos* instance = nil;
     @synchronized(self) {
         if (instance == nil) {
             instance = [[self alloc] init];
+            [instance registerForAuthenticationNotification];
         }
     }
     return instance;
@@ -41,7 +42,7 @@ static GameCenterIos* instance = nil;
     if (localPlayer.isAuthenticated) {
         return;
     }
-    
+
     [localPlayer authenticateWithCompletionHandler:^(NSError* error) {
         if (error) {
             if (error.code == GKErrorAuthenticationInProgress) {
@@ -52,8 +53,6 @@ static GameCenterIos* instance = nil;
             return;
         }
 
-        isAuthenticated = YES;
-        [self registerForAuthenticationNotification];
         [self retrieveScoresFromDevice];
         [self retrieveAchievementsFromDevice];
     }];
@@ -141,7 +140,7 @@ static GameCenterIos* instance = nil;
         [self saveScoreToDevice:gkScore];
         return;
     }
-    
+
     [gkScore reportScoreWithCompletionHandler:^(NSError* error) {
         if (error) {
             NSLog(@"[GameCenter] postScore for %s failed: %@", idName, error.localizedDescription);
@@ -273,7 +272,7 @@ static GameCenterIos* instance = nil;
     if (![[NSFileManager defaultManager] fileExistsAtPath:savePath]) {
         return;
     }
-    
+
     NSMutableDictionary* data = [NSMutableDictionary dictionaryWithContentsOfFile:savePath];
     if (!data) {
         return;
@@ -284,10 +283,10 @@ static GameCenterIos* instance = nil;
 
     for (NSString* lowOrHighKey in [NSArray arrayWithObjects:scoresArchiveKeyLow,scoresArchiveKeyHigh,nil]) {
         NSMutableDictionary* lowOrHighData = [data objectForKey:lowOrHighKey];
-        
+
         for (NSString* key in lowOrHighData) {
             NSNumber* number = [lowOrHighData objectForKey:key];
-            
+
             GKScore* gkScore = [[[GKScore alloc] init] autorelease];
             gkScore.category = key;
             gkScore.value = [number longLongValue];
@@ -320,11 +319,8 @@ static GameCenterIos* instance = nil;
 - (void)authenticationChanged
 {
     if ([GKLocalPlayer localPlayer].isAuthenticated) {
-        isAuthenticated = YES;
         [self retrieveScoresFromDevice];
         [self retrieveAchievementsFromDevice];
-    } else {
-        isAuthenticated = NO;
     }
 }
 
