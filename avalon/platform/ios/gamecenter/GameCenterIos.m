@@ -30,6 +30,7 @@ static GameCenterIos* instance = nil;
     @synchronized(self) {
         if (instance == nil) {
             instance = [[self alloc] init];
+            [instance registerForAuthenticationNotification];
         }
     }
     return instance;
@@ -53,7 +54,6 @@ static GameCenterIos* instance = nil;
         }
 
         isAuthenticated = YES;
-        [self registerForAuthenticationNotification];
         [self retrieveScoresFromDevice];
         [self retrieveAchievementsFromDevice];
     }];
