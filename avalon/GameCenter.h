@@ -1,6 +1,8 @@
 #ifndef AVALON_GAMECENTER_H
 #define AVALON_GAMECENTER_H
 
+#include <avalon/utils/platform.h>
+
 namespace avalon {
 
 class GameCenter
@@ -15,6 +17,12 @@ public:
     bool showScores();
     void postScore(const char* idName, int score);
     void clearAllScores();
+
+#if AVALON_PLATFORM_IS_ANDROID_GOOGLE
+    void signIn();
+    void signOut();
+    bool isSignedIn();
+#endif
 };
 
 } // namespace avalon
