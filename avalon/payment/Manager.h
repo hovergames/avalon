@@ -14,15 +14,30 @@ class Product;
 class ProductConsumable;
 typedef std::map<const std::string, Product* const> ProductList;
 
+/**
+ * Main actor for the whole payment handling and also the mose user facing part.
+ *
+ * - Keeps track of all available products
+ * - Instantiates and holds the native payment::Backend
+ * - Can store products under a second name (alias)
+ * - Simple interface to start product purchase with only a string
+ *
+ * @warning It's a good idea to use payment::Loader to instaniate and configure
+ *          this class!
+ */
 class Manager : boost::noncopyable
 {
 public:
+    /**
+     * Controls wether all payment::ProductConsumable with quantity > 0 should
+     * be consumed in ~Manager() to avoid/ignore the otherwise triggered error.
+     */
     bool ignoreUnusedConsumableQuantities;
     ManagerDelegate* delegate;
 
     Manager();
     ~Manager();
-    
+
     void addProduct(Product* const product);
     void addProduct(Product* const product, const char* const alias);
 

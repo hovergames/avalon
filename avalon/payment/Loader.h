@@ -12,6 +12,10 @@ namespace payment {
 
 class Manager;
 
+/**
+ * Translates the content of the given ini-file into the right setup of
+ * payment::Manager with payment::Product and/or payment::ProductConsumable.
+ */
 class Loader : boost::noncopyable
 {
 public:
