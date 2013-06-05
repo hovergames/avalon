@@ -85,6 +85,19 @@ void Manager::showBanner()
     }
 }
 
+void Manager::showBannerIgnoreTime()
+{
+    if (!enabled) {
+        return;
+    }
+    
+    Banner *bp = getRandomProvider<Banner>(adProviders);
+    if (bp) {
+        bp->showBanner();
+    }
+
+}
+
 void Manager::showPopup()
 {
     Popup *pp = getRandomProvider<Popup>(adProviders);
