@@ -36,8 +36,8 @@ void Chartboost::hideAds()
 
 void Chartboost::showFullscreenAd()
 {
-    ChartboostX::sharedChartboostX()->hasCachedInterstitial();
     ChartboostX::sharedChartboostX()->showInterstitial();
+    ChartboostX::sharedChartboostX()->cacheMoreApps();
 }
 
 void Chartboost::openAdLink()
