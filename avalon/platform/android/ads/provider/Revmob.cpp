@@ -9,11 +9,14 @@ namespace avalon {
 namespace ads {
 namespace provider {
 
-const char* const CLASS_NAME = "com/avalon/ads/RevmobBridge";
-
 /**
  * C++ -->> Java
  */
+
+namespace revmob {
+namespace helper {
+
+const char* const CLASS_NAME = "com/avalon/ads/RevmobBridge";
 
 void callStaticVoidMethod(const char* name)
 {
@@ -35,6 +38,9 @@ void callStaticVoidMethodWithString(const char* name, const char* argument)
     }
 }
 
+} // namespace helper
+} // namespace revmob
+
 /**
  * Public API
  */
@@ -47,32 +53,32 @@ Revmob::Revmob()
 void Revmob::init()
 {
     BOOST_ASSERT_MSG(appId != "", "appId must be set first");
-    callStaticVoidMethodWithString("init", appId.c_str());
+    revmob::helper::callStaticVoidMethodWithString("init", appId.c_str());
 }
 
 void Revmob::hideAds()
 {
-    callStaticVoidMethod("hideAds");
+    revmob::helper::callStaticVoidMethod("hideAds");
 }
 
 void Revmob::showFullscreenAd()
 {
-    callStaticVoidMethod("showFullscreenAd");
+    revmob::helper::callStaticVoidMethod("showFullscreenAd");
 }
 
 void Revmob::openAdLink()
 {
-    callStaticVoidMethod("openAdLink");
+    revmob::helper::callStaticVoidMethod("openAdLink");
 }
 
 void Revmob::showBanner()
 {
-    callStaticVoidMethod("showBanner");
+    revmob::helper::callStaticVoidMethod("showBanner");
 }
 
 void Revmob::showPopupAd()
 {
-    callStaticVoidMethod("showPopupAd");
+    revmob::helper::callStaticVoidMethod("showPopupAd");
 }
 
 } // namespace provider

@@ -35,7 +35,8 @@ ifneq (,$(findstring ads,$(AVALON_FEATURES)))
         avalon/ads/provider/Chartboost.cpp \
         avalon/platform/android/ads/provider/ChartboostXJni.cpp \
         avalon/platform/android/ads/provider/ChartboostX_android.cpp \
-        avalon/platform/android/ads/provider/Revmob.cpp
+        avalon/platform/android/ads/provider/Revmob.cpp \
+        avalon/platform/android/ads/provider/SamsungAdHub.cpp
 endif
 
 ifneq (,$(findstring payment,$(AVALON_FEATURES)))
