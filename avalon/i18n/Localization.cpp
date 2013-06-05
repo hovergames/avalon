@@ -5,6 +5,7 @@
 #include <avalon/i18n/LanguageKey.h>
 #include <avalon/i18n/Language.h>
 #include <avalon/io/IniReader.h>
+#include <boost/assert.hpp>
 
 using namespace cocos2d;
 
@@ -91,14 +92,20 @@ void Localization::addLanguage(const char* languageFile)
 
 void Localization::setCurrentLanguage(const char* languageFile)
 {
-    assert(hastLanguage(languageFile) && "Language not loaded!");
-    currentLanguage = languages[languageFile];
+    if (hastLanguage(languageFile)) {
+        currentLanguage = languages[languageFile];
+    } else {
+        BOOST_ASSERT_MSG(false, "Language not loaded!");
+    }
 }
 
 void Localization::setDefaultLanguage(const char* languageFile)
 {
-    assert(hastLanguage(languageFile) && "Language not loaded!");
-    defaultLanguage = languages[languageFile];
+    if (hastLanguage(languageFile)) {
+        defaultLanguage = languages[languageFile];
+    } else {
+        BOOST_ASSERT_MSG(false, "Language not loaded!");
+    }
 }
 
 bool Localization::hastLanguage(const char* languageFile) const

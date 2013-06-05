@@ -1,5 +1,6 @@
 #include <avalon/ads/provider/Chartboost.h>
 
+#include <boost/assert.hpp>
 #include "cocos2d.h"
 
 using namespace cocos2d;
@@ -16,8 +17,8 @@ Chartboost::Chartboost()
 
 void Chartboost::init()
 {
-    assert((appId != "") && "appId is empty!");
-    assert((appSignature != "") && "appSignature is empty!");
+    BOOST_ASSERT_MSG(!appId.empty(), "appId is empty!");
+    BOOST_ASSERT_MSG(!appSignature.empty(), "appSignature is empty!");
 
     ChartboostX::sharedChartboostX()->setAppId(appId.c_str());
     ChartboostX::sharedChartboostX()->setAppSignature(appSignature.c_str());
