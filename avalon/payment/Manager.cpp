@@ -25,8 +25,8 @@ Manager::Manager()
 
 Manager::~Manager()
 {
-    for (auto pair : products) {
-        auto product = pair.second;
+    for (auto& pair : products) {
+        auto& product = pair.second;
 
         if (ignoreUnusedConsumableQuantities) {
             auto consumable = dynamic_cast<ProductConsumable* const>(product);

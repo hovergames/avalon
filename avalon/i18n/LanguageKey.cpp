@@ -54,7 +54,7 @@ std::string LanguageKey::get()
 
     std::string formatted = value;
 
-    for (auto row : parameters) {
+    for (auto& row : parameters) {
         boost::replace_all(formatted, row.first, row.second);
     }
     parameters.clear();

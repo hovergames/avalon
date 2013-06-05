@@ -61,7 +61,7 @@ void Manager::initWithIniFile(const char *iniFile)
 
 void Manager::startService()
 {
-    for (auto provider : adProviders) {
+    for (auto& provider : adProviders) {
         provider->init();
     }
     lastAdShownAt = 0;
@@ -132,7 +132,7 @@ bool Manager::showNextAd()
 
 void Manager::hide()
 {
-    for (auto provider : adProviders) {
+    for (auto& provider : adProviders) {
         provider->hideAds();
     }
 }

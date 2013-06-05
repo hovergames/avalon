@@ -25,7 +25,7 @@ Localization::~Localization()
 
 void Localization::clear()
 {
-    for (auto language : languages ) {
+    for (auto& language : languages ) {
         delete language.second;
     }
     languages.clear();
@@ -72,8 +72,8 @@ void Localization::addLanguage(const char* languageFile)
     avalon::io::IniReader file;
     file.loadFile(languageFile);
 
-    for (auto section : *file.getSections()) {
-        for (auto row : section.second) {
+    for (auto& section : *file.getSections()) {
+        for (auto& row : section.second) {
             lang->addLanguageKey(section.first.c_str(), row.first.c_str(), row.second.c_str());
         }
     }

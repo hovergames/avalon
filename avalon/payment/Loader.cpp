@@ -18,7 +18,7 @@ Loader::Loader(const char* iniFile)
 {
     config.loadFile(iniFile);
 
-    for (auto section : *config.getSections()) {
+    for (auto& section : *config.getSections()) {
         const char* sectionName = section.first.c_str();
 
         if (strcmp(sectionName, "general") == 0) {

@@ -35,7 +35,7 @@ void Backend::initialize()
 {
     // convert Avalon::Payment::ProductList into NSMutableSet
     NSMutableSet* products = [[[NSMutableSet alloc] init] autorelease];
-    for (auto pair : manager.getProducts()) {
+    for (auto& pair : manager.getProducts()) {
         const char* const productId = pair.second->getProductId().c_str();
         [products addObject:[NSString stringWithUTF8String:productId]];
     }
