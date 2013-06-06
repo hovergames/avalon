@@ -5,8 +5,6 @@
 #include <avalon/ads/Provider.h>
 #include <avalon/ads/Fullscreen.h>
 #include <avalon/ads/Banner.h>
-#include <avalon/ads/Link.h>
-#include <avalon/ads/Popup.h>
 
 namespace avalon {
 namespace ads {
