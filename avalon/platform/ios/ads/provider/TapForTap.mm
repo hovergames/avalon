@@ -1,5 +1,6 @@
 #include <avalon/ads/provider/TapForTap.h>
 
+#import <CoreLocation/CoreLocation.h>
 #include <boost/assert.hpp>
 #import <avalon/platform/ios/ads/provider/TapForTap/TapForTap.h>
 
@@ -19,6 +20,14 @@ void TapForTap::init()
 {
     BOOST_ASSERT_MSG(apiKey != "", "apiKey must be set first");
     [::TapForTap initializeWithAPIKey:[NSString stringWithUTF8String:apiKey.c_str()]];
+
+#ifdef AVALON_PLATFORM_IOS_USE_CORELOCATION
+    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+    [locationManager startUpdatingLocation];
+    [::TapForTap setLocation:locationManager.location];
+#else
+    NSLog(@"[TapForTap] Increase your eCPM with AVALON_PLATFORM_IOS_USE_CORELOCATION!");
+#endif
 }
 
 void TapForTap::hideAds()
