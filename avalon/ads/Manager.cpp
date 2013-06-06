@@ -6,9 +6,13 @@
 #include <avalon/ads/Banner.h>
 #include <avalon/ads/Popup.h>
 #include <avalon/ads/Link.h>
+#include <avalon/utils/platform.h>
 #include <avalon/ads/provider/Chartboost.h>
 #include <avalon/ads/provider/Revmob.h>
-#include <avalon/utils/platform.h>
+
+#if AVALON_PLATFORM_IS_IOS
+    #include <avalon/ads/provider/TapForTap.h>
+#endif
 
 using namespace cocos2d;
 
@@ -57,6 +61,15 @@ void Manager::initWithIniFile(const char *iniFile)
         p->appId = config.getValue("revmob", (prefix + "AppId").c_str());
         adProviders.push_back(p);
     }
+
+#if AVALON_PLATFORM_IS_IOS
+    if (config.doesSectionExist("tapfortap")) {
+        provider::TapForTap *p = new provider::TapForTap();
+        p->setWeight(config.getValueAsInt("tapfortap", "weight"));
+        p->apiKey = config.getValue("tapfortap", "apiKey");
+        adProviders.push_back(p);
+    }
+#endif
 }
 
 void Manager::startService()
