@@ -22,7 +22,7 @@ void TapForTap::init()
     [::TapForTap initializeWithAPIKey:[NSString stringWithUTF8String:apiKey.c_str()]];
 
 #ifdef AVALON_PLATFORM_IOS_USE_CORELOCATION
-    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+    CLLocationManager* locationManager = [[CLLocationManager alloc] init];
     [locationManager startUpdatingLocation];
     [::TapForTap setLocation:locationManager.location];
 #else

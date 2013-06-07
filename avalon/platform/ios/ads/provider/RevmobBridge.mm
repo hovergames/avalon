@@ -13,10 +13,10 @@ void RevmobBridge::startSession(const char* sessionId)
     [RevMobAds startSessionWithAppID:nsId];
 
 #ifdef AVALON_PLATFORM_IOS_USE_CORELOCATION
-    CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+    CLLocationManager* locationManager = [[CLLocationManager alloc] init];
     [locationManager startUpdatingLocation];
 
-    CLLocation *location = locationManager.location;
+    CLLocation* location = locationManager.location;
     [[RevMobAds session] setUserLatitude:location.coordinate.latitude
                           userLongitude:location.coordinate.longitude
                  userHorizontalAccuracy:location.horizontalAccuracy
