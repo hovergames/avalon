@@ -45,16 +45,13 @@ static GameCenterIos* instance = nil;
 
     [localPlayer authenticateWithCompletionHandler:^(NSError* error) {
         if (error) {
-            if (error.code == GKErrorAuthenticationInProgress) {
-                // Silently ignore this case
+            if (error.code != GKErrorAuthenticationInProgress) {
+                NSLog(@"[GameCenter] login failed: %@", error.localizedDescription);
             }
-
-            NSLog(@"[GameCenter] login failed: %@", error.localizedDescription);
-            return;
+        } else {
+            [self retrieveScoresFromDevice];
+            [self retrieveAchievementsFromDevice];
         }
-
-        [self retrieveScoresFromDevice];
-        [self retrieveAchievementsFromDevice];
     }];
 }
 
