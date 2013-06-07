@@ -63,7 +63,7 @@ void IAd::showBanner()
     UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
     bool isPortrait = (orientation == UIInterfaceOrientationPortrait) || (orientation == UIInterfaceOrientationPortraitUpsideDown);
 
-    ADBannerView*adView;
+    ADBannerView* adView;
     // On iOS 6 ADBannerView introduces a new initializer, use it when available.
     if ([ADBannerView instancesRespondToSelector:@selector(initWithAdType:)]) {
         adView = [[ADBannerView alloc] initWithAdType:ADAdTypeBanner];
