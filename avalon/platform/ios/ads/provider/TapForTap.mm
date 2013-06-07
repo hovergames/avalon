@@ -24,7 +24,7 @@ void TapForTap::init()
 void TapForTap::hideAds()
 {
     AppController* appController = (AppController*) [UIApplication sharedApplication].delegate;
-    for (UIView *subView in appController->viewController.view.subviews) {
+    for (UIView* subView in appController->viewController.view.subviews) {
         if (static_cast<TapForTapAdView*>(subView) != NULL) {
             [subView removeFromSuperview];
         }
@@ -48,7 +48,7 @@ void TapForTap::showBanner()
     CGFloat adHeight = (screenRect.size.width < 640) ? 50 : 100;
     CGFloat posY = screenRect.size.height - adHeight;
     
-    TapForTapAdView *adView = [[TapForTapAdView alloc] initWithFrame:CGRectMake(0, posY, screenRect.size.width, adHeight)];
+    TapForTapAdView* adView = [[TapForTapAdView alloc] initWithFrame:CGRectMake(0, posY, screenRect.size.width, adHeight)];
     AppController* appController = (AppController*) [UIApplication sharedApplication].delegate;
     [appController->viewController.view addSubview:adView];
     [adView release];
