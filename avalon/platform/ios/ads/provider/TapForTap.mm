@@ -29,6 +29,7 @@ void TapForTap::hideAds()
             [subView removeFromSuperview];
         }
     }
+    [TapForTapInterstitial close];
 }
 
 void TapForTap::showFullscreenAd()
