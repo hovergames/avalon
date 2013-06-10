@@ -23,6 +23,7 @@ int Manager::adCount = 0;
 time_t Manager::lastAdShownAt;
 Manager *Manager::adManager = NULL;
 std::vector<Provider*> Manager::adProviders;
+bool Manager::bannerVisible = false;
 
 void Manager::initWithIniFile(const char *iniFile)
 {
@@ -78,24 +79,29 @@ void Manager::showFullscreenAd()
 
 void Manager::showBanner()
 {
+    if (bannerVisible) {
+        return;
+    }
+
     Banner *bp = getRandomProvider<Banner>(adProviders);
     if (bp && showNextAd()) {
         time(&lastAdShownAt);
         bp->showBanner();
+        bannerVisible = true;
     }
 }
 
 void Manager::showBannerIgnoreTime()
 {
-    if (!enabled) {
+    if (!enabled || bannerVisible) {
         return;
     }
     
     Banner *bp = getRandomProvider<Banner>(adProviders);
     if (bp) {
         bp->showBanner();
+        bannerVisible = true;
     }
-
 }
 
 void Manager::showPopup()
@@ -148,6 +154,7 @@ void Manager::hide()
     for (auto provider : adProviders) {
         provider->hideAds();
     }
+    bannerVisible = false;
 }
 
 void Manager::enableAds()

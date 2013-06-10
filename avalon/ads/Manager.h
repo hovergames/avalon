@@ -74,6 +74,8 @@ public:
 private:
     Manager() {}
     ~Manager() {}
+
+    static bool bannerVisible;
 };
 
 } // namespace ads
