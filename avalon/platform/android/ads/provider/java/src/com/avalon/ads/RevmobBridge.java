@@ -11,17 +11,21 @@ import com.revmob.RevMobTestingMode;
 
 abstract class RevmobBridge
 {
-    private static RevMob revmob;
+    static Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
+    static RevMob revmob = null;
 
     public static void init(String id)
     {
-        revmob = RevMob.start((Activity) Cocos2dxActivity.getContext(), id);
+        if (revmob == null) {
+            revmob = RevMob.start(activity, id);
+        }
     }
 
     public static void showFullscreenAd()
     {
-        if (revmob == null) { return; }
-        revmob.showFullscreen((Activity) Cocos2dxActivity.getContext());
+        if (revmob != null) {
+            revmob.showFullscreen(activity);
+        }
     }
 
     public static void showBanner()
@@ -61,31 +65,36 @@ abstract class RevmobBridge
 
     public static void openAdLink()
     {
-        if (revmob == null) { return; }
-        revmob.openAdLink((Activity) Cocos2dxActivity.getContext(), null);
+        if (revmob != null) {
+            revmob.openAdLink(activity, null);
+        }
     }
 
     public static void showPopupAd()
     {
-        if (revmob == null) { return; }
-        revmob.showPopup((Activity)Cocos2dxActivity.getContext());
+        if (revmob != null) {
+            revmob.showPopup(activity);
+        }
     }
 
     public static void enableTestingWithAds()
     {
-        if (revmob == null) { return; }
-        revmob.setTestingMode(RevMobTestingMode.WITH_ADS);
+        if (revmob != null) {
+            revmob.setTestingMode(RevMobTestingMode.WITH_ADS);
+        }
     }
 
     public static void enableTestingWithoutAds()
     {
-        if (revmob == null) { return; }
-        revmob.setTestingMode(RevMobTestingMode.WITHOUT_ADS);
+        if (revmob != null) {
+            revmob.setTestingMode(RevMobTestingMode.WITHOUT_ADS);
+        }
     }
 
     public static void disableTesting()
     {
-        if (revmob == null) { return; }
-        revmob.setTestingMode(RevMobTestingMode.DISABLED);
+        if (revmob != null) {
+            revmob.setTestingMode(RevMobTestingMode.DISABLED);
+        }
     }
 }
