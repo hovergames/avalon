@@ -46,7 +46,6 @@ void IAd::init()
 
 void IAd::hideAds()
 {
-    NSLog(@"[IAd] hideAds");
     AppController* appController = (AppController*) [UIApplication sharedApplication].delegate;
     for (UIView* subView in appController->viewController.view.subviews) {
         ADBannerView* adView = static_cast<ADBannerView*>(subView);
