@@ -10,6 +10,10 @@
 #include <avalon/ads/provider/Revmob.h>
 #include <avalon/utils/platform.h>
 
+#if AVALON_PLATFORM_IS_IOS
+    #include <avalon/ads/provider/IAd.h>
+#endif
+
 using namespace cocos2d;
 
 namespace avalon {
@@ -57,6 +61,14 @@ void Manager::initWithIniFile(const char *iniFile)
         p->appId = config.getValue("revmob", (prefix + "AppId").c_str());
         adProviders.push_back(p);
     }
+
+#if AVALON_PLATFORM_IS_IOS
+    if (config.doesSectionExist("iad")) {
+        provider::IAd *p = new provider::IAd();
+        p->setWeight(config.getValueAsInt("iad", "weight"));
+        adProviders.push_back(p);
+    }
+#endif
 }
 
 void Manager::startService()
