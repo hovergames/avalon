@@ -1,32 +1,25 @@
-BOOST_DIR=vendors/boost
-BOOST_LIB_DIR=$(BOOST_DIR)/stage/lib
+BOOST_DIR := vendors/boost
+BOOST_LIB_DIR := $(BOOST_DIR)/stage/lib
+BOOST_LIB_UTF := $(BOOST_LIB_DIR)/libboost_unit_test_framework.a
+CXX ?= g++
 
-tests: build-tests darwin-copy-dylib
-	@cd tests && ./runner
+install:
+	git submodule update --init --recursive
+
+test: build-tests
+	@./tests/runner
 
 clean:
-	@rm -f tests/runner
-	@rm -f tests/libboost_unit_test_framework.dylib
-	@cd $(BOOST_DIR) && [ -x b2 ] && ./b2 --clean > /dev/null
-
-darwin-copy-dylib: build-boost
-	@if [ "Darwin" == "$$(uname)" ]; then \
-		cp $(BOOST_LIB_DIR)/libboost_unit_test_framework.dylib tests/; \
-	fi
+	rm -f tests/runner
+	cd $(BOOST_DIR) && [ -x b2 ] && ./b2 --clean > /dev/null
 
 build-tests: build-boost
-	@g++ tests/runner.cpp \
-		-I . \
-		-L$(BOOST_LIB_DIR) \
-		-lboost_unit_test_framework \
-		-o tests/runner
+	@$(CXX) tests/runner.cpp -I . $(BOOST_LIB_UTF) -o tests/runner
 
 build-boost:
-	@if [ ! -f $(BOOST_LIB_DIR)/libboost_unit_test_framework.a ]; then \
-		echo "!! trigged compilation of boost UTF library"; \
-		cd $(BOOST_DIR) && \
-		./bootstrap.sh --with-libraries=test > /dev/null && \
-		./b2 > /dev/null; \
+	@if [ ! -f "$(BOOST_LIB_UTF)" ]; then \
+		echo "!! compilation of boost UTF library triggered"; \
+		cd $(BOOST_DIR) && ./bootstrap.sh --with-libraries=test > /dev/null && ./b2 > /dev/null; \
 	fi
 
-.PHONY: tests clean darwin-copy-dylib build-tests build-boost
+.PHONY: install test clean build-tests build-boost

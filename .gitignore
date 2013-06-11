@@ -7,4 +7,4 @@ avalon.xcodeproj/project.xcworkspace/xcuserdata/
 
 # Test runner
 tests/runner
-tests/libboost_unit_test_framework.dylib
+tests/libboost_unit_test_framework.*
