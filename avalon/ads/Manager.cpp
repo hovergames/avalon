@@ -10,7 +10,7 @@
 #include <avalon/ads/provider/Chartboost.h>
 #include <avalon/ads/provider/Revmob.h>
 
-#if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_FLAVOR_GOOGLE
+#if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE
     #include <avalon/ads/provider/TapForTap.h>
 #endif
 
@@ -62,7 +62,7 @@ void Manager::initWithIniFile(const char *iniFile)
         adProviders.push_back(p);
     }
 
-#if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_FLAVOR_GOOGLE
+#if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE
     if (config.doesSectionExist("tapfortap")) {
         provider::TapForTap *p = new provider::TapForTap();
         p->setWeight(config.getValueAsInt("tapfortap", "weight"));
