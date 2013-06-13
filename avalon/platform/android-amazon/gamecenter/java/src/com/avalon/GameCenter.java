@@ -32,7 +32,7 @@ public abstract class GameCenter
         if (agsGameClient != null) {
             return;
         }
-        
+
         final Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
         activity.runOnUiThread(new Runnable() {
             public void run() {
@@ -61,7 +61,7 @@ public abstract class GameCenter
             return;
         }
 
-        AGResponseHandle<UpdateProgressResponse> handle = acClient.updateProgress(idName, percentComplete);    
+        AGResponseHandle<UpdateProgressResponse> handle = acClient.updateProgress(idName, percentComplete);
         handle.setCallback(new AGResponseCallback<UpdateProgressResponse>() {
             @Override
             public void onComplete(UpdateProgressResponse result) {
@@ -77,7 +77,7 @@ public abstract class GameCenter
         if (agsGameClient == null || !agsGameClient.isReady() || acClient == null) {
             return;
         }
-        
+
         AGResponseHandle<RequestResponse> handle = acClient.resetAchievements();
         handle.setCallback(new AGResponseCallback<RequestResponse>() {
             @Override
@@ -104,7 +104,7 @@ public abstract class GameCenter
         if (agsGameClient == null || !agsGameClient.isReady() || lbClient == null) {
             return;
         }
-        
+
         AGResponseHandle<SubmitScoreResponse> handle = lbClient.submitScore(idName, score);
         handle.setCallback(new AGResponseCallback<SubmitScoreResponse>() {
             @Override
@@ -133,5 +133,4 @@ public abstract class GameCenter
             // result is ignored
         }
     };
-
 }
