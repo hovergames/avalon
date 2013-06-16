@@ -9,12 +9,12 @@
 
 namespace avalon {
 
+namespace helper {
+namespace gamecenter {
+
 /**
  * C++ -->> Java
  */
-
-namespace helper {
-namespace gamecenter {
 
 const char* const CLASS_NAME = "com/avalon/GameCenter";
 

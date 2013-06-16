@@ -4,3 +4,7 @@
 # XCode userdata
 avalon.xcodeproj/xcuserdata/
 avalon.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Doxygen
+debug.txt
+docs/
