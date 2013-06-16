@@ -1,6 +1,7 @@
 #include <avalon/i18n/LanguageKey.h>
 
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/assert.hpp>
 
 namespace avalon {
 namespace i18n {
@@ -12,7 +13,7 @@ LanguageKey::LanguageKey(const char* keyName, const char* keyValue)
 , value(keyValue)
 , parameters()
 {
-    assert(!name.empty() && "name can't be empty");
+    BOOST_ASSERT_MSG(!name.empty(), "name can't be empty");
 }
 
 LanguageKey& LanguageKey::assign(const char* varName, const char* value)
@@ -37,12 +38,13 @@ LanguageKey& LanguageKey::assign(const char* varName, float value)
 
 LanguageKey& LanguageKey::assign(const char* varName, float value, const char* format)
 {
-    assert(format && "no format given");
+    if (format) {
+        char buffer[25] = {0};
+        snprintf(buffer, sizeof(buffer), format, value);
+        assign(varName, buffer);
+    }
     
-    char buffer[25] = {0};
-    snprintf(buffer, sizeof(buffer), format, value);
-    assign(varName, buffer);
-    
+    BOOST_ASSERT_MSG(format, "no format given");
     return *this;
 }
 
@@ -54,7 +56,7 @@ std::string LanguageKey::get()
 
     std::string formatted = value;
 
-    for (auto row : parameters) {
+    for (auto& row : parameters) {
         boost::replace_all(formatted, row.first, row.second);
     }
     parameters.clear();

@@ -25,8 +25,8 @@ Manager::Manager()
 
 Manager::~Manager()
 {
-    for (auto pair : products) {
-        auto product = pair.second;
+    for (auto& pair : products) {
+        auto& product = pair.second;
 
         if (ignoreUnusedConsumableQuantities) {
             auto consumable = dynamic_cast<ProductConsumable* const>(product);
@@ -44,8 +44,15 @@ Manager::~Manager()
 
 void Manager::addProduct(Product* const product)
 {
-    BOOST_ASSERT_MSG(product, "product must be given");
-    BOOST_ASSERT_MSG(!backend.isInitialized(), "backend already initialized");
+    if (backend.isInitialized()) {
+        BOOST_ASSERT_MSG(false, "backend already initialized");
+        return;
+    }
+
+    if (!product) {
+        BOOST_ASSERT_MSG(false, "product must be given");
+        return;
+    }
     BOOST_ASSERT_MSG(!hasProduct(product->getProductId().c_str()), "productId already in use");
 
     products.insert(make_pair(
@@ -114,7 +121,10 @@ bool Manager::hasProduct(const char* const productIdOrAlias) const
 
 void Manager::purchase(const char* const productIdOrAlias)
 {
-    BOOST_ASSERT_MSG(isPurchaseReady(), "backend service not started yet");
+    if (!isPurchaseReady()) {
+        BOOST_ASSERT_MSG(false, "backend service not started yet");
+        return;
+    }
 
     auto product = getProduct(productIdOrAlias);
     if (product) {
@@ -124,8 +134,15 @@ void Manager::purchase(const char* const productIdOrAlias)
 
 void Manager::startService()
 {
-    BOOST_ASSERT_MSG(delegate, "delegate must be set first");
-    BOOST_ASSERT_MSG(!isStarted(), "service already started");
+    if (!delegate) {
+        BOOST_ASSERT_MSG(false, "delegate must be set first");
+        return;
+    }
+
+    if (isStarted()) {
+        BOOST_ASSERT_MSG(false, "service already started");
+        return;
+    }
 
     backend.initialize();
     started = true;
@@ -149,7 +166,10 @@ bool Manager::isPurchaseReady() const
 
 void Manager::restorePurchases() const
 {
-    BOOST_ASSERT_MSG(isPurchaseReady(), "backend service not started yet");
+    if (!isPurchaseReady()) {
+        BOOST_ASSERT_MSG(false, "backend service not started yet");
+        return;
+    }
 
     backend.restorePurchases();
 }

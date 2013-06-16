@@ -7,8 +7,8 @@ namespace i18n {
 
 Language::~Language()
 {
-    for (auto section : sections) {
-        for (auto key : section.second) {
+    for (auto& section : sections) {
+        for (auto& key : section.second) {
             delete key.second;
         }
     }
