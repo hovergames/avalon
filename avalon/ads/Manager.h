@@ -29,6 +29,7 @@ public:
 
     static void showFullscreenAd();
     static void showBanner();
+    static void showBannerIgnoreTime();
     static void showPopup();
     static void openAdLink();
 
@@ -73,6 +74,8 @@ public:
 private:
     Manager() {}
     ~Manager() {}
+
+    static bool bannerVisible;
 };
 
 } // namespace ads
