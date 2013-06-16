@@ -9,6 +9,8 @@
 #import "RevMobFullscreen.h"
 #import "RevMobPopup.h"
 
+//#import <CoreLocation/CoreLocation.h>
+
 
 typedef enum {
     RevMobAdsTestingModeOff = 0,
@@ -116,6 +118,32 @@ typedef enum {
  */
 @property (nonatomic, strong) NSString *userPage;
 
+
+/**
+ These properties are used to set user location in order to get targeted ads with higher eCPM.
+ You should pass NSNumber for the user latitude and longitude,  user desired accuracy and user distance filter.
+ 
+ Example of usage:
+ 
+ RevMobAds *revmob = [RevMobAds session];
+ 
+ CLLocationManager *locationManager = [[CLLocationManager alloc] init];
+ [locationManager startUpdatingLocation];
+ 
+ CLLocation *location = locationManager.location
+ 
+ [revmob setUserLatitude: location.coordinate.latitude
+ userLongitude: location.coordinate.longitude
+ userHorizontalAccuracy: location.horizontalAccuracy
+ userVerticalAccuracy: location.verticalAccuracy];
+
+// */
+//@property (nonatomic, assign) double userLatitude;
+//@property (nonatomic, assign) double userLongitude;
+//@property (nonatomic, assign) double userHorizontalAccuracy;
+//@property (nonatomic, assign) double userVerticalAccuracy;
+- (void)setUserLatitude:(double)userLatitude userLongitude: (double)userLongitude userHorizontalAccuracy: (double)userHorizontalAccuracy userAltitude: (double) userAltitude userVerticalAccuracy: (double)userVerticalAccuracy;
+
 #pragma mark - Alternative use
 
 /**
@@ -127,7 +155,7 @@ typedef enum {
  
      - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
  
-         [RevMobAds startSessionWithAppID:@"your RevMob ID"];
+         [RevMobAds startSessionWithAppID:@"your RevMob App ID"];
  
          self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
  
