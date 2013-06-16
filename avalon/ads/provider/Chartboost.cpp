@@ -1,5 +1,6 @@
 #include <avalon/ads/provider/Chartboost.h>
 
+#include <boost/assert.hpp>
 #include "cocos2d.h"
 
 using namespace cocos2d;
@@ -16,8 +17,8 @@ Chartboost::Chartboost()
 
 void Chartboost::init()
 {
-    assert((appId != "") && "appId is empty!");
-    assert((appSignature != "") && "appSignature is empty!");
+    BOOST_ASSERT_MSG(!appId.empty(), "appId is empty!");
+    BOOST_ASSERT_MSG(!appSignature.empty(), "appSignature is empty!");
 
     ChartboostX::sharedChartboostX()->setAppId(appId.c_str());
     ChartboostX::sharedChartboostX()->setAppSignature(appSignature.c_str());
@@ -26,7 +27,7 @@ void Chartboost::init()
 
     ChartboostX::sharedChartboostX()->cacheInterstitial();
     ChartboostX::sharedChartboostX()->cacheMoreApps();
-    CCLog("Chartboost initilized with AppId: %s | AppSig: %s |", appId.c_str(), appSignature.c_str());
+    CCLog("[Chartboost] init AppId: %s and AppSig: %s", appId.c_str(), appSignature.c_str());
 }
 
 void Chartboost::hideAds()
@@ -35,8 +36,8 @@ void Chartboost::hideAds()
 
 void Chartboost::showFullscreenAd()
 {
-    ChartboostX::sharedChartboostX()->hasCachedInterstitial();
     ChartboostX::sharedChartboostX()->showInterstitial();
+    ChartboostX::sharedChartboostX()->cacheMoreApps();
 }
 
 void Chartboost::openAdLink()
@@ -53,22 +54,22 @@ bool Chartboost::shouldDisplayInterstitial(const char* location)
 
 void Chartboost::didCacheInterstitial(const char* location)
 {
-    CCLog("did cache interstitial at location %s", location);
+    CCLog("[Chartboost] didCacheInterstitial %s", location);
 }
 
 void Chartboost::didFailToLoadInterstitial(const char* location)
 {
-    CCLog("did fail to load interstitial at location %s", location);
+    CCLog("[Chartboost] didFailToLoadInterstitial %s", location);
 }
 
 void Chartboost::didCloseInterstitial(const char* location)
 {
-    CCLog("did close interstitial at location %s", location);
+    CCLog("[Chartboost] didCloseInterstitial %s", location);
 }
 
 void Chartboost::didClickInterstitial(const char* location)
 {
-    CCLog("did click interstitial at location %s", location);
+    CCLog("[Chartboost] didClickInterstitial %s", location);
 }
 
 } // namespace provider
