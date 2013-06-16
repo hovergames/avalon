@@ -39,15 +39,17 @@ inline unsigned int reverseBytes(unsigned int value)
     (value >> 24 & 0xFF);
 }
 
-// A static_cast<> that throws std::bad_cast if the type has been narrowed.
-//
-// Use boost::numeric_cast<> if you accept some loss (e.g float -> int) but
-// want to ensure the range (aka detect under- / overflows). So this cast is to
-// static_cast<> what "int i {X}" is to "int i = X".
-//
-// Found in / Credit goes to:
-//     "The C++ Programming Language" by Bjarne Stourstrup
-//     Fourth Edition; Page 299; Chapter 11.5 Explicit Type Convertion
+/**
+ * A static_cast<> that throws std::bad_cast if the type has been narrowed.
+ *
+ * Use boost::numeric_cast<> if you accept some loss (e.g float -> int) but
+ * want to ensure the range (aka detect under- / overflows). So this cast is to
+ * static_cast<> what "int i {X}" is to "int i = X".
+ *
+ * Found in / Credit goes to:
+ *     "The C++ Programming Language" by Bjarne Stourstrup
+ *     Fourth Edition; Page 299; Chapter 11.5 Explicit Type Convertion
+ */
 template<typename Target, typename Source>
 Target narrow_cast(Source value)
 {
