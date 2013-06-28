@@ -8,3 +8,7 @@ avalon.xcodeproj/project.xcworkspace/xcuserdata/
 # Doxygen
 debug.txt
 docs/
+
+# Test runner
+tests/runner
+tests/libboost_unit_test_framework.*

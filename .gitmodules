@@ -1,6 +1,6 @@
 [submodule "vendors/Chartboost-x"]
 	path = vendors/Chartboost-x
-	url = git@github.com:michaelcontento/Chartboost-x.git
+	url = git://github.com/michaelcontento/Chartboost-x.git
 [submodule "vendors/boost"]
 	path = vendors/boost
-	url = git@github.com:michaelcontento/boost-mirror.git
+	url = git://github.com/michaelcontento/boost-mirror.git

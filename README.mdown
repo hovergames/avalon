@@ -1,5 +1,7 @@
 # Avalon
 
+[![Build Status](https://travis-ci.org/michaelcontento/avalon.png)](https://travis-ci.org/michaelcontento/avalon)
+
 Avalon provides various extension, helpers, libraries, classes, templates &
 functions on top of [cocos2d-x][]. It should speed up cross-platform development
 and automate annoying tasks.
