@@ -14,6 +14,10 @@
     #include <avalon/ads/provider/TapForTap.h>
 #endif
 
+#if AVALON_PLATFORM_IS_IOS
+    #include <avalon/ads/provider/IAd.h>
+#endif
+
 using namespace cocos2d;
 
 namespace avalon {
