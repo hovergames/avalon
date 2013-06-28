@@ -36,6 +36,7 @@ ifneq (,$(findstring ads,$(AVALON_FEATURES)))
         avalon/platform/android/ads/provider/ChartboostXJni.cpp \
         avalon/platform/android/ads/provider/ChartboostX_android.cpp \
         avalon/platform/android/ads/provider/Revmob.cpp
+        avalon/platform/android/ads/provider/SamsungAdHub.cpp
 
     ifeq (google, $(AVALON_PLATFORM_FLAVOR))
         LOCAL_SRC_FILES += \
