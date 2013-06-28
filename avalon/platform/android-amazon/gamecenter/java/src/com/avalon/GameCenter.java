@@ -22,9 +22,9 @@ import org.cocos2dx.lib.Cocos2dxActivity;
 
 public abstract class GameCenter
 {
-    private static AmazonGames agsGameClient;
-    private static LeaderboardsClient lbClient;
-    private static AchievementsClient acClient;
+    private static AmazonGames agsGameClient = null;
+    private static LeaderboardsClient lbClient = null;
+    private static AchievementsClient acClient = null;
     private static final String TAG = "avalon.GameCenter";
 
     public static void login()
@@ -32,7 +32,7 @@ public abstract class GameCenter
         if (agsGameClient != null) {
             return;
         }
-        
+
         final Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
         activity.runOnUiThread(new Runnable() {
             public void run() {
@@ -47,21 +47,21 @@ public abstract class GameCenter
 
     public static boolean showAchievements()
     {
-        if (agsGameClient == null || !agsGameClient.isReady()) {
+        if (agsGameClient == null || !agsGameClient.isReady() || acClient == null) {
             return false;
+        } else {
+            acClient.showAchievementsOverlay();
+            return true;
         }
-
-        acClient.showAchievementsOverlay();
-        return true;
     }
 
     public static void postAchievement(String idName, int percentComplete)
     {
-        if (agsGameClient == null || !agsGameClient.isReady()) {
+        if (agsGameClient == null || !agsGameClient.isReady() || acClient == null) {
             return;
         }
 
-        AGResponseHandle<UpdateProgressResponse> handle = acClient.updateProgress(idName, percentComplete);    
+        AGResponseHandle<UpdateProgressResponse> handle = acClient.updateProgress(idName, percentComplete);
         handle.setCallback(new AGResponseCallback<UpdateProgressResponse>() {
             @Override
             public void onComplete(UpdateProgressResponse result) {
@@ -74,10 +74,10 @@ public abstract class GameCenter
 
     public static void clearAllAchievements()
     {
-        if (agsGameClient == null || !agsGameClient.isReady()) {
+        if (agsGameClient == null || !agsGameClient.isReady() || acClient == null) {
             return;
         }
-        
+
         AGResponseHandle<RequestResponse> handle = acClient.resetAchievements();
         handle.setCallback(new AGResponseCallback<RequestResponse>() {
             @Override
@@ -91,20 +91,20 @@ public abstract class GameCenter
 
     public static boolean showScores()
     {
-        if (agsGameClient == null || !agsGameClient.isReady()) {
+        if (agsGameClient == null || !agsGameClient.isReady() || lbClient == null) {
             return false;
+        } else {
+            lbClient.showLeaderboardsOverlay();
+            return true;
         }
-
-        lbClient.showLeaderboardsOverlay();
-        return true;
     }
 
     public static void postScore(String idName, int score)
     {
-        if (agsGameClient == null || !agsGameClient.isReady()) {
+        if (agsGameClient == null || !agsGameClient.isReady() || lbClient == null) {
             return;
         }
-        
+
         AGResponseHandle<SubmitScoreResponse> handle = lbClient.submitScore(idName, score);
         handle.setCallback(new AGResponseCallback<SubmitScoreResponse>() {
             @Override
@@ -133,5 +133,4 @@ public abstract class GameCenter
             // result is ignored
         }
     };
-
 }
