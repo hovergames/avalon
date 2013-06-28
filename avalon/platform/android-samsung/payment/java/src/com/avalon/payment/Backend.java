@@ -73,4 +73,16 @@ public class Backend
     public static native void delegateOnTransactionEnd();
     public static native void onItemData(String productId, String name, String desc, String priceStr, float price);
     public static native void onInitialized();
+
+    /**
+     *
+     * Helper methods to integrate this lib into your app. Should be called in
+     * your main activity - please read the docs provided with this library!
+     *
+     */
+
+    public static void setItemGroupId(final String itemGroupId)
+    {
+        PurchasingObserver.itemGroupId = itemGroupId;
+    }
 }

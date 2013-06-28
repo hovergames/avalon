@@ -76,12 +76,12 @@ public class PurchasingObserver extends BasePurchasingObserver
      *
      * @param productIds
      */
-    public void startItemDataRequest(HashSet<String> productIds)
+    public void startItemDataRequest(Map<String, Boolean> productIds)
     {
         if (productIds.isEmpty()) {
             sendStoresProductsAndStartService();
         } else {
-            PurchasingManager.initiateItemDataRequest(productIds);
+            PurchasingManager.initiateItemDataRequest(productIds.keySet());
         }
     }
 

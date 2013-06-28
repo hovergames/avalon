@@ -123,10 +123,12 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
 
     if (globalManager) {
-        for (auto& row : globalManager->getProducts()) {
-            callStaticVoidMethodWithString(
+        for (auto row : globalManager->getProducts()) {
+            bool isConsumable = (dynamic_cast<ProductConsumable* const>(row.second) != NULL);
+            callStaticVoidMethodWithStringAndBool(
                 "addItemDataRequest",
-                row.second->getProductId().c_str()
+                row.second->getProductId().c_str(),
+                isConsumable
             );
         }
     }

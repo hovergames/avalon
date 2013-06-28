@@ -7,6 +7,8 @@ import android.util.Log;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 import com.example.android.trivialdrivesample.util.IabHelper;
 import com.example.android.trivialdrivesample.util.IabResult;
@@ -24,7 +26,7 @@ public class PurchasingObserver
     Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
     public static String base64EncodedPublicKey;
     IabHelper mHelper;
-    List<String> consumableSkus = new ArrayList<String>();
+    private Map<String, Boolean> productIds;
     private Integer taskCount = 0;
     boolean checkTaskCountOnConsumeFinished = false;
 
@@ -53,7 +55,7 @@ public class PurchasingObserver
 
     private boolean isConsumable(String sku)
     {
-        return consumableSkus.contains(sku);
+        return (productIds.containsKey(sku) && productIds.get(sku));
     }
 
     private String clearTitle(String title)
@@ -243,18 +245,15 @@ public class PurchasingObserver
 
     public void purchase(String sku, boolean isConsumable)
     {
-        if (isConsumable) {
-            consumableSkus.add(sku);
-        } else {
-            consumableSkus.remove(sku);
-        }
-
         threadIncrementTaskCounter();
         mHelper.launchPurchaseFlow(activity, sku, RC_REQUEST, mPurchaseFinishedListener);
     }
 
-    public void startItemDataRequest(final List<String> moreSkus)
+    public void startItemDataRequest(final Map<String, Boolean> productIds)
     {
+        this.productIds = productIds;
+        final List<String> moreSkus = new ArrayList<String>(productIds.keySet());
+
         activity.runOnUiThread(new Runnable() {
             public void run() {
                 mHelper.queryInventoryAsync(true, moreSkus, mGotInventoryListener);
