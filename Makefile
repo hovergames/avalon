@@ -14,7 +14,7 @@ clean:
 	cd $(BOOST_DIR) && [ -x b2 ] && ./b2 --clean > /dev/null
 
 build-tests: build-boost
-	@$(CXX) tests/runner.cpp -I . $(BOOST_LIB_UTF) -o tests/runner
+	@$(CXX) -std=c++0x tests/runner.cpp -I . $(BOOST_LIB_UTF) -o tests/runner
 
 build-boost:
 	@if [ ! -f "$(BOOST_LIB_UTF)" ]; then \
