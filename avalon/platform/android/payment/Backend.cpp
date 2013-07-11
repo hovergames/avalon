@@ -70,7 +70,7 @@ void callStaticVoidMethodWithStringAndBool(const char* name, const char* argumen
 
 /**
  * Java -->> C++
- */ 
+ */
 
 extern "C" {
 
@@ -88,7 +88,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed
 {
     using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-    
+
     if (globalManager && globalManager->delegate) {
         std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
         auto product = globalManager->getProduct(productId.c_str());
@@ -103,7 +103,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseFail(JN
 {
     using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-    
+
     if (globalManager && globalManager->delegate) {
         globalManager->delegate->onPurchaseFail(globalManager);
     }
@@ -113,7 +113,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionStar
 {
     using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-    
+
     if (globalManager && globalManager->delegate) {
         globalManager->delegate->onTransactionStart(globalManager);
     }
@@ -123,7 +123,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnTransactionEnd(
 {
     using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
-    
+
     if (globalManager && globalManager->delegate) {
         globalManager->delegate->onTransactionEnd(globalManager);
     }
@@ -135,7 +135,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
 
     if (globalManager) {
-        for (auto row : globalManager->getProducts()) {
+        for (auto& row : globalManager->getProducts()) {
             bool isConsumable = (dynamic_cast<ProductConsumable* const>(row.second) != NULL);
             callStaticVoidMethodWithStringAndBool(
                 "addItemDataRequest",
@@ -154,7 +154,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onItemData(JNIEnv* env, j
     if (!globalManager) {
         return;
     }
-    
+
     std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
     auto product = globalManager->getProduct(productId.c_str());
 

@@ -3,7 +3,7 @@
 	url = git://github.com/michaelcontento/Chartboost-x.git
 [submodule "vendors/boost"]
 	path = vendors/boost
-	url = git@github.com:michaelcontento/boost-mirror.git
+	url = git://github.com/michaelcontento/boost-mirror.git
 [submodule "vendors/google/playgameservices/android-samples"]
 	path = vendors/google/playgameservices/android-samples
 	url = git@github.com:playgameservices/android-samples.git

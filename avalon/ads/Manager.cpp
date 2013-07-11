@@ -7,26 +7,19 @@
 #include <avalon/ads/Popup.h>
 #include <avalon/ads/Link.h>
 #include <avalon/utils/platform.h>
-<<<<<<< HEAD
-#include <avalon/ads/provider/Chartboost.h>
-#include <avalon/ads/provider/Revmob.h>
-
-#if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE
-    #include <avalon/ads/provider/TapForTap.h>
-#endif
-
-#if AVALON_PLATFORM_IS_IOS
-    #include <avalon/ads/provider/IAd.h>
-#endif
-=======
->>>>>>> ef2028816c3a5f5dd5ccb08d8f7c4832134e0052
 
 #include <avalon/ads/provider/SamsungAdHub.h>
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_SAMSUNG)
+#if AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     // Only Samsung AdHub is allowed on the Samsung Apps store ...
 #else
     #include <avalon/ads/provider/Chartboost.h>
     #include <avalon/ads/provider/Revmob.h>
+#endif
+#if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE
+    #include <avalon/ads/provider/TapForTap.h>
+#endif
+#if AVALON_PLATFORM_IS_IOS
+    #include <avalon/ads/provider/IAd.h>
 #endif
 
 using namespace cocos2d;
@@ -69,7 +62,8 @@ void Manager::initWithIniFile(const char *iniFile)
         p->inventoryId = config.getValue("samsungadhub", (prefix + "InventoryId").c_str());
         adProviders.push_back(p);
     }
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) && (AVALON_PLATFORM_FLAVOR == AVALON_PLATFORM_FLAVOR_SAMSUNG)
+    
+#if AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     // Only Samsung AdHub is allowed on the Samsung Apps store ...
 #else
     if (config.doesSectionExist("chartboost")) {
@@ -77,26 +71,40 @@ void Manager::initWithIniFile(const char *iniFile)
         p->setWeight(config.getValueAsInt("chartboost", "weight"));
         p->appId = config.getValue("chartboost", (prefix + "AppId").c_str());
         p->appSignature = config.getValue("chartboost", (prefix + "AppSignature").c_str());
-        adProviders.push_back(p);
+        if (p->getWeight() > 0) {
+            adProviders.push_back(p);
+        }
     }
 
     if (config.doesSectionExist("revmob")) {
         auto *p = new provider::Revmob();
         p->setWeight(config.getValueAsInt("revmob", "weight"));
         p->appId = config.getValue("revmob", (prefix + "AppId").c_str());
-        adProviders.push_back(p);
+        if (p->getWeight() > 0) {
+            adProviders.push_back(p);
+        }
     }
-<<<<<<< HEAD
+#endif
 
 #if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE
     if (config.doesSectionExist("tapfortap")) {
         provider::TapForTap *p = new provider::TapForTap();
         p->setWeight(config.getValueAsInt("tapfortap", "weight"));
         p->apiKey = config.getValue("tapfortap", "apiKey");
-        adProviders.push_back(p);
+        if (p->getWeight() > 0) {
+            adProviders.push_back(p);
+        }
     }
-=======
->>>>>>> ef2028816c3a5f5dd5ccb08d8f7c4832134e0052
+#endif
+
+#if AVALON_PLATFORM_IS_IOS
+    if (config.doesSectionExist("iad")) {
+        provider::IAd *p = new provider::IAd();
+        p->setWeight(config.getValueAsInt("iad", "weight"));
+        if (p->getWeight() > 0) {
+            adProviders.push_back(p);
+        }
+    }
 #endif
 }
 
