@@ -1,24 +1,14 @@
 package com.avalon.payment;
 
-<<<<<<< HEAD
 import java.util.Map;
 import java.util.HashMap;
-=======
-import java.util.List;
-import java.util.ArrayList;
-import android.content.Intent;
->>>>>>> ef2028816c3a5f5dd5ccb08d8f7c4832134e0052
 
 import com.avalon.payment.PurchasingObserver;
 
 public class Backend
 {
     private static PurchasingObserver mPurchaseObserver = null;
-<<<<<<< HEAD
     private static Map<String, Boolean> pendingItemData = new HashMap<String, Boolean>();
-=======
-    private static List<String> pendingItemData = new ArrayList<String>();
->>>>>>> ef2028816c3a5f5dd5ccb08d8f7c4832134e0052
     private static int itemDataReturned = 0;
 
     /**
@@ -53,15 +43,9 @@ public class Backend
         return isInitialized() && itemDataReturned > 0;
     }
 
-<<<<<<< HEAD
     public static void addItemDataRequest(String productId, boolean isConsumable)
     {
         pendingItemData.put(productId, isConsumable);
-=======
-    public static void addItemDataRequest(String productId)
-    {
-        pendingItemData.add(productId);
->>>>>>> ef2028816c3a5f5dd5ccb08d8f7c4832134e0052
     }
 
     public static void startItemDataRequest()
@@ -90,10 +74,6 @@ public class Backend
     public static native void onItemData(String productId, String name, String desc, String priceStr, float price);
     public static native void onInitialized();
 
-<<<<<<< HEAD
-=======
-
->>>>>>> ef2028816c3a5f5dd5ccb08d8f7c4832134e0052
     /**
      *
      * Helper methods to integrate this lib into your app. Should be called in
@@ -101,20 +81,8 @@ public class Backend
      *
      */
 
-<<<<<<< HEAD
     public static void setItemGroupId(final String itemGroupId)
     {
         PurchasingObserver.itemGroupId = itemGroupId;
-=======
-    public static boolean handleActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        initialize();
-        return mPurchaseObserver.handleActivityResult(requestCode, resultCode, data);
-    }
-
-    public static void setPublicKey(final String publicKey)
-    {
-        PurchasingObserver.base64EncodedPublicKey = publicKey;
->>>>>>> ef2028816c3a5f5dd5ccb08d8f7c4832134e0052
     }
 }
