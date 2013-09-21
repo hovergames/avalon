@@ -1,5 +1,4 @@
 #import <UIKit/UIKit.h>
-#import "RevMobAdvertisement.h"
 #import "RevMobAdsDelegate.h"
 
 

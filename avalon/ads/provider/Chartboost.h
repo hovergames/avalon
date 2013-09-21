@@ -5,15 +5,13 @@
 #include <avalon/ads/Provider.h>
 #include <avalon/ads/Fullscreen.h>
 #include <avalon/ads/Link.h>
-#include <avalon/ads/provider/ChartboostX.h>
 
 namespace avalon {
 namespace ads {
 namespace provider {
 
 class Chartboost
-: public ChartboostXDelegate
-, public Fullscreen
+: public Fullscreen
 , public Provider
 , public Link
 {
@@ -32,13 +30,6 @@ public:
 
     // Link
     virtual void openAdLink() override;
-
-    // ChartboostXDelegate method
-    virtual bool shouldDisplayInterstitial(const char* location) override;
-    virtual void didCacheInterstitial(const char* location) override;
-    virtual void didFailToLoadInterstitial(const char* location) override;
-    virtual void didCloseInterstitial(const char* location) override;
-    virtual void didClickInterstitial(const char* location) override;
 };
 
 } // namespace provider

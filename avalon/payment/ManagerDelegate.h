@@ -10,7 +10,7 @@ class Product;
 class ManagerDelegate
 {
 public:
-    virtual void onServiceStarted(Manager* const manager) = 0;
+    virtual void onServiceStarted(Manager* const manager) {};
 
     virtual void onPurchaseSucceed(Manager* const manager, Product* const product) = 0;
     virtual void onPurchaseFail(Manager* const manager) = 0;

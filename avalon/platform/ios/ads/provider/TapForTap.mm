@@ -18,7 +18,7 @@ TapForTap::TapForTap()
 
 void TapForTap::init()
 {
-    BOOST_ASSERT_MSG(apiKey != "", "apiKey must be set first");
+    BOOST_ASSERT_MSG(!apiKey.empty(), "apiKey must be set first");
     [::TapForTap initializeWithAPIKey:[NSString stringWithUTF8String:apiKey.c_str()]];
 
 #ifdef AVALON_PLATFORM_IOS_USE_CORELOCATION

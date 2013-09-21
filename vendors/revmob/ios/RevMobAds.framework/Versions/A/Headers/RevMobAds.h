@@ -120,29 +120,25 @@ typedef enum {
 
 
 /**
- These properties are used to set user location in order to get targeted ads with higher eCPM.
- You should pass NSNumber for the user latitude and longitude,  user desired accuracy and user distance filter.
+ This method is used to set user location in order to get targeted ads with higher eCPM.
+ You should pass double values for the user latitude, longitude and accuracy.
  
  Example of usage:
  
  RevMobAds *revmob = [RevMobAds session];
  
- CLLocationManager *locationManager = [[CLLocationManager alloc] init];
- [locationManager startUpdatingLocation];
+ CLLocation *location = self.locationManager.location;
  
- CLLocation *location = locationManager.location
+ [self.locationManager setDistanceFilter: kCLDistanceFilterNone];
+ [self.locationManager setDesiredAccuracy: kCLLocationAccuracyHundredMeters];
+ [self.locationManager startUpdatingLocation];
  
  [revmob setUserLatitude: location.coordinate.latitude
  userLongitude: location.coordinate.longitude
- userHorizontalAccuracy: location.horizontalAccuracy
- userVerticalAccuracy: location.verticalAccuracy];
+ userAccuracy: location.horizontalAccuracy];
 
 // */
-//@property (nonatomic, assign) double userLatitude;
-//@property (nonatomic, assign) double userLongitude;
-//@property (nonatomic, assign) double userHorizontalAccuracy;
-//@property (nonatomic, assign) double userVerticalAccuracy;
-- (void)setUserLatitude:(double)userLatitude userLongitude: (double)userLongitude userHorizontalAccuracy: (double)userHorizontalAccuracy userAltitude: (double) userAltitude userVerticalAccuracy: (double)userVerticalAccuracy;
+- (void)setUserLatitude:(double)userLatitude userLongitude: (double)userLongitude userAccuracy: (double)userAccuracy;
 
 #pragma mark - Alternative use
 
@@ -228,11 +224,6 @@ typedef enum {
 
  */
 - (void)openAdLinkWithDelegate:(id<RevMobAdsDelegate>)adelegate;
-
-- (void)scheduleLocalNotification:(NSDate *)fireDate __attribute__((deprecated));
-- (void)scheduleLocalNotification __attribute__((deprecated));
-- (void)cancelAllLocalNotifications __attribute__((deprecated));
-- (void)processLocalNotification:(UILocalNotification *)notification __attribute__((deprecated));
 
 #pragma mark - Advanced mode
 

@@ -15,9 +15,9 @@ void IniReader::loadFile(const char* iniFile)
     unsigned char* fileContents = NULL;
     std::string line, fullPath, contents;
 
-    fullPath = cocos2d::CCFileUtils::sharedFileUtils()->fullPathForFilename(iniFile);
+    fullPath = cocos2d::FileUtils::getInstance()->fullPathForFilename(iniFile);
 
-    fileContents = cocos2d::CCFileUtils::sharedFileUtils()->getFileData(fullPath.c_str( ) , "rb", &fileSize);
+    fileContents = cocos2d::FileUtils::getInstance()->getFileData(fullPath.c_str( ) , "rb", &fileSize);
 
     contents.assign(fileContents, fileContents + fileSize - 1);
 

@@ -8,7 +8,9 @@
 #include <avalon/ads/Link.h>
 #include <avalon/utils/platform.h>
 
-#include <avalon/ads/provider/SamsungAdHub.h>
+#ifdef AVALON_ENABLE_ADS_PROVIDER_SAMSUNGADHUB
+    #include <avalon/ads/provider/SamsungAdHub.h>
+#endif
 #if AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     // Only Samsung AdHub is allowed on the Samsung Apps store ...
 #else
@@ -40,7 +42,7 @@ bool Manager::bannerVisible = false;
 void Manager::initWithIniFile(const char *iniFile)
 {
     if (Manager::adManager) {
-        CCLog("Admanager already initilized");
+        log("Admanager already initilized");
         return;
     }
 
@@ -56,12 +58,14 @@ void Manager::initWithIniFile(const char *iniFile)
     flavor[0] = std::toupper(flavor[0]);
     auto prefix = avalon::utils::platform::getName() + flavor;
 
+#ifdef AVALON_ENABLE_ADS_PROVIDER_SAMSUNGADHUB
     if (config.doesSectionExist("samsungadhub")) {
         auto *p = new provider::SamsungAdHub();
         p->setWeight(config.getValueAsInt("samsungadhub", "weight"));
         p->inventoryId = config.getValue("samsungadhub", (prefix + "InventoryId").c_str());
         adProviders.push_back(p);
     }
+#endif
     
 #if AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     // Only Samsung AdHub is allowed on the Samsung Apps store ...
@@ -71,18 +75,14 @@ void Manager::initWithIniFile(const char *iniFile)
         p->setWeight(config.getValueAsInt("chartboost", "weight"));
         p->appId = config.getValue("chartboost", (prefix + "AppId").c_str());
         p->appSignature = config.getValue("chartboost", (prefix + "AppSignature").c_str());
-        if (p->getWeight() > 0) {
-            adProviders.push_back(p);
-        }
+        adProviders.push_back(p);
     }
 
     if (config.doesSectionExist("revmob")) {
         auto *p = new provider::Revmob();
         p->setWeight(config.getValueAsInt("revmob", "weight"));
         p->appId = config.getValue("revmob", (prefix + "AppId").c_str());
-        if (p->getWeight() > 0) {
-            adProviders.push_back(p);
-        }
+        adProviders.push_back(p);
     }
 #endif
 
@@ -91,19 +91,15 @@ void Manager::initWithIniFile(const char *iniFile)
         provider::TapForTap *p = new provider::TapForTap();
         p->setWeight(config.getValueAsInt("tapfortap", "weight"));
         p->apiKey = config.getValue("tapfortap", "apiKey");
-        if (p->getWeight() > 0) {
-            adProviders.push_back(p);
-        }
+        adProviders.push_back(p);
     }
 #endif
 
-#if AVALON_PLATFORM_IS_IOS
+#if AVALON_PLATFORM_IS_IOS && AVALON_ENABLE_ADS_PROVIDER_IAD
     if (config.doesSectionExist("iad")) {
         provider::IAd *p = new provider::IAd();
         p->setWeight(config.getValueAsInt("iad", "weight"));
-        if (p->getWeight() > 0) {
-            adProviders.push_back(p);
-        }
+        adProviders.push_back(p);
     }
 #endif
 }

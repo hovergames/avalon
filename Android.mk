@@ -32,10 +32,8 @@ LOCAL_SRC_FILES := \
 ifneq (,$(findstring ads,$(AVALON_FEATURES)))
     LOCAL_SRC_FILES += \
         avalon/ads/Manager.cpp \
-        avalon/ads/provider/Chartboost.cpp \
-        avalon/platform/android/ads/provider/ChartboostXJni.cpp \
-        avalon/platform/android/ads/provider/ChartboostX_android.cpp \
-        avalon/platform/android/ads/provider/Revmob.cpp
+        avalon/platform/android/ads/provider/Chartboost.cpp \
+        avalon/platform/android/ads/provider/Revmob.cpp \
         avalon/platform/android/ads/provider/SamsungAdHub.cpp
 
     ifeq (google, $(AVALON_PLATFORM_FLAVOR))
@@ -63,7 +61,7 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 
 # enable c++11 support but "remove" the override specifier with a simple
 # preprocessor define - it's not supported yet :(
-LOCAL_CFLAGS += -std=c++11 -Doverride=
+LOCAL_CFLAGS += -std=c++11 -Doverride= -fexceptions
 
 LOCAL_WHOLE_STATIC_LIBRARIES += cocos2dx_static
 

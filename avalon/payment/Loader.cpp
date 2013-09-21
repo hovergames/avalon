@@ -10,7 +10,7 @@
 namespace avalon {
 namespace payment {
 
-shared_ptr<Manager> Loader::globalManager;
+boost::shared_ptr<Manager> Loader::globalManager;
 
 Loader::Loader(const char* iniFile)
 : manager(new Manager())
@@ -72,7 +72,7 @@ const char* Loader::detectProductId(const char* section)
     return productId;
 }
 
-shared_ptr<Manager> Loader::getManager() const
+boost::shared_ptr<Manager> Loader::getManager() const
 {
     return manager;
 }

@@ -1,3 +1,4 @@
+#ifdef AVALON_ENABLE_ADS_PROVIDER_IAD
 #ifndef AVALON_ADS_PROVIDER_IAD_H
 #define AVALON_ADS_PROVIDER_IAD_H
 
@@ -29,3 +30,4 @@ public:
 } // namespace avalon
 
 #endif /* AVALON_ADS_PROVIDER_IAD_H */
+#endif /* AVALON_ENABLE_ADS_PROVIDER_IAD */

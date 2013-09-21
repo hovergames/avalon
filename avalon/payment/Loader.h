@@ -5,8 +5,6 @@
 #include <boost/noncopyable.hpp>
 #include <avalon/io/IniReader.h>
 
-using boost::shared_ptr;
-
 namespace avalon {
 namespace payment {
 
@@ -19,13 +17,13 @@ class Manager;
 class Loader : boost::noncopyable
 {
 public:
-    static shared_ptr<Manager> globalManager;
+    static boost::shared_ptr<Manager> globalManager;
 
     explicit Loader(const char* iniFile);
-    shared_ptr<Manager> getManager() const;
+    boost::shared_ptr<Manager> getManager() const;
 
 private:
-    shared_ptr<Manager> manager;
+    boost::shared_ptr<Manager> manager;
     io::IniReader config;
 
     const char* detectProductId(const char* section);

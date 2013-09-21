@@ -134,14 +134,13 @@ void Manager::purchase(const char* const productIdOrAlias)
 
 void Manager::startService()
 {
-    if (!delegate) {
-        BOOST_ASSERT_MSG(false, "delegate must be set first");
-        return;
-    }
-
     if (isStarted()) {
         BOOST_ASSERT_MSG(false, "service already started");
         return;
+    }
+
+    if (!delegate) {
+        throw new std::runtime_error("payment delegate must be set!");
     }
 
     backend.initialize();
@@ -172,6 +171,11 @@ void Manager::restorePurchases() const
     }
 
     backend.restorePurchases();
+}
+
+Backend& Manager::getBackend()
+{
+    return backend;
 }
 
 } // namespace payment

@@ -57,7 +57,6 @@
         NSLog(@"[Payment] productsRequest: Product not found on apple side - productId: %@", productId);
     }
 
-    initialized = true;
     if (manager->delegate) {
         manager->delegate->onServiceStarted(manager);
     }
@@ -95,35 +94,29 @@
 
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
 {
-    bool callOnTransactionEnd = false;
-    if (--transactionDepth == 0) {
-        callOnTransactionEnd = true;
-    }
-
-    if (manager && manager->delegate && callOnTransactionEnd) {
-        manager->delegate->onTransactionEnd(manager);
-    }
-
     if (manager && manager->delegate) {
         manager->delegate->onRestoreSucceed(manager);
+    }
+
+    transactionDepth = std::max(0, --transactionDepth);
+    if (manager && manager->delegate && transactionDepth == 0) {
+        manager->delegate->onTransactionEnd(manager);
     }
 }
 
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
 {
-    NSLog(@"[Payment] restoreCompletedTransactions failed: %@", error.localizedDescription);
+    if (error.code != SKErrorPaymentCancelled) {
+        NSLog(@"[Payment] restoreCompletedTransactions failed: %@", error.localizedDescription);
 
-    bool callOnTransactionEnd = false;
-    if (--transactionDepth == 0) {
-        callOnTransactionEnd = true;
+        if (manager && manager->delegate) {
+            manager->delegate->onRestoreFail(manager);
+        }
     }
-    
-    if (manager && manager->delegate && callOnTransactionEnd) {
+
+    transactionDepth = std::max(0, --transactionDepth);
+    if (manager && manager->delegate && transactionDepth == 0) {
         manager->delegate->onTransactionEnd(manager);
-    }
-    
-    if (manager && manager->delegate) {
-        manager->delegate->onRestoreFail(manager);
     }
 }
 
@@ -132,15 +125,11 @@
 
 - (void)completeTransaction:(SKPaymentTransaction *)transaction
 {
-    bool callOnTransactionEnd = false;
-    if (--transactionDepth == 0) {
-        callOnTransactionEnd = true;
-    }
-
     // it's important to NOT CALL finishTransaction in this case! because we
     // were unable to process this transaction in the user application. apple
     // will try to deliver this transaction again.
     if (!manager) {
+        transactionDepth = std::max(0, --transactionDepth);
         NSLog(@"[Payment] completeTransaction failed: no manager set");
         return;
     }
@@ -151,10 +140,6 @@
         product->onHasBeenPurchased();
     } else {
         NSLog(@"[Payment] completeTransaction failed: invalid productId: %s", productId);
-    }
-
-    if (manager->delegate && callOnTransactionEnd) {
-        manager->delegate->onTransactionEnd(manager);
     }
 
     // roughly the same reason as the return above. this is a real transaction and
@@ -168,20 +153,21 @@
             manager->delegate->onPurchaseSucceed(manager, product);
         }
     }
+
+    transactionDepth = std::max(0, --transactionDepth);
+    if (manager->delegate && transactionDepth == 0) {
+        manager->delegate->onTransactionEnd(manager);
+    }
 }
 
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction
 {
-    bool callOnTransactionEnd = false;
-    if (--transactionDepth == 0) {
-        callOnTransactionEnd = true;
-    }
-
     // we can return early in this case. and we're allowed to finish this
     // transaction too. why? because it's just a restoreTransaction and not
     // a important purchase transaction that must reach the users application
     // as in completeTransaction().
     if (!manager) {
+        transactionDepth = std::max(0, --transactionDepth);
         [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
         return;
     }
@@ -192,10 +178,6 @@
         product->onHasBeenPurchased();
     } else {
         NSLog(@"[Payment] restoreTransaction invalid productId: %s", productId);
-    }
-
-    if (manager->delegate && callOnTransactionEnd) {
-        manager->delegate->onTransactionEnd(manager);
     }
 
     if (manager->delegate && product) {
@@ -235,19 +217,15 @@
 			break;
 	}
 
-    bool callOnTransactionEnd = false;
-    if (--transactionDepth == 0) {
-        callOnTransactionEnd = true;
-    }
-    
-    if (manager && manager->delegate && callOnTransactionEnd) {
-        manager->delegate->onTransactionEnd(manager);
-    }
-    
     if (manager && manager->delegate && reportFailure) {
         manager->delegate->onPurchaseFail(manager);
     }
-    
+
+    transactionDepth = std::max(0, --transactionDepth);
+    if (manager && manager->delegate && transactionDepth == 0) {
+        manager->delegate->onTransactionEnd(manager);
+    }
+
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
 }
 

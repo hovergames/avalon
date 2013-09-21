@@ -5,7 +5,6 @@ import java.util.EnumSet;
 import android.app.Activity;
 import android.util.Log;
 
-import com.amazon.ags.api.AmazonGames;
 import com.amazon.ags.api.AmazonGamesCallback;
 import com.amazon.ags.api.AmazonGamesClient;
 import com.amazon.ags.api.AmazonGamesFeature;
@@ -18,11 +17,11 @@ import com.amazon.ags.api.leaderboards.SubmitScoreResponse;
 import com.amazon.ags.api.achievements.AchievementsClient;
 import com.amazon.ags.api.achievements.UpdateProgressResponse;
 
-import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxHelper;
 
 public abstract class GameCenter
 {
-    private static AmazonGames agsGameClient = null;
+    private static AmazonGamesClient agsGameClient = null;
     private static LeaderboardsClient lbClient = null;
     private static AchievementsClient acClient = null;
     private static final String TAG = "avalon.GameCenter";
@@ -33,11 +32,10 @@ public abstract class GameCenter
             return;
         }
 
-        final Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
-        activity.runOnUiThread(new Runnable() {
+        Cocos2dxHelper.getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                GameCenter.agsGameClient = AmazonGamesClient.initialize(
-                    activity.getApplication(),
+                 AmazonGamesClient.initialize(
+                    Cocos2dxHelper.getActivity(),
                     agsGameCallback,
                     EnumSet.of(AmazonGamesFeature.Achievements, AmazonGamesFeature.Leaderboards)
                 );
@@ -47,7 +45,7 @@ public abstract class GameCenter
 
     public static boolean showAchievements()
     {
-        if (agsGameClient == null || !agsGameClient.isReady() || acClient == null) {
+        if (agsGameClient == null || !agsGameClient.isInitialized() || acClient == null) {
             return false;
         } else {
             acClient.showAchievementsOverlay();
@@ -57,7 +55,7 @@ public abstract class GameCenter
 
     public static void postAchievement(String idName, int percentComplete)
     {
-        if (agsGameClient == null || !agsGameClient.isReady() || acClient == null) {
+        if (agsGameClient == null || !agsGameClient.isInitialized() || acClient == null) {
             return;
         }
 
@@ -74,24 +72,11 @@ public abstract class GameCenter
 
     public static void clearAllAchievements()
     {
-        if (agsGameClient == null || !agsGameClient.isReady() || acClient == null) {
-            return;
-        }
-
-        AGResponseHandle<RequestResponse> handle = acClient.resetAchievements();
-        handle.setCallback(new AGResponseCallback<RequestResponse>() {
-            @Override
-            public void onComplete(RequestResponse result) {
-                if (result.isError()) {
-                    Log.v(TAG, "clearAllAchievements failed: " + result.getError());
-                }
-            }
-        });
     }
 
     public static boolean showScores()
     {
-        if (agsGameClient == null || !agsGameClient.isReady() || lbClient == null) {
+        if (agsGameClient == null || !agsGameClient.isInitialized() || lbClient == null) {
             return false;
         } else {
             lbClient.showLeaderboardsOverlay();
@@ -101,7 +86,7 @@ public abstract class GameCenter
 
     public static void postScore(String idName, int score)
     {
-        if (agsGameClient == null || !agsGameClient.isReady() || lbClient == null) {
+        if (agsGameClient == null || !agsGameClient.isInitialized() || lbClient == null) {
             return;
         }
 
@@ -123,7 +108,8 @@ public abstract class GameCenter
     private static final AmazonGamesCallback agsGameCallback = new AmazonGamesCallback()
     {
         @Override
-        public void onServiceReady() {
+        public void onServiceReady(AmazonGamesClient amazonGamesClient) {
+            agsGameClient = amazonGamesClient;
             lbClient = agsGameClient.getLeaderboardsClient();
             acClient = agsGameClient.getAchievementsClient();
         }

@@ -35,6 +35,26 @@ private:
     Manager& manager;
 };
 
+//
+// initialize:
+// ===========
+// - onServiceStarted()
+//
+// purchase:
+// =========
+// - onTransactionStart()
+// -     Product::onHasBeenPurchased() + onPurchaseSucceed()
+// - OR! Product::onHasBeenPurchased() + onPurchaseFail()
+// - onTransactionEnd()
+//
+// restorePurchases:
+// =================
+// - onTransactionStart()
+// -     onRestoreSucceed()
+// - OR! onRestoreFail()
+// - onTransactionEnd()
+//
+
 } // namespace payment
 } // namespace avalon
 

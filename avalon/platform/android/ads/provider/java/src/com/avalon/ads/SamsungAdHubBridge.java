@@ -1,6 +1,6 @@
 package com.avalon.ads;
 
-import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxHelper;
 
 import android.app.Activity;
 import android.util.Log;
@@ -15,10 +15,9 @@ abstract class SamsungAdHubBridge
 
     public static void init(final String id)
     {
-        final Activity activity = (Activity) Cocos2dxActivity.getContext();
-        activity.runOnUiThread(new Runnable() {
+        Cocos2dxHelper.getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                SamsungAdHubBridge.adHubInterstitial = new AdHubInterstitial(Cocos2dxActivity.getContext(), id);
+                SamsungAdHubBridge.adHubInterstitial = new AdHubInterstitial(Cocos2dxHelper.getActivity(), id);
                 SamsungAdHubBridge.adHubInterstitial.setListener(new AdInterstitialListener() {
                     @Override
                     public void onAdInterstitialReceived(AdHubInterstitial ad) {

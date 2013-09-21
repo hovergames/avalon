@@ -12,7 +12,11 @@ void open(const char* url)
     cocos2d::JniMethodInfo t;
     if (cocos2d::JniHelper::getStaticMethodInfo(t, "com/avalon/utils/Url", "open", "(Ljava/lang/String;)V")) {
         jstring jUrl = t.env->NewStringUTF(url);
+
         t.env->CallStaticVoidMethod(t.classID, t.methodID, jUrl);
+        t.env->DeleteLocalRef(t.classID);
+
+        t.env->DeleteLocalRef(jUrl);
     }
 }
 

@@ -1,3 +1,5 @@
+#ifdef AVALON_ENABLE_ADS_PROVIDER_IAD
+
 #include <avalon/ads/provider/IAd.h>
 
 #include <boost/assert.hpp>
@@ -107,3 +109,5 @@ void IAd::showBanner()
 } // namespace provider
 } // namespace ads
 } // namespace avalon
+
+#endif /* AVALON_ENABLE_ADS_PROVIDER_IAD */

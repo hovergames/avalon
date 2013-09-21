@@ -89,13 +89,20 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_delegateOnPurchaseSucceed
     using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
 
-    if (globalManager && globalManager->delegate) {
-        std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
-        auto product = globalManager->getProduct(productId.c_str());
-        if (product) {
-            product->onHasBeenPurchased();
-            globalManager->delegate->onPurchaseSucceed(globalManager, product);
-        }
+    if (!globalManager) {
+        return;
+    }
+
+    std::string productId = cocos2d::JniHelper::jstring2string(jProductId);
+    auto product = globalManager->getProduct(productId.c_str());
+
+    if (!product) {
+        return;
+    }
+
+    product->onHasBeenPurchased();
+    if (globalManager->delegate) {
+        globalManager->delegate->onPurchaseSucceed(globalManager, product);
     }
 }
 
@@ -137,7 +144,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onInitialized(JNIEnv* env
     if (globalManager) {
         for (auto& row : globalManager->getProducts()) {
             bool isConsumable = (dynamic_cast<ProductConsumable* const>(row.second) != NULL);
-            callStaticVoidMethodWithStringAndBool(
+            backend::helper::callStaticVoidMethodWithStringAndBool(
                 "addItemDataRequest",
                 row.second->getProductId().c_str(),
                 isConsumable
@@ -151,6 +158,7 @@ JNIEXPORT void JNICALL Java_com_avalon_payment_Backend_onItemData(JNIEnv* env, j
 {
     using backend::helper::globalManager;
     BOOST_ASSERT_MSG(globalManager, "globalManager should be already set");
+    
     if (!globalManager) {
         return;
     }

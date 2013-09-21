@@ -19,6 +19,7 @@ bool GameCenter::showAchievements()
 
 void GameCenter::postAchievement(const char* idName, int percentComplete)
 {
+    NSLog(@"[GC Achievement] %s %i", idName, percentComplete);
     [[GameCenterIos shared] postAchievement:idName percent:[NSNumber numberWithInt:percentComplete]];
 }
 
@@ -37,6 +38,7 @@ bool GameCenter::showScores()
 
 void GameCenter::postScore(const char* idName, int score)
 {
+    NSLog(@"[GC Score] %s %i", idName, score);
     [[GameCenterIos shared] postScore:idName score:[NSNumber numberWithInt:score]];
 }
 
