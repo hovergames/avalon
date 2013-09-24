@@ -4,3 +4,6 @@
 [submodule "vendors/google/playgameservices/android-samples"]
 	path = vendors/google/playgameservices/android-samples
 	url = git@github.com:playgameservices/android-samples.git
+[submodule "vendors/appirater-ios"]
+	path = vendors/appirater-ios
+	url = https://github.com/arashpayan/appirater.git

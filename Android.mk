@@ -27,6 +27,7 @@ LOCAL_SRC_FILES := \
     avalon/utils/platform.cpp \
     avalon/platform/android/ui/AlertNative.cpp \
     avalon/platform/android/utils/url.cpp \
+    avalon/platform/android/appirater/Appirater.cpp \
     avalon/ui/Alert.cpp
 
 ifneq (,$(findstring ads,$(AVALON_FEATURES)))
