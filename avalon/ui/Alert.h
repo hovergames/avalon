@@ -7,36 +7,26 @@
 namespace avalon {
 namespace ui {
 
-class AlertDelegate;
-typedef std::map<unsigned int, std::string> ButtonList;
-
 class Alert
 {
 public:
-    explicit Alert(AlertDelegate* delegate = NULL);
-    Alert(const char* title, const char* message, const char* dismissButton, AlertDelegate* delegate = NULL);
-    ~Alert();
+    using ButtonList = std::map<const unsigned int, std::string>;
+    using Callback = std::function<void(const unsigned int, const std::string)>;
 
-    std::string getTitle() const;
-    void setTitle(const char* title);
+    std::string title;
+    std::string message;
+    Callback delegate = nullptr;
 
-    std::string getMessage() const;
-    void setMessage(const char* message);
+    explicit Alert(Callback delegate);
 
-    void addButton(const unsigned int index, const char* label);
+    void addButton(const unsigned int index, const std::string label);
     void removeButton(const unsigned int index);
     std::string getButtonLabel(const unsigned int index) const;
-
-    AlertDelegate* getDelegate() const;
-    void setDelegate(AlertDelegate* delegate);
 
     void show() const;
 
 private:
-    std::string title;
-    std::string message;
     ButtonList buttons;
-    AlertDelegate* delegate;
 };
 
 // Only this function has to be implemented in native code and NOT the class
@@ -44,7 +34,7 @@ private:
 // You could, for instance, reuse and re-show a single alert multiple times. On
 // the other hand the interface with the native code should be as simple as
 // possible and we'd like to stick in C++ as long as possible too.
-void showAlert(const std::string& title, const std::string& message, const ButtonList& buttons, AlertDelegate* delegate);
+void showAlert(const std::string& title, const std::string& message, const Alert::ButtonList& buttons, Alert::Callback delegate);
 
 } // namespace ui
 } // namespace avalon

@@ -1,11 +1,12 @@
 #include <avalon/ui/Alert.h>
 
 #include <boost/assert.hpp>
+#include "cocos2d.h"
 
 namespace avalon {
 namespace ui {
 
-Alert::Alert(AlertDelegate* delegate)
+Alert::Alert(Callback delegate)
 : title()
 , message()
 , buttons()
@@ -13,40 +14,7 @@ Alert::Alert(AlertDelegate* delegate)
 {
 }
 
-Alert::Alert(const char* title, const char* message, const char* dismissButton, AlertDelegate* delegate)
-: title(title)
-, message(message)
-, buttons()
-, delegate(delegate)
-{
-    addButton(0, dismissButton);
-}
-
-Alert::~Alert()
-{
-}
-
-std::string Alert::getTitle() const
-{
-    return title;
-}
-
-void Alert::setTitle(const char* title)
-{
-    this->title = title;
-}
-
-std::string Alert::getMessage() const
-{
-    return message;
-}
-
-void Alert::setMessage(const char* message)
-{
-    this->message = message;
-}
-
-void Alert::addButton(const unsigned int index, const char* label)
+void Alert::addButton(const unsigned int index, std::string label)
 {
     buttons[index] = label;
 }
@@ -59,16 +27,6 @@ void Alert::removeButton(const unsigned int index)
 std::string Alert::getButtonLabel(const unsigned int index) const
 {
     return buttons.at(index);
-}
-
-AlertDelegate* Alert::getDelegate() const
-{
-    return delegate;
-}
-
-void Alert::setDelegate(AlertDelegate* delegate)
-{
-    this->delegate = delegate;
 }
 
 void Alert::show() const
