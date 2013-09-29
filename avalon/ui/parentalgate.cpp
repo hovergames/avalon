@@ -1,4 +1,4 @@
-#include <avalon/parentalgate.h>
+#include <avalon/ui/parentalgate.h>
 
 #include <algorithm>
 #include <random>
@@ -6,6 +6,7 @@
 #include "cocos2d.h"
 
 namespace avalon {
+namespace ui {
 namespace parentalgate {
 
 void show(Callback successCallback, Callback failureCallback)
@@ -57,4 +58,5 @@ void show(Callback successCallback, Callback failureCallback)
 }
 
 } // namespace parentalgate
+} // namespace ui
 } // namespace avalon
