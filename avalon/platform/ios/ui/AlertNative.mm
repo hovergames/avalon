@@ -2,7 +2,6 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#include "cocos2d.h"
 
 @interface AlertViewProxy : NSObject<UIAlertViewDelegate>
 {
@@ -29,7 +28,7 @@
 namespace avalon {
 namespace ui {
 
-void showAlert(const std::string& title, const std::string& message, const Alert::ButtonList& buttons, Alert::Callback delegate)
+void showAlert(const std::string& title, const std::string& message, const Alert::ButtonList& buttons, Alert::Callback& delegate)
 {
     AlertViewProxy* proxy = [[[[AlertViewProxy alloc] init] autorelease] retain];
     proxy->delegate = delegate;

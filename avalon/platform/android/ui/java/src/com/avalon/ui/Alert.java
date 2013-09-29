@@ -25,7 +25,7 @@ class OnClick implements DialogInterface.OnClickListener
 
     public void onClick(DialogInterface dialog, int id)
     {
-        Cocos2dxHelper.getActivity().runOnUiThread(new Runnable() {
+        Cocos2dxHelper.runOnGLThread(new Runnable() {
             public void run() {
                 Alert.onClick(delegatePtr, index, label);
             }
@@ -36,6 +36,7 @@ class OnClick implements DialogInterface.OnClickListener
 class Alert
 {
     private static HashMap<Integer, String> buttons = new HashMap<Integer, String>();
+    private static final String TAG = "avalon.ui.Alert";
 
     public static void reset()
     {
@@ -66,6 +67,8 @@ class Alert
                         alert.setNeutralButton(entry.getValue(), callback);
                     } else if (counter == 3) {
                         alert.setPositiveButton(entry.getValue(), callback);
+                    } else {
+                        Log.v(TAG, "Button '" + entry.getValue() + "' with index " + entry.getKey() + " ignored!");
                     }
                 }
 

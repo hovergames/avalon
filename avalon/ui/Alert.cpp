@@ -29,7 +29,7 @@ std::string Alert::getButtonLabel(const unsigned int index) const
     return buttons.at(index);
 }
 
-void Alert::show() const
+void Alert::show()
 {
     showAlert(title, message, buttons, delegate);
 }

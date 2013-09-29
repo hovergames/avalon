@@ -2,7 +2,9 @@
 
 #include <algorithm>
 #include <random>
+#include <memory>
 #include <avalon/ui/Alert.h>
+#include <avalon/platform/android/gnustl_string_fixes.h>
 #include "cocos2d.h"
 
 namespace avalon {
@@ -30,7 +32,8 @@ void show(Callback successCallback, Callback failureCallback)
         std::swap(rightIndex, wrongIndex);
     }
 
-    auto callback = [rightIndex, wrongIndex, successCallback, failureCallback](const unsigned int index, const std::string label) {
+    auto alert = std::make_shared<avalon::ui::Alert>(nullptr);
+    alert->delegate = [alert, rightIndex, wrongIndex, successCallback, failureCallback](const unsigned int index, const std::string label) {
         if (successCallback && index == rightIndex) {
             successCallback();
         } else if (failureCallback && index == wrongIndex) {
@@ -40,21 +43,19 @@ void show(Callback successCallback, Callback failureCallback)
         }
     };
 
-    avalon::ui::Alert alert(callback);
-    alert.message = std::to_string(a) + " + " + std::to_string(b) + " = ?";
-    alert.addButton(rightIndex, std::to_string(right));
-    alert.addButton(wrongIndex, std::to_string(wrong));
-
     const auto language = cocos2d::Application::getInstance()->getCurrentLanguage();
     if (language == cocos2d::LanguageType::GERMAN) {
-        alert.title = "Kindersicherung";
-        alert.addButton(0, "Abbrechen");
+        alert->title = "Kindersicherung";
+        alert->addButton(0, "Abbrechen");
     } else {
-        alert.title = "Are You An Adult?";
-        alert.addButton(0, "Cancel");
+        alert->title = "Are You An Adult?";
+        alert->addButton(0, "Cancel");
     }
 
-    alert.show();
+    alert->message = std::to_string(a) + " + " + std::to_string(b) + " = ?";
+    alert->addButton(rightIndex, std::to_string(right));
+    alert->addButton(wrongIndex, std::to_string(wrong));
+    alert->show();
 }
 
 } // namespace parentalgate

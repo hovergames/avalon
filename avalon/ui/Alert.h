@@ -3,6 +3,7 @@
 
 #include <string>
 #include <map>
+#include <functional>
 
 namespace avalon {
 namespace ui {
@@ -23,7 +24,7 @@ public:
     void removeButton(const unsigned int index);
     std::string getButtonLabel(const unsigned int index) const;
 
-    void show() const;
+    void show();
 
 private:
     ButtonList buttons;
@@ -34,7 +35,7 @@ private:
 // You could, for instance, reuse and re-show a single alert multiple times. On
 // the other hand the interface with the native code should be as simple as
 // possible and we'd like to stick in C++ as long as possible too.
-void showAlert(const std::string& title, const std::string& message, const Alert::ButtonList& buttons, Alert::Callback delegate);
+void showAlert(const std::string& title, const std::string& message, const Alert::ButtonList& buttons, Alert::Callback& delegate);
 
 } // namespace ui
 } // namespace avalon

@@ -24,11 +24,13 @@ LOCAL_SRC_FILES := \
     avalon/i18n/LanguageKey.cpp \
     avalon/i18n/Localization.cpp \
     avalon/io/IniReader.cpp \
-    avalon/utils/platform.cpp \
+    avalon/platform/android/appirater/Appirater.cpp \
     avalon/platform/android/ui/AlertNative.cpp \
     avalon/platform/android/utils/url.cpp \
-    avalon/platform/android/appirater/Appirater.cpp \
-    avalon/ui/Alert.cpp
+    avalon/platform/android/gnustl_string_fixes.cpp \
+    avalon/ui/Alert.cpp \
+    avalon/ui/parentalgate.cpp \
+    avalon/utils/platform.cpp
 
 ifneq (,$(findstring ads,$(AVALON_FEATURES)))
     LOCAL_SRC_FILES += \
