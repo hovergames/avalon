@@ -5,6 +5,7 @@
 #include <memory>
 #include <avalon/ui/Alert.h>
 #include <avalon/platform/android/gnustl_string_fixes.h>
+#include <avalon/utils/platform.h>
 #include "cocos2d.h"
 
 namespace avalon {
@@ -56,6 +57,15 @@ void show(Callback successCallback, Callback failureCallback)
     alert->addButton(rightIndex, std::to_string(right));
     alert->addButton(wrongIndex, std::to_string(wrong));
     alert->show();
+}
+
+void showOnlyIos(Callback successCallback, Callback failureCallback)
+{
+#if AVALON_PLATFORM_IS_IOS
+    show(successCallback, failureCallback);
+#else
+    successCallback();
+#endif
 }
 
 } // namespace parentalgate

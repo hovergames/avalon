@@ -10,6 +10,7 @@ namespace parentalgate {
 using Callback = std::function<void()>;
 
 void show(Callback successCallback, Callback failureCallback = nullptr);
+void showOnlyIos(Callback successCallback, Callback failureCallback = nullptr);
 
 } // namespace parentalgate
 } // namespace ui
