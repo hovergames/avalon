@@ -1,4 +1,4 @@
-#ifdef AVALON_ENABLE_ADS_PROVIDER_IAD
+#ifdef AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED
 
 #include <avalon/ads/provider/IAd.h>
 
@@ -110,4 +110,4 @@ void IAd::showBanner()
 } // namespace ads
 } // namespace avalon
 
-#endif /* AVALON_ENABLE_ADS_PROVIDER_IAD */
+#endif /* AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED */

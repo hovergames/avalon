@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED
+
 #include <avalon/ads/provider/Chartboost.h>
 
 #include <jni.h>
@@ -79,3 +81,5 @@ void Chartboost::openAdLink()
 } // namespace provider
 } // namespace ads
 } // namespace avalon
+
+#endif /* AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED */

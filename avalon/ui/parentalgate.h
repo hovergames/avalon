@@ -7,7 +7,7 @@ namespace avalon {
 namespace ui {
 namespace parentalgate {
 
-using Callback = std::function<void()>;
+typedef std::function<void()> Callback;
 
 void show(Callback successCallback, Callback failureCallback = nullptr);
 void showOnlyIos(Callback successCallback, Callback failureCallback = nullptr);

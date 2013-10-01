@@ -6,21 +6,22 @@
 #include <avalon/ads/Banner.h>
 #include <avalon/ads/Popup.h>
 #include <avalon/ads/Link.h>
+#include <avalon/ads/Fullscreen.h>
 #include <avalon/utils/platform.h>
 
-#ifdef AVALON_ENABLE_ADS_PROVIDER_SAMSUNGADHUB
+#if defined(AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED) && AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     #include <avalon/ads/provider/SamsungAdHub.h>
 #endif
-#if AVALON_PLATFORM_IS_ANDROID_SAMSUNG
-    // Only Samsung AdHub is allowed on the Samsung Apps store ...
-#else
+#if defined(AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED)   && !AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     #include <avalon/ads/provider/Chartboost.h>
+#endif
+#if defined(AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED)       && !AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     #include <avalon/ads/provider/Revmob.h>
 #endif
-#if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE
+#if defined(AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED)    && (AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE)
     #include <avalon/ads/provider/TapForTap.h>
 #endif
-#if AVALON_PLATFORM_IS_IOS
+#if defined(AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED)          && AVALON_PLATFORM_IS_IOS
     #include <avalon/ads/provider/IAd.h>
 #endif
 
@@ -58,7 +59,7 @@ void Manager::initWithIniFile(const char *iniFile)
     flavor[0] = std::toupper(flavor[0]);
     auto prefix = avalon::utils::platform::getName() + flavor;
 
-#ifdef AVALON_ENABLE_ADS_PROVIDER_SAMSUNGADHUB
+#if defined(AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED)  && AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     if (config.doesSectionExist("samsungadhub")) {
         auto *p = new provider::SamsungAdHub();
         p->setWeight(config.getValueAsInt("samsungadhub", "weight"));
@@ -67,9 +68,7 @@ void Manager::initWithIniFile(const char *iniFile)
     }
 #endif
     
-#if AVALON_PLATFORM_IS_ANDROID_SAMSUNG
-    // Only Samsung AdHub is allowed on the Samsung Apps store ...
-#else
+#if defined(AVALON_CONFIG_ADS_PROVIDER_CHARTBOOST_ENABLED) && !AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     if (config.doesSectionExist("chartboost")) {
         auto *p = new provider::Chartboost();
         p->setWeight(config.getValueAsInt("chartboost", "weight"));
@@ -77,7 +76,9 @@ void Manager::initWithIniFile(const char *iniFile)
         p->appSignature = config.getValue("chartboost", (prefix + "AppSignature").c_str());
         adProviders.push_back(p);
     }
+#endif
 
+#if defined(AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED) && !AVALON_PLATFORM_IS_ANDROID_SAMSUNG
     if (config.doesSectionExist("revmob")) {
         auto *p = new provider::Revmob();
         p->setWeight(config.getValueAsInt("revmob", "weight"));
@@ -86,7 +87,7 @@ void Manager::initWithIniFile(const char *iniFile)
     }
 #endif
 
-#if AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE
+#if defined(AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED) && (AVALON_PLATFORM_IS_IOS || AVALON_PLATFORM_IS_ANDROID_GOOGLE)
     if (config.doesSectionExist("tapfortap")) {
         provider::TapForTap *p = new provider::TapForTap();
         p->setWeight(config.getValueAsInt("tapfortap", "weight"));
@@ -95,7 +96,7 @@ void Manager::initWithIniFile(const char *iniFile)
     }
 #endif
 
-#if AVALON_PLATFORM_IS_IOS && AVALON_ENABLE_ADS_PROVIDER_IAD
+#if defined(AVALON_CONFIG_ADS_PROVIDER_IAD_ENABLED) && AVALON_PLATFORM_IS_IOS
     if (config.doesSectionExist("iad")) {
         provider::IAd *p = new provider::IAd();
         p->setWeight(config.getValueAsInt("iad", "weight"));

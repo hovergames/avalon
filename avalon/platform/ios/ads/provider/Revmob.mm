@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED
+
 #include <avalon/ads/provider/Revmob.h>
 
 #include <boost/assert.hpp>
@@ -73,3 +75,5 @@ void Revmob::showPopupAd()
 } // namespace provider
 } // namespace ads
 } // namespace avalon
+
+#endif /* AVALON_CONFIG_ADS_PROVIDER_REVMOB_ENABLED */

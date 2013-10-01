@@ -56,7 +56,7 @@ endif
 
 ifneq (,$(findstring gamecenter,$(AVALON_FEATURES)))
     LOCAL_SRC_FILES += \
-        avalon/platform/android-$(AVALON_PLATFORM_FLAVOR)/gamecenter/GameCenter.cpp
+        avalon/platform/android/gamecenter_switch.cpp
 endif
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
