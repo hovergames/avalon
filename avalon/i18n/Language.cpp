@@ -19,7 +19,7 @@ LanguageKey* Language::addLanguageKey(const char* section, const char* varName, 
     if (sections[section][varName]) {
         delete sections[section][varName];
     }
-    
+
     sections[section][varName] = new LanguageKey(varName, value);
     return sections[section][varName];
 }

@@ -16,10 +16,10 @@ namespace payment {
 Manager::Manager()
 : ignoreUnusedConsumableQuantities(false)
 , delegate()
+, started(false)
 , backend(*this)
 , products()
 , productIdAliases()
-, started(false)
 {
 }
 
@@ -106,7 +106,7 @@ ProductConsumable* Manager::getProductConsumable(const char* const productIdOrAl
 bool Manager::hasProduct(const char* const productIdOrAlias) const
 {
     auto productId = string(productIdOrAlias);
-    
+
     if (products.count(productId) > 0) {
         return true;
     }

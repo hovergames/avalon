@@ -16,8 +16,9 @@ public:
 
     std::string title;
     std::string message;
-    Callback delegate = nullptr;
+    Callback delegate;
 
+    Alert();
     explicit Alert(Callback delegate);
 
     void addButton(const unsigned int index, const std::string label);

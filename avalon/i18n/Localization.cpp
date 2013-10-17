@@ -13,8 +13,8 @@ namespace avalon {
 namespace i18n {
 
 Localization::Localization()
-: currentLanguage(NULL)
-, defaultLanguage(NULL)
+: currentLanguage(nullptr)
+, defaultLanguage(nullptr)
 {
 }
 
@@ -31,8 +31,8 @@ void Localization::clear()
     }
     languages.clear();
 
-    currentLanguage = NULL;
-    defaultLanguage = NULL;
+    currentLanguage = nullptr;
+    defaultLanguage = nullptr;
 }
 
 LanguageKey& _(const char* section, const char* key)
@@ -57,7 +57,7 @@ LanguageKey& _(const char* section, const char* key)
             log("WARNING! Language Key not found in default Language: %s/%s", section, key);
         }
     }
-    
+
     return *langKey;
 }
 
@@ -66,7 +66,7 @@ void Localization::addLanguage(const char* languageFile)
     if (hastLanguage(languageFile)) {
         return;
     }
-    
+
     Language *lang = new Language();
     lang->fileName = languageFile;
 

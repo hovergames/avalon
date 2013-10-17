@@ -27,7 +27,7 @@ LanguageKey& LanguageKey::assign(const char* varName, int value)
     char buffer[25] = {0};
     snprintf(buffer, sizeof(buffer), "%d", value);
     assign(varName, buffer);
-    
+
     return *this;
 }
 
@@ -43,7 +43,7 @@ LanguageKey& LanguageKey::assign(const char* varName, float value, const char* f
         snprintf(buffer, sizeof(buffer), format, value);
         assign(varName, buffer);
     }
-    
+
     BOOST_ASSERT_MSG(format, "no format given");
     return *this;
 }

@@ -6,11 +6,12 @@
 namespace avalon {
 namespace ui {
 
+Alert::Alert()
+{
+}
+
 Alert::Alert(Callback delegate)
-: title()
-, message()
-, buttons()
-, delegate(delegate)
+: delegate(delegate)
 {
 }
 
@@ -33,6 +34,6 @@ void Alert::show()
 {
     showAlert(title, message, buttons, delegate);
 }
-        
+
 } // namespace ui
 } // namespace avalon

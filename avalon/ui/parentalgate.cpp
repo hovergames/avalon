@@ -33,7 +33,7 @@ void show(Callback successCallback, Callback failureCallback)
         std::swap(rightIndex, wrongIndex);
     }
 
-    auto alert = std::make_shared<avalon::ui::Alert>(nullptr);
+    auto alert = std::make_shared<avalon::ui::Alert>();
     alert->delegate = [alert, rightIndex, wrongIndex, successCallback, failureCallback](const unsigned int index, const std::string label) {
         if (successCallback && index == rightIndex) {
             successCallback();
