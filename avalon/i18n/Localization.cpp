@@ -13,8 +13,8 @@ namespace avalon {
 namespace i18n {
 
 Localization::Localization()
-: currentLanguage(NULL)
-, defaultLanguage(NULL)
+: currentLanguage(nullptr)
+, defaultLanguage(nullptr)
 {
 }
 
@@ -31,8 +31,8 @@ void Localization::clear()
     }
     languages.clear();
 
-    currentLanguage = NULL;
-    defaultLanguage = NULL;
+    currentLanguage = nullptr;
+    defaultLanguage = nullptr;
 }
 
 LanguageKey& _(const char* section, const char* key)
@@ -41,7 +41,7 @@ LanguageKey& _(const char* section, const char* key)
 
     LanguageKey *langKey = Localization::getInstance().currentLanguage->getLanguageKey(section, key);
     if (!langKey || langKey->name.empty()) {
-        CCLog(
+        log(
             "WARNING! Language Key not found in current Language '%s': %s/%s",
             Localization::getInstance().currentLanguage->fileName.c_str(), section, key
         );
@@ -51,13 +51,13 @@ LanguageKey& _(const char* section, const char* key)
             if (!langKey) {
                 langKey = Localization::getInstance().currentLanguage->addLanguageKey(section, key,  (std::string("_") + std::string(key)).c_str());
             } else {
-                CCLog("Set temporary key");
+                log("Set temporary key");
                 langKey->value = (std::string("_") + std::string(key)).c_str();
             }
-            CCLog("WARNING! Language Key not found in default Language: %s/%s", section, key);
+            log("WARNING! Language Key not found in default Language: %s/%s", section, key);
         }
     }
-    
+
     return *langKey;
 }
 
@@ -66,7 +66,7 @@ void Localization::addLanguage(const char* languageFile)
     if (hastLanguage(languageFile)) {
         return;
     }
-    
+
     Language *lang = new Language();
     lang->fileName = languageFile;
 

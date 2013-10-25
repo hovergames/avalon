@@ -24,6 +24,12 @@ std::string getName()
     return std::string("mac");
 #elif AVALON_PLATFORM_IS_NACL
     return std::string("nacl");
+#elif AVALON_PLATFORM_IS_EMSCRIPTEN
+    return std::string("emscripten");
+#elif AVALON_PLATFORM_IS_TIZEN
+    return std::string("tizen");
+#elif AVALON_PLATFORM_IS_QT5
+    return std::string("qt5");
 #else
     #error "No name defined for current used CC_TARGET_PLATFORM"
 #endif

@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED
+
 #include <avalon/ads/provider/SamsungAdHub.h>
 
 #include <jni.h>
@@ -69,3 +71,5 @@ void SamsungAdHub::showFullscreenAd()
 } // namespace provider
 } // namespace ads
 } // namespace avalon
+
+#endif /* AVALON_CONFIG_ADS_PROVIDER_SAMSUNGADHUB_ENABLED */

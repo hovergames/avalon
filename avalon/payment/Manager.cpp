@@ -16,10 +16,10 @@ namespace payment {
 Manager::Manager()
 : ignoreUnusedConsumableQuantities(false)
 , delegate()
+, started(false)
 , backend(*this)
 , products()
 , productIdAliases()
-, started(false)
 {
 }
 
@@ -106,7 +106,7 @@ ProductConsumable* Manager::getProductConsumable(const char* const productIdOrAl
 bool Manager::hasProduct(const char* const productIdOrAlias) const
 {
     auto productId = string(productIdOrAlias);
-    
+
     if (products.count(productId) > 0) {
         return true;
     }
@@ -134,14 +134,13 @@ void Manager::purchase(const char* const productIdOrAlias)
 
 void Manager::startService()
 {
-    if (!delegate) {
-        BOOST_ASSERT_MSG(false, "delegate must be set first");
-        return;
-    }
-
     if (isStarted()) {
         BOOST_ASSERT_MSG(false, "service already started");
         return;
+    }
+
+    if (!delegate) {
+        throw new std::runtime_error("payment delegate must be set!");
     }
 
     backend.initialize();
@@ -172,6 +171,11 @@ void Manager::restorePurchases() const
     }
 
     backend.restorePurchases();
+}
+
+Backend& Manager::getBackend()
+{
+    return backend;
 }
 
 } // namespace payment

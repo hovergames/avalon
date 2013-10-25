@@ -1,102 +1,188 @@
 package com.avalon.ads;
 
-import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxHelper;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.RelativeLayout;
 import android.widget.FrameLayout;
 import android.view.Gravity;
 
 import com.revmob.RevMob;
-import com.revmob.RevMobTestingMode;
+import com.revmob.RevMobAdsListener;
+import com.revmob.ads.fullscreen.RevMobFullscreen;
+import com.revmob.ads.link.RevMobLink;
+import com.revmob.ads.banner.RevMobBanner;
 
 abstract class RevmobBridge
 {
-    static Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
-    static RevMob revmob = null;
-    static RelativeLayout adView = null;
+    static final String TAG = "avalon.ads.RevmobBridge";
+    private static Activity activity = Cocos2dxHelper.getActivity();
+    private static RevMob revmob = null;
+    private static RevMobFullscreen fullscreen = null;
+    private static RevMobLink adLink = null;
+    private static RevMobBanner banner = null;
+    private static RelativeLayout adView = null;
 
-    public static void init(String id)
+    public static void init(final String id)
     {
-        if (revmob == null) {
-            revmob = RevMob.start(activity, id);
+        if (revmob != null) {
+            Log.v(TAG, "init: already initialized - ignored");
+            return;
         }
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(TAG, "init");
+
+                revmob = RevMob.start(activity, id);
+                
+                // prefill all the caches!
+                fullscreen = revmob.createFullscreen(activity, getListener("FullscreenAd"));
+                banner = revmob.createBanner(activity, getListener("Banner"));
+                adLink = revmob.createAdLink(activity, getListener("AdLink"));
+            }
+        });
     }
 
     public static void showFullscreenAd()
     {
-        if (revmob != null) {
-            revmob.showFullscreen(activity);
+        if (revmob == null) {
+            Log.v(TAG, "showFullscreenAd: NOT INITIALIZED YET!");
+            return;
         }
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(TAG, "showFullscreenAd");
+
+                if (fullscreen != null) {
+                    fullscreen.show();
+                }
+
+                // pre-load next fullscreen ad
+                fullscreen = revmob.createFullscreen(activity, getListener("FullscreenAd"));
+            }
+        });
     }
 
     public static void showBanner()
     {
-        if (revmob == null || adView != null) {
+        if (revmob == null) {
+            Log.v(TAG, "showBanner: NOT INITIALIZED YET!");
             return;
         }
 
-        adView = new RelativeLayout(activity);
-        adView.setGravity(Gravity.BOTTOM);
-        adView.addView(revmob.createBanner(activity));
+        if (adView != null) {
+            Log.v(TAG, "showBanner: another banner should already be visible - ignored");
+            return;
+        }
 
         activity.runOnUiThread(new Runnable() {
             public void run() {
+                Log.v(TAG, "showBanner");
+
+                adView = new RelativeLayout(activity);
+                adView.setGravity(Gravity.BOTTOM);
+                adView.addView(banner);
+
                 FrameLayout mainLayout = (FrameLayout) activity.findViewById(android.R.id.content);
                 mainLayout.addView(adView);
+
+                // pre-load next banner
+                banner = revmob.createBanner(activity, getListener("Banner"));
             }
         });
     }
 
     public static void hideAds()
     {
-        if (adView == null) {
-            return;
-        }
-
         activity.runOnUiThread(new Runnable() {
             public void run() {
-                FrameLayout mainLayout = (FrameLayout) activity.findViewById(android.R.id.content);
-                mainLayout.removeView(adView);
+                Log.v(TAG, "hideAds");
 
-                adView.removeAllViews();
-                adView = null;
+                if (fullscreen != null) {
+                    fullscreen.hide();
+                }
+
+                if (adView != null) {
+                    FrameLayout mainLayout = (FrameLayout) activity.findViewById(android.R.id.content);
+                    mainLayout.removeView(adView);
+
+                    adView.removeAllViews();
+                    adView = null;
+                }
             }
         });
     }
 
     public static void openAdLink()
     {
-        if (revmob != null) {
-            revmob.openAdLink(activity, null);
+        if (revmob == null) {
+            Log.v(TAG, "openAdLink: NOT INITIALIZED YET!");
+            return;
         }
+
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Log.v(TAG, "openAdLink");
+
+                if (adLink != null) {
+                    adLink.open();
+                }
+
+                // pre-load next banner
+                adLink = revmob.createAdLink(activity, getListener("AdLink"));
+            }
+        });
     }
 
     public static void showPopupAd()
     {
-        if (revmob != null) {
-            revmob.showPopup(activity);
+        if (revmob == null) {
+            Log.v(TAG, "showPopupAd: NOT INITIALIZED YET!");
+            return;
         }
+
+        activity.runOnUiThread(new Runnable() {
+            public void run() {
+                Log.v(TAG, "showPopupAd");
+
+                revmob.showPopup(activity, null, getListener("PopUpAd"));
+            }
+        });
     }
 
-    public static void enableTestingWithAds()
+    public static RevMobAdsListener getListener(final String mode)
     {
-        if (revmob != null) {
-            revmob.setTestingMode(RevMobTestingMode.WITH_ADS);
-        }
-    }
+        return new RevMobAdsListener()
+        {
+            public void onRevMobAdReceived()
+            {
+                Log.v(TAG, mode + ": onRevMobAdReceived");
+            }
 
-    public static void enableTestingWithoutAds()
-    {
-        if (revmob != null) {
-            revmob.setTestingMode(RevMobTestingMode.WITHOUT_ADS);
-        }
-    }
+            public void onRevMobAdNotReceived(String message)
+            {
+                Log.v(TAG, mode + ": onRevMobAdNotReceived: " + message);
+            }
 
-    public static void disableTesting()
-    {
-        if (revmob != null) {
-            revmob.setTestingMode(RevMobTestingMode.DISABLED);
-        }
+            public void onRevMobAdDisplayed()
+            {
+                Log.v(TAG, mode + ": onRevMobAdDisplayed");
+            }
+
+            public void onRevMobAdDismiss()
+            {
+                Log.v(TAG, mode + ": onRevMobAdDismiss");
+            }
+
+            public void onRevMobAdClicked()
+            {
+                Log.v(TAG, mode + ": onRevMobAdClicked");
+            }
+        };
     }
 }

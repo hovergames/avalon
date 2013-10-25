@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED
+
 #include <avalon/ads/provider/TapForTap.h>
 
 #include <jni.h>
@@ -74,3 +76,5 @@ void TapForTap::showBanner()
 } // namespace provider
 } // namespace ads
 } // namespace avalon
+
+#endif /* AVALON_CONFIG_ADS_PROVIDER_TAPFORTAP_ENABLED */

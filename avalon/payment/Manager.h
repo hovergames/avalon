@@ -54,6 +54,8 @@ public:
     void stopService();
     bool isStarted() const;
 
+    Backend& getBackend();
+
 private:
     bool started;
     Backend backend;

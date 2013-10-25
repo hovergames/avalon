@@ -10,7 +10,7 @@
 namespace avalon {
 namespace payment {
 
-shared_ptr<Manager> Loader::globalManager;
+boost::shared_ptr<Manager> Loader::globalManager;
 
 Loader::Loader(const char* iniFile)
 : manager(new Manager())
@@ -36,7 +36,7 @@ Loader::Loader(const char* iniFile)
             BOOST_ASSERT_MSG(false, "Product has no productId set for this platform");
             continue;
         }
-        
+
         Product *product = NULL;
         if (strcmp(type, "non-consumable") == 0) {
             product = new Product(productId);
@@ -63,7 +63,7 @@ const char* Loader::detectProductId(const char* section)
     if (!config.getSection(section)->count(prefix.c_str())) {
         return NULL;
     }
-    
+
     const char* productId = config.getValue(section, prefix.c_str());
     if (!productId || strlen(productId) == 0) {
         return NULL;
@@ -72,7 +72,7 @@ const char* Loader::detectProductId(const char* section)
     return productId;
 }
 
-shared_ptr<Manager> Loader::getManager() const
+boost::shared_ptr<Manager> Loader::getManager() const
 {
     return manager;
 }

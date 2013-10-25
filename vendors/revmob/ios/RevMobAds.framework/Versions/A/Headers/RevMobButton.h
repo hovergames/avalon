@@ -1,5 +1,4 @@
 #import <Foundation/Foundation.h>
-#import "RevMobAdvertisement.h"
 #import "RevMobAdsDelegate.h"
 
 

@@ -56,7 +56,6 @@ public class Backend
 
     public static void delegateOnItemData(String productId, String name, String desc, String priceStr, float price)
     {
-        pendingItemData.clear();
         ++itemDataReturned;
         onItemData(productId, name, desc, priceStr, price);
     }
@@ -75,19 +74,12 @@ public class Backend
     public static native void onItemData(String productId, String name, String desc, String priceStr, float price);
     public static native void onInitialized();
 
-
     /**
      *
      * Helper methods to integrate this lib into your app. Should be called in
      * your main activity - please read the docs provided with this library!
      *
      */
-
-    public static boolean handleActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        initialize();
-        return mPurchaseObserver.handleActivityResult(requestCode, resultCode, data);
-    }
 
     public static void setPublicKey(final String publicKey)
     {

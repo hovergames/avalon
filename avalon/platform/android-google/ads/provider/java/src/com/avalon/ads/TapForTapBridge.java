@@ -1,63 +1,102 @@
 package com.avalon.ads;
 
-import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxHelper;
 
+import android.util.Log;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 import android.widget.FrameLayout;
 import android.view.Gravity;
 
 import com.tapfortap.TapForTap;
-import com.tapfortap.AdView;
+import com.tapfortap.Banner;
 import com.tapfortap.Interstitial;
 
 abstract class TapForTapBridge
 {
-    static Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
-    static RelativeLayout adView = null;
+    private static final String TAG = "avalon.ad.TapForTapBridge";
+    static Activity activity = Cocos2dxHelper.getActivity();
+    static Interstitial interstitial = null;
+    static RelativeLayout bannerLayout = null;
 
-    public static void init(String id)
+    public static void init(final String id)
     {
-        TapForTap.initialize(activity, id);
-        Interstitial.prepare(activity);
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(TAG, "init");
+
+                TapForTap.initialize(activity, id);
+                interstitial = Interstitial.create(activity);
+                interstitial.load();
+            }
+        });
     }
 
     public static void showFullscreenAd()
     {
-        Interstitial.show(activity);
+        if (interstitial == null) {
+            Log.v(TAG, "showFullscreenAd: NOT INITIALIZED YET!");
+            return;
+        }
+
+        if (!interstitial.isReadyToShow()) {
+            Log.v(TAG, "showFullscreenAd: interstitial not fully loaded yet");
+            return;
+        }
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(TAG, "showFullscreenAd");
+
+                interstitial.showAndLoad();
+            }
+        });
     }
 
     public static void showBanner()
     {
-        if (adView != null) {
+        if (bannerLayout != null) {
+            Log.v(TAG, "showBanner: another banner is already visible - ignored");
             return;
         }
-        
-        adView = new RelativeLayout(activity);
-        adView.setGravity(Gravity.BOTTOM);
-        adView.addView(new AdView(activity));
+
+        Banner banner = Banner.create(activity);
+        banner.enableAutoRollover();
+
+        bannerLayout = new RelativeLayout(activity);
+        bannerLayout.setGravity(Gravity.BOTTOM);
+        bannerLayout.addView(banner);
         
         activity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
+                Log.v(TAG, "showBanner");
+
                 FrameLayout mainLayout = (FrameLayout) activity.findViewById(android.R.id.content);
-                mainLayout.addView(adView);
+                mainLayout.addView(bannerLayout);
             }
         });
     }
 
     public static void hideAds()
     {
-        if (adView == null) {
+        if (bannerLayout == null) {
+            Log.v(TAG, "hideAds: no banner to hide - ignored");
             return;
         }
 
         activity.runOnUiThread(new Runnable() {
+            @Override
             public void run() {
-                FrameLayout mainLayout = (FrameLayout) activity.findViewById(android.R.id.content);
-                mainLayout.removeView(adView);
+                Log.v(TAG, "hideAds");
 
-                adView.removeAllViews();
-                adView = null;
+                FrameLayout mainLayout = (FrameLayout) activity.findViewById(android.R.id.content);
+                mainLayout.removeView(bannerLayout);
+
+                bannerLayout.removeAllViews();
+                bannerLayout = null;
             }
         });
     }

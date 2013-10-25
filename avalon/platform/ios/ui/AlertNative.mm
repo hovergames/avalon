@@ -1,13 +1,11 @@
 #include <avalon/ui/Alert.h>
 
-#include <avalon/ui/AlertDelegate.h>
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#include "cocos2d.h"
 
 @interface AlertViewProxy : NSObject<UIAlertViewDelegate>
 {
-    @public avalon::ui::AlertDelegate* delegate;
+    @public avalon::ui::Alert::Callback delegate;
 }
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex;
 @end
@@ -20,7 +18,7 @@
     }
 
     NSString* buttonTitle = [alertView buttonTitleAtIndex:buttonIndex];
-    delegate->onAlertButtonClick(buttonIndex, [buttonTitle UTF8String]);
+    delegate(buttonIndex, [buttonTitle UTF8String]);
 
     [self release];
     [alertView release];
@@ -30,7 +28,7 @@
 namespace avalon {
 namespace ui {
 
-void showAlert(const std::string& title, const std::string& message, const ButtonList& buttons, AlertDelegate* delegate)
+void showAlert(const std::string& title, const std::string& message, const Alert::ButtonList& buttons, Alert::Callback& delegate)
 {
     AlertViewProxy* proxy = [[[[AlertViewProxy alloc] init] autorelease] retain];
     proxy->delegate = delegate;
@@ -41,10 +39,10 @@ void showAlert(const std::string& title, const std::string& message, const Butto
     }
 
     UIAlertView* view = [[[[UIAlertView alloc] initWithTitle:[NSString stringWithUTF8String:title.c_str()]
-                                                   message:[NSString stringWithUTF8String:message.c_str()]
-                                                  delegate:proxy
-                                         cancelButtonTitle:cancelTitle
-                                         otherButtonTitles:nil] autorelease] retain];
+                                                     message:[NSString stringWithUTF8String:message.c_str()]
+                                                    delegate:proxy
+                                           cancelButtonTitle:cancelTitle
+                                           otherButtonTitles:nil] autorelease] retain];
 
 
     bool firstSkipped = false;

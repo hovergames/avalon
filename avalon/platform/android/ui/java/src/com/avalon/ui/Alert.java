@@ -7,7 +7,7 @@ import android.util.Log;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
-import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxHelper;
 import android.app.Activity;
 
 class OnClick implements DialogInterface.OnClickListener
@@ -25,8 +25,7 @@ class OnClick implements DialogInterface.OnClickListener
 
     public void onClick(DialogInterface dialog, int id)
     {
-        final Cocos2dxActivity activity = (Cocos2dxActivity) Cocos2dxActivity.getContext();
-        activity.runOnGLThread(new Runnable() {
+        Cocos2dxHelper.runOnGLThread(new Runnable() {
             public void run() {
                 Alert.onClick(delegatePtr, index, label);
             }
@@ -37,6 +36,7 @@ class OnClick implements DialogInterface.OnClickListener
 class Alert
 {
     private static HashMap<Integer, String> buttons = new HashMap<Integer, String>();
+    private static final String TAG = "avalon.ui.Alert";
 
     public static void reset()
     {
@@ -50,10 +50,9 @@ class Alert
 
     public static void show(final String title, final String message, final long delegatePtr)
     {
-        final Activity activity = (Activity) Cocos2dxActivity.getContext();
-        activity.runOnUiThread(new Runnable() {
+        Cocos2dxHelper.getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                AlertDialog.Builder alert = new AlertDialog.Builder(Cocos2dxActivity.getContext());
+                AlertDialog.Builder alert = new AlertDialog.Builder(Cocos2dxHelper.getActivity());
                 alert.setTitle(title);
                 alert.setMessage(message);
 
@@ -68,6 +67,8 @@ class Alert
                         alert.setNeutralButton(entry.getValue(), callback);
                     } else if (counter == 3) {
                         alert.setPositiveButton(entry.getValue(), callback);
+                    } else {
+                        Log.v(TAG, "Button '" + entry.getValue() + "' with index " + entry.getKey() + " ignored!");
                     }
                 }
 
