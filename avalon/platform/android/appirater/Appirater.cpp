@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_APPIRATER_ENABLED
+
 #include <avalon/Appirater.h>
 
 #include <avalon/utils/platform.h>
@@ -106,3 +108,5 @@ void Appirater::showIfNeeded()
 }
 
 } // namespace avalon
+
+#endif /* AVALON_CONFIG_APPIRATER_ENABLED */
