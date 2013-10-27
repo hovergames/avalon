@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_GAMECENTER_ENABLED
+
 #include <avalon/GameCenter.h>
 
 #include <jni.h>
@@ -117,3 +119,5 @@ bool GameCenter::isSignedIn()
 }
 
 } // namespace avalon
+
+#endif /* AVALON_CONFIG_GAMECENTER_ENABLED */

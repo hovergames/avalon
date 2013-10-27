@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_GAMECENTER_ENABLED
+
 #include <avalon/GameCenter.h>
 
 #include <avalon/platform/ios/gamecenter/GameCenterIos.h>
@@ -46,3 +48,5 @@ void GameCenter::clearAllScores()
 }
 
 } // namespace avalon
+
+#endif /* AVALON_CONFIG_GAMECENTER_ENABLED */

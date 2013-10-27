@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_GAMECENTER_ENABLED
+
 #include <avalon/GameCenter.h>
 
 #include <string>
@@ -67,7 +69,7 @@ void callStaticVoidMethodWithStringAndInt(const char* name, const char* idName, 
 /**
  * Public API
  */
- 
+
 void GameCenter::login()
 {
     helper::gamecenter::callStaticVoidMethod("login");
@@ -106,5 +108,7 @@ void GameCenter::clearAllScores()
 {
     helper::gamecenter::callStaticVoidMethod("clearAllScores");
 }
-    
+
 } // namespace avalon
+
+#endif /* AVALON_CONFIG_GAMECENTER_ENABLED */

@@ -1,3 +1,5 @@
+#ifdef AVALON_CONFIG_GAMECENTER_ENABLED
+
 #ifndef AVALON_GAMECENTER_H
 #define AVALON_GAMECENTER_H
 
@@ -28,3 +30,5 @@ public:
 } // namespace avalon
 
 #endif /* AVALON_GAMECENTER_H */
+
+#endif /* AVALON_CONFIG_GAMECENTER_ENABLED */
