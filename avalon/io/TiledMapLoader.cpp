@@ -13,52 +13,85 @@ TiledMapLoader::TiledMapLoader(std::string mapFileName)
 {
 }
 
+bool TiledMapLoader::isFiltered(const std::string& name, const std::list<std::string> filter)
+{
+    if (filter.empty()) {
+        return false;
+    }
+
+    auto iter = std::find(filter.begin(), filter.end(), name);
+    if (iter == filter.end()) {
+        return true;
+    }
+
+    return false;
+}
+
 std::shared_ptr<cocos2d::TMXTiledMap> TiledMapLoader::load()
 {
     auto map = std::shared_ptr<TMXTiledMap>(TMXTiledMap::create(mapFileName.c_str()));
-    if (!map) throw std::invalid_argument("Mapfile not found!");
+    if (!map) {
+        throw std::invalid_argument("Mapfile not found!");
+    }
 
-    for (auto& child : *map->getChildren()) {
+    loadGidFactories(*map.get());
+    loadNamedFactories(*map.get());
+
+    return map;
+}
+
+void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
+{
+    for (auto& child : *map.getChildren()) {
         auto mapLayer = dynamic_cast<TMXLayer*>(child);
-        if (!mapLayer) continue;
+        if (!mapLayer) {
+            continue;
+        }
 
         for (int x = 0; x < mapLayer->getMapTileSize().width; ++x) {
             for (int y = 0; y < mapLayer->getMapTileSize().height; ++y) {
                 auto currentGID = mapLayer->getTileGIDAt({x, y});
+                auto info = map.getPropertiesForGID(currentGID);
+                auto data = avalon::utils::cocos::to_map<std::string>(*info);
 
                 for (auto& obj : gidFactories) {
-                    if (obj.first != currentGID) continue;
-
-                    auto info = map->getPropertiesForGID(currentGID);
-                    auto data = avalon::utils::cocos::to_map<std::string>(*info);
-
-                    obj.second(*map.get(), mapLayer->getLayerName(), data);
+                    if (obj.first == currentGID) {
+                        obj.second(map, mapLayer->getLayerName(), data);
+                    }
                 }
             }
         }
     }
+}
 
-    // ObjectGroups
-    for (auto& arrayElement : *map->getObjectGroups()) {
+void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
+{
+    for (auto& arrayElement : *map.getObjectGroups()) {
         auto objectGroup = dynamic_cast<TMXObjectGroup*>(arrayElement);
-        if (!objectGroup) continue;
+        if (!objectGroup) {
+            continue;
+        }
 
         for (auto& arrayElement : *objectGroup->getObjects()) {
             auto objectDictonary = dynamic_cast<Dictionary*>(arrayElement);
-            if (!objectDictonary) continue;
+            if (!objectDictonary) {
+                continue;
+            }
 
             auto data = avalon::utils::cocos::to_map<std::string>(*objectDictonary);
-            if (!data.count("name")) continue;
+            if (!data.count("name")) {
+                continue;
+            }
 
             for (auto& obj : nameFactories) {
-                if (obj.first != data["name"]) continue;
+                if (obj.first != data["name"]) {
+                    continue;
+                }
 
-                obj.second(*map.get(), objectGroup->getGroupName(), data);
+                obj.second(map, objectGroup->getGroupName(), data);
             }
         }
     }
-
-    return map;
 }
 
 } // namespace io

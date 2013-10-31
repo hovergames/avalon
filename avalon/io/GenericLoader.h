@@ -12,44 +12,59 @@ namespace io {
 template<typename T, typename L>
 class GenericLoader : public L, public GenericLoaderInterface
 {
+public:
+    typedef std::map<std::string, boost::any> Dictionary;
+
 private:
-    T* target = nullptr;
-    std::map<std::string, boost::any> properties;
+    std::map<T*, Dictionary> nodeSettings;
+
+    T* getTarget(cocos2d::Node* node)
+    {
+        auto target = dynamic_cast<T*>(node);
+        if (!target) {
+            throw std::invalid_argument("Node is invalid!");
+        }
+        return target;
+    }
 
 public:
     CCB_STATIC_NEW_AUTORELEASE_OBJECT_METHOD(GenericLoader, loader);
 
-    virtual void parseProperties(cocos2d::Node* node, cocos2d::Node* parent, cocosbuilder::CCBReader* reader)
+    virtual void parseProperties(cocos2d::Node* pNode, cocos2d::Node* pParent, cocosbuilder::CCBReader* pCCBReader)
     {
-        target = dynamic_cast<T*>(node);
-        if (!target) throw std::invalid_argument("Node is invalid!");
+        auto target = getTarget(pNode);
+        if (!nodeSettings.count(target)) {
+            nodeSettings[target] = {};
+        }
 
-        L::parseProperties(node, parent, reader);
+        L::parseProperties(pNode, pParent, pCCBReader);
     }
 
     virtual void onHandlePropTypeString(cocos2d::Node* pNode, cocos2d::Node* pParent, const char* pPropertyName, const char* value, cocosbuilder::CCBReader* pCCBReader) override
     {
-        properties[pPropertyName] = std::string(value);
+        nodeSettings[getTarget(pNode)][pPropertyName] = std::string(value);
     }
 
     virtual void onHandlePropTypeInteger(cocos2d::Node* pNode, cocos2d::Node* pParent, const char* pPropertyName, int value, cocosbuilder::CCBReader* pCCBReader) override
     {
-        properties[pPropertyName] = value;
+        nodeSettings[getTarget(pNode)][pPropertyName] = value;
     }
 
     virtual void onHandlePropTypeFloat(cocos2d::Node* pNode, cocos2d::Node* pParent, const char* pPropertyName, float value, cocosbuilder::CCBReader* pCCBReader) override
     {
-        properties[pPropertyName] = value;
+        nodeSettings[getTarget(pNode)][pPropertyName] = value;
     }
 
     virtual void onHandlePropTypeCheck(cocos2d::Node* pNode, cocos2d::Node* pParent, const char* pPropertyName, bool value,  cocosbuilder::CCBReader* pCCBReader) override
     {
-        properties[pPropertyName] = value;
+        nodeSettings[getTarget(pNode)][pPropertyName] = value;
     }
 
     virtual void dispatchPendingProperties() override
     {
-        target->onCCBConfiguration(properties);
+        for (auto& pair : nodeSettings) {
+            pair.first->onCCBConfiguration(pair.second);
+        }
     }
 
 protected:

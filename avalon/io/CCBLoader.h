@@ -2,12 +2,9 @@
 #define AVALON_IO_CCBLOADER_H
 
 #include "cocos2d.h"
+#include <editor-support/cocosbuilder/CocosBuilder.h>
 #include <avalon/io/GenericLoaderInterface.h>
 #include <avalon/io/GenericLoader.h>
-#include <editor-support/cocosbuilder/CCBSelectorResolver.h>
-#include <editor-support/cocosbuilder/CCBMemberVariableAssigner.h>
-#include <editor-support/cocosbuilder/CCNodeLoaderLibrary.h>
-#include <editor-support/cocosbuilder/CocosBuilder.h>
 #include <boost/any.hpp>
 
 namespace avalon {
@@ -33,7 +30,9 @@ public:
     {
         nameAssigner[name] = [destination](cocos2d::Object* object) {
             *destination = dynamic_cast<T*>(object);
-            if (!destination) throw std::invalid_argument("Wrong Object type");
+            if (!*destination) {
+                throw std::invalid_argument("Wrong Object type");
+            }
         };
     }
 
@@ -45,7 +44,6 @@ public:
         nodeLoaderLibrary->registerNodeLoader(className.c_str(), loader);
     }
 
-    /* CCB Member Assigner */
     virtual bool onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node);
 };
 
