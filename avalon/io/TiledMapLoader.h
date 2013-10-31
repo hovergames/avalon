@@ -13,9 +13,8 @@ public:
     typedef std::function<void(cocos2d::TMXTiledMap&, const std::string&, const Dictonary&)> Callback;
 
 private:
-    typedef std::function<void(cocos2d::TMXTiledMap&, const std::string&, const Dictonary&)> Factory;
-    std::map<int, Factory> gidFactories;
-    std::map<std::string, Factory> nameFactories;
+    std::map<int, Callback> gidFactories;
+    std::map<std::string, Callback> nameFactories;
 
     const std::string mapFileName;
 
@@ -26,11 +25,13 @@ private:
 public:
     TiledMapLoader(const std::string mapFileName);
     std::shared_ptr<cocos2d::TMXTiledMap> load();
+    void registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string> layerFilter = {});
 
     template<typename T>
     void registerObjectForGID(const int gid, const std::list<std::string> layerFilter = {})
     {
-        gidFactories[gid] = [this, layerFilter](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictonary& data) {
+        gidFactories[gid] = [this, layerFilter](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictonary& data)
+        {
             if (!isFiltered(layerName, layerFilter)) {
                 auto newObject = T::create();
                 newObject->onTiledConfiguration(map, layerName, data);
@@ -42,20 +43,12 @@ public:
     template<typename T>
     void registerObjectForName(const std::string& name, const std::list<std::string> layerFilter = {})
     {
-        nameFactories[name] = [this, layerFilter](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictonary& data) {
+        nameFactories[name] = [this, layerFilter](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictonary& data)
+        {
             if (!isFiltered(layerName, layerFilter)) {
                 auto newObject = T::create();
                 newObject->onTiledConfiguration(map, layerName, data);
                 map.addChild(newObject);
-            }
-        };
-    }
-
-    void registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string> layerFilter = {})
-    {
-        nameFactories[name] = [this, layerFilter, callback](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictonary& data) {
-            if (!isFiltered(layerName, layerFilter)) {
-                callback(map, layerName, data);
             }
         };
     }

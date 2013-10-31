@@ -94,5 +94,15 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
     }
 }
 
+void TiledMapLoader::registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string> layerFilter)
+{
+    nameFactories[name] = [this, layerFilter, callback](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictonary& data)
+    {
+        if (!isFiltered(layerName, layerFilter)) {
+            callback(map, layerName, data);
+        }
+    };
+}
+
 } // namespace io
 } // namespace avalon
