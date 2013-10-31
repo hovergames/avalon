@@ -11,7 +11,6 @@ class TiledMapLoader
 {
 public:
     typedef std::map<std::string, std::string> Dictionary;
-    typedef std::function<void(cocos2d::TMXTiledMap&, const std::string&, const Dictionary&)> Callback;
     struct Configuration
     {
         const Dictionary& settings;
@@ -19,6 +18,7 @@ public:
         cocos2d::TMXTiledMap& map;
         avalon::physics::Box2dContainer* box2dContainer;
     };
+    typedef std::function<void(const Configuration&)> Callback;
 
 private:
     std::map<int, Callback> gidFactories;
@@ -40,13 +40,12 @@ public:
     template<typename T>
     void registerObjectForGID(const int gid, const std::list<std::string> layerFilter = {})
     {
-        gidFactories[gid] = [this, layerFilter](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictionary& data)
+        gidFactories[gid] = [this, layerFilter](const Configuration& config)
         {
-            if (!isFiltered(layerName, layerFilter)) {
+            if (!isFiltered(config.layer, layerFilter)) {
                 auto newObject = T::create();
-                Configuration config{data, layerName, map, box2dContainer};
                 newObject->onConfiguration(config);
-                map.addChild(newObject);
+                config.map.addChild(newObject);
             }
         };
     }
@@ -54,13 +53,12 @@ public:
     template<typename T>
     void registerObjectForName(const std::string& name, const std::list<std::string> layerFilter = {})
     {
-        nameFactories[name] = [this, layerFilter](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictionary& data)
+        nameFactories[name] = [this, layerFilter](const Configuration& config)
         {
-            if (!isFiltered(layerName, layerFilter)) {
+            if (!isFiltered(config.layer, layerFilter)) {
                 auto newObject = T::create();
-                Configuration config{data, layerName, map, box2dContainer};
                 newObject->onConfiguration(config);
-                map.addChild(newObject);
+                config.map.addChild(newObject);
             }
         };
     }

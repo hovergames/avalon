@@ -61,7 +61,8 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
 
                 for (auto& obj : gidFactories) {
                     if (obj.first == currentGID) {
-                        obj.second(map, mapLayer->getLayerName(), data);
+                        Configuration config{data, mapLayer->getLayerName(), map, box2dContainer};
+                        obj.second(config);
                     }
                 }
             }
@@ -93,7 +94,8 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
                     continue;
                 }
 
-                obj.second(map, objectGroup->getGroupName(), data);
+                Configuration config{data, objectGroup->getGroupName(), map, box2dContainer};
+                obj.second(config);
             }
         }
     }
@@ -101,10 +103,10 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
 
 void TiledMapLoader::registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string> layerFilter)
 {
-    nameFactories[name] = [this, layerFilter, callback](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictionary& data)
+    nameFactories[name] = [this, layerFilter, callback](const Configuration& config)
     {
-        if (!isFiltered(layerName, layerFilter)) {
-            callback(map, layerName, data);
+        if (!isFiltered(config.layer, layerFilter)) {
+            callback(config);
         }
     };
 }
