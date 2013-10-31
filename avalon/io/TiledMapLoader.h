@@ -10,6 +10,7 @@ class TiledMapLoader
 {
 public:
     typedef std::map<std::string, std::string> Dictonary;
+    typedef std::function<void(cocos2d::TMXTiledMap&, const std::string&, const Dictonary&)> Callback;
 
 private:
     typedef std::function<void(cocos2d::TMXTiledMap&, const std::string&, const Dictonary&)> Factory;
@@ -46,6 +47,15 @@ public:
                 auto newObject = T::create();
                 newObject->onTiledConfiguration(map, layerName, data);
                 map.addChild(newObject);
+            }
+        };
+    }
+
+    void registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string> layerFilter = {})
+    {
+        nameFactories[name] = [this, layerFilter, callback](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictonary& data) {
+            if (!isFiltered(layerName, layerFilter)) {
+                callback(map, layerName, data);
             }
         };
     }
