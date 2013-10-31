@@ -53,11 +53,15 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
             continue;
         }
 
-        for (int x = 0; x < mapLayer->getMapTileSize().width; ++x) {
-            for (int y = 0; y < mapLayer->getMapTileSize().height; ++y) {
+        for (int x = 0; x < map.getMapSize().width; ++x) {
+            for (int y = 0; y < map.getMapSize().height; ++y) {
                 auto currentGID = mapLayer->getTileGIDAt({x, y});
                 auto info = map.getPropertiesForGID(currentGID);
                 auto data = avalon::utils::cocos::to_map<std::string>(*info);
+
+                if (!data.count("x")) data["x"] = std::to_string(x);
+                if (!data.count("y")) data["y"] = std::to_string(y);
+                if (!data.count("gid")) data["gid"] = std::to_string(currentGID);
 
                 for (auto& obj : gidFactories) {
                     if (obj.first == currentGID) {

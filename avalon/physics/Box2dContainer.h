@@ -20,6 +20,7 @@ public:
     int32 velocityIterations = 8;
     int32 positionIterations = 3;
 
+    // todo: read only
     float pixelsInMeter = 100;
 
     CREATE_FUNC(Box2dContainer);

@@ -29,8 +29,7 @@ void Box2dContainer::enableDebugDraw(const bool enable)
     if (!debugLayer)
     {
         debugLayer = B2DebugDrawLayer::create(world.get(), pixelsInMeter);
-        addChild(debugLayer);
-        setZOrder(std::numeric_limits<int>::max());
+        addChild(debugLayer, std::numeric_limits<int>::max());
     }
 
     debugLayer->setVisible(enable);
