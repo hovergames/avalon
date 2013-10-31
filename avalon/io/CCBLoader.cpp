@@ -15,6 +15,11 @@ CCBLoader::CCBLoader(std::string ccbFileName)
 {
 }
 
+void CCBLoader::setBox2dContainer(avalon::physics::Box2dContainer& container)
+{
+    box2dContainer = &container;
+}
+
 std::shared_ptr<cocos2d::Node> CCBLoader::load()
 {
     nodeLoaderLibrary->registerDefaultNodeLoaders();
@@ -23,7 +28,7 @@ std::shared_ptr<cocos2d::Node> CCBLoader::load()
     auto node = ccbReader.readNodeGraphFromFile(ccbFileName.c_str(), this);
 
     for (auto& loader : genericLoaders) {
-        loader->dispatchPendingProperties();
+        loader->dispatchPendingProperties(box2dContainer);
     }
 
     return std::shared_ptr<Node>(node);

@@ -4,7 +4,6 @@
 #include "cocos2d.h"
 #include <editor-support/cocosbuilder/CocosBuilder.h>
 #include <avalon/io/GenericLoaderInterface.h>
-#include <boost/any.hpp>
 
 namespace avalon {
 namespace io {
@@ -12,9 +11,6 @@ namespace io {
 template<typename T, typename L>
 class GenericLoader : public L, public GenericLoaderInterface
 {
-public:
-    typedef std::map<std::string, boost::any> Dictionary;
-
 private:
     std::map<T*, Dictionary> nodeSettings;
 
@@ -60,10 +56,11 @@ public:
         nodeSettings[getTarget(pNode)][pPropertyName] = value;
     }
 
-    virtual void dispatchPendingProperties() override
+    virtual void dispatchPendingProperties(avalon::physics::Box2dContainer* box2dContainer) override
     {
         for (auto& pair : nodeSettings) {
-            pair.first->onCCBConfiguration(pair.second);
+            Configuration config{pair.second, box2dContainer};
+            pair.first->onConfiguration(config);
         }
     }
 

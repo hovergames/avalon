@@ -13,6 +13,11 @@ TiledMapLoader::TiledMapLoader(std::string mapFileName)
 {
 }
 
+void TiledMapLoader::setBox2dContainer(avalon::physics::Box2dContainer& container)
+{
+    box2dContainer = &container;
+}
+
 bool TiledMapLoader::isFiltered(const std::string& name, const std::list<std::string> filter)
 {
     if (filter.empty()) {
@@ -73,7 +78,7 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
         }
 
         for (auto& arrayElement : *objectGroup->getObjects()) {
-            auto objectDictonary = dynamic_cast<Dictionary*>(arrayElement);
+            auto objectDictonary = dynamic_cast<cocos2d::Dictionary*>(arrayElement);
             if (!objectDictonary) {
                 continue;
             }
@@ -96,7 +101,7 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
 
 void TiledMapLoader::registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string> layerFilter)
 {
-    nameFactories[name] = [this, layerFilter, callback](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictonary& data)
+    nameFactories[name] = [this, layerFilter, callback](cocos2d::TMXTiledMap& map, const std::string& layerName, const Dictionary& data)
     {
         if (!isFiltered(layerName, layerFilter)) {
             callback(map, layerName, data);

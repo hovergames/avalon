@@ -5,7 +5,6 @@
 #include <editor-support/cocosbuilder/CocosBuilder.h>
 #include <avalon/io/GenericLoaderInterface.h>
 #include <avalon/io/GenericLoader.h>
-#include <boost/any.hpp>
 
 namespace avalon {
 namespace io {
@@ -20,11 +19,13 @@ private:
     const std::string ccbFileName;
     std::shared_ptr<cocosbuilder::NodeLoaderLibrary> nodeLoaderLibrary;
     std::list<GenericLoaderInterface*> genericLoaders;
+    avalon::physics::Box2dContainer* box2dContainer = nullptr;
 
 public:
     CCBLoader(const std::string ccbFileName);
     std::shared_ptr<cocos2d::Node> load();
-    
+    void setBox2dContainer(avalon::physics::Box2dContainer& container);
+
     template<typename T>
     void assignObject(const std::string& name, T** destination)
     {
