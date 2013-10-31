@@ -8,7 +8,7 @@ using namespace cocos2d;
 namespace avalon {
 namespace io {
 
-TiledMapLoader::TiledMapLoader(std::string mapFileName)
+TiledMapLoader::TiledMapLoader(const std::string& mapFileName)
 : mapFileName(mapFileName)
 {
 }
@@ -18,7 +18,7 @@ void TiledMapLoader::setBox2dContainer(avalon::physics::Box2dContainer& containe
     box2dContainer = &container;
 }
 
-bool TiledMapLoader::isFiltered(const std::string& name, const std::list<std::string> filter)
+bool TiledMapLoader::isFiltered(const std::string& name, const std::list<std::string>& filter)
 {
     if (filter.empty()) {
         return false;
@@ -57,7 +57,7 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
             for (int y = 0; y < map.getMapSize().height; ++y) {
                 auto currentGID = mapLayer->getTileGIDAt({x, y});
                 auto info = map.getPropertiesForGID(currentGID);
-                auto data = avalon::utils::cocos::to_map<std::string>(*info);
+                auto data = avalon::utils::cocos::to_unordered_map<std::string>(*info);
 
                 if (!data.count("x")) data["x"] = std::to_string(x);
                 if (!data.count("y")) data["y"] = std::to_string(y);
@@ -88,7 +88,7 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
                 continue;
             }
 
-            auto data = avalon::utils::cocos::to_map<std::string>(*objectDictonary);
+            auto data = avalon::utils::cocos::to_unordered_map<std::string>(*objectDictonary);
             if (!data.count("name")) {
                 continue;
             }
@@ -105,7 +105,7 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
     }
 }
 
-void TiledMapLoader::registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string> layerFilter)
+void TiledMapLoader::registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter)
 {
     nameFactories[name] = [this, layerFilter, callback](const Configuration& config)
     {

@@ -7,10 +7,11 @@ namespace physics {
 
 bool Box2dContainer::init()
 {
-    if (!Node::init())
+    if (!Node::init()) {
         return false;
+    }
 
-    world.reset(new b2World(b2Vec2(0,0)));
+    world.reset(new b2World(b2Vec2(0, 0)));
     scheduleUpdate();
 
     return true;
@@ -24,10 +25,11 @@ void Box2dContainer::update(float delta)
 
 void Box2dContainer::enableDebugDraw(const bool enable)
 {
-    if (!enable && !debugLayer) return;
+    if (!enable && !debugLayer) {
+        return;
+    }
 
-    if (!debugLayer)
-    {
+    if (!debugLayer) {
         debugLayer = B2DebugDrawLayer::create(world.get(), pixelsInMeter);
         addChild(debugLayer, std::numeric_limits<int>::max());
     }

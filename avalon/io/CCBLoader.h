@@ -3,8 +3,10 @@
 
 #include "cocos2d.h"
 #include <editor-support/cocosbuilder/CocosBuilder.h>
-#include <avalon/io/GenericLoaderInterface.h>
-#include <avalon/io/GenericLoader.h>
+
+#include <avalon/io/ccbloader/GenericLoaderInterface.h>
+#include <avalon/io/ccbloader/GenericLoader.h>
+#include <avalon/io/ccbloader/types.h>
 
 namespace avalon {
 namespace io {
@@ -13,18 +15,24 @@ class CCBLoader
 : public cocosbuilder::CCBMemberVariableAssigner
 , public cocos2d::Object
 {
+public:
+    using Dictionary = ccbloader::Dictionary;
+    using Configuration = ccbloader::Configuration;
+
 private:
-    typedef std::function<void(cocos2d::Object*)> Assigner;
-    std::map<std::string, Assigner> nameAssigner;
+    using Assigner = std::function<void(cocos2d::Object*)>;
+
+    std::unordered_map<std::string, Assigner> nameAssigner;
     const std::string ccbFileName;
     std::shared_ptr<cocosbuilder::NodeLoaderLibrary> nodeLoaderLibrary;
-    std::list<GenericLoaderInterface*> genericLoaders;
+    std::list<ccbloader::GenericLoaderInterface*> genericLoaders;
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
 
 public:
-    CCBLoader(const std::string ccbFileName);
+    CCBLoader(const std::string& ccbFileName);
     std::shared_ptr<cocos2d::Node> load();
     void setBox2dContainer(avalon::physics::Box2dContainer& container);
+    virtual bool onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node);
 
     template<typename T>
     void assignObject(const std::string& name, T** destination)
@@ -40,12 +48,10 @@ public:
     template<typename T, typename L>
     void registerCustomClass(const std::string& className)
     {
-        auto loader = GenericLoader<T, L>::loader();
+        auto loader = ccbloader::GenericLoader<T, L>::loader();
         genericLoaders.push_back(loader);
         nodeLoaderLibrary->registerNodeLoader(className.c_str(), loader);
     }
-
-    virtual bool onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node);
 };
 
 } // namespace io

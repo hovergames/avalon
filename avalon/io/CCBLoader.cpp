@@ -9,7 +9,7 @@ using namespace cocosbuilder;
 namespace avalon {
 namespace io {
 
-CCBLoader::CCBLoader(std::string ccbFileName)
+CCBLoader::CCBLoader(const std::string& ccbFileName)
 : ccbFileName(ccbFileName)
 , nodeLoaderLibrary(NodeLoaderLibrary::library())
 {

@@ -1,18 +1,21 @@
-#ifndef AVALON_IO_GENERICLOADER_H
-#define AVALON_IO_GENERICLOADER_H
+#ifndef AVALON_IO_CCBLOADER_GENERICLOADER_H
+#define AVALON_IO_CCBLOADER_GENERICLOADER_H
 
 #include "cocos2d.h"
 #include <editor-support/cocosbuilder/CocosBuilder.h>
-#include <avalon/io/GenericLoaderInterface.h>
+
+#include <avalon/io/ccbloader/GenericLoaderInterface.h>
+#include <avalon/io/ccbloader/types.h>
 
 namespace avalon {
 namespace io {
+namespace ccbloader {
 
 template<typename T, typename L>
 class GenericLoader : public L, public GenericLoaderInterface
 {
 private:
-    std::map<T*, Dictionary> nodeSettings;
+    std::unordered_map<T*, Dictionary> nodeSettings;
 
     T* getTarget(cocos2d::Node* node)
     {
@@ -51,7 +54,7 @@ public:
         nodeSettings[getTarget(pNode)][pPropertyName] = value;
     }
 
-    virtual void onHandlePropTypeCheck(cocos2d::Node* pNode, cocos2d::Node* pParent, const char* pPropertyName, bool value,  cocosbuilder::CCBReader* pCCBReader) override
+    virtual void onHandlePropTypeCheck(cocos2d::Node* pNode, cocos2d::Node* pParent, const char* pPropertyName, bool value, cocosbuilder::CCBReader* pCCBReader) override
     {
         nodeSettings[getTarget(pNode)][pPropertyName] = value;
     }
@@ -68,7 +71,8 @@ protected:
     CCB_VIRTUAL_NEW_AUTORELEASE_CREATECCNODE_METHOD(T);
 };
 
+} // namespace ccbloader
 } // namespace io
 } // namespace avalon
 
-#endif /* AVALON_IO_GENERICLOADER_H */
+#endif /* AVALON_IO_CCBLOADER_GENERICLOADER_H */
