@@ -2,25 +2,36 @@
 #define AVALON_UTILS_COCOS2D_H
 
 #include "cocos2d.h"
+#include <boost/any.hpp>
 
 namespace avalon {
 namespace utils {
 namespace cocos {
 
-template<typename V>
-std::unordered_map<std::string, V> to_unordered_map(const cocos2d::Dictionary& dict)
-{
-    using namespace cocos2d;
+boost::any to_any(cocos2d::Object* object);
+std::list<boost::any> to_list(cocos2d::Array& array);
+std::list<boost::any> to_list(cocos2d::Set& set);
 
-    std::unordered_map<std::string, V> data;
+template<typename Key>
+std::map<Key, boost::any> to_map(cocos2d::Dictionary& dict)
+{
+    // The following lines may look weird but CCDICT_FOREACH is
+    // a little bit broken ...
+    using namespace cocos2d;
+    const cocos2d::Dictionary* dictPtr = &dict;
+
+    std::map<Key, boost::any> data;
     cocos2d::DictElement* dictElement = nullptr;
 
-    const cocos2d::Dictionary* pDict = &dict;
-    CCDICT_FOREACH(pDict, dictElement)
-    {
-        std::string key(dictElement->getStrKey());
-        std::string value = dynamic_cast<cocos2d::String*>(dictElement->getObject())->getCString();
-        data[key] = value;
+    CCDICT_FOREACH(dictPtr, dictElement) {
+        Key key;
+        if (std::is_same<Key, std::string>::value) {
+            key = std::string(dictElement->getStrKey());
+        } else {
+            key = dictElement->getIntKey();
+        }
+
+        data[key] = to_any(dictElement->getObject());
     }
 
     return data;

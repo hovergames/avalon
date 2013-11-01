@@ -57,11 +57,11 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
             for (int y = 0; y < map.getMapSize().height; ++y) {
                 auto currentGID = mapLayer->getTileGIDAt({x, y});
                 auto info = map.getPropertiesForGID(currentGID);
-                auto data = avalon::utils::cocos::to_unordered_map<std::string>(*info);
+                auto data = avalon::utils::cocos::to_map<std::string>(*info);
 
-                if (!data.count("x")) data["x"] = std::to_string(x);
-                if (!data.count("y")) data["y"] = std::to_string(y);
-                if (!data.count("gid")) data["gid"] = std::to_string(currentGID);
+                if (!data.count("x")) data["x"] = x;
+                if (!data.count("y")) data["y"] = y;
+                if (!data.count("gid")) data["gid"] = currentGID;
 
                 for (auto& obj : gidFactories) {
                     if (obj.first == currentGID) {
@@ -88,13 +88,14 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
                 continue;
             }
 
-            auto data = avalon::utils::cocos::to_unordered_map<std::string>(*objectDictonary);
+            auto data = avalon::utils::cocos::to_map<std::string>(*objectDictonary);
             if (!data.count("name")) {
                 continue;
             }
 
             for (auto& obj : nameFactories) {
-                if (obj.first != data["name"]) {
+                auto dataName = boost::any_cast<std::string>(data["name"]);
+                if (obj.first != dataName) {
                     continue;
                 }
 

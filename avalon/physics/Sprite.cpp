@@ -133,30 +133,30 @@ void Sprite::onConfiguration(const avalon::io::TiledMapLoader::Configuration& co
             throw std::invalid_argument("pes.shape not defined!");
         }
 
-        auto file = config.settings.at("pes.file");
-        auto shape = config.settings.at("pes.shape");
+        auto file = boost::any_cast<std::string>(config.settings.at("pes.file"));
+        auto shape = boost::any_cast<std::string>(config.settings.at("pes.shape"));
         createBodyWithPESShape(*config.box2dContainer, file, shape);
     } else {
         createBody(*config.box2dContainer);
         addTextureShape();
     }
 
-    float x = std::stoi(config.settings.at("x"));
-    float y = std::stoi(config.settings.at("y"));
+    float x = boost::any_cast<int>(config.settings.at("x"));
+    float y = boost::any_cast<int>(config.settings.at("y"));
     auto pos = avalon::utils::tiled::getPositionFromCoord(config.map, x, y);
     setPosition(pos);
 
     if (config.settings.count("friction")) {
-        getBody().GetFixtureList()->SetFriction(std::stof(config.settings.at("friction")));
+        getBody().GetFixtureList()->SetFriction(std::stof(boost::any_cast<std::string>(config.settings.at("friction"))));
     }
     if (config.settings.count("density")) {
-        getBody().GetFixtureList()->SetDensity(std::stof(config.settings.at("density")));
+        getBody().GetFixtureList()->SetDensity(std::stof(boost::any_cast<std::string>(config.settings.at("density"))));
     }
     if (config.settings.count("restitution")) {
-        getBody().GetFixtureList()->SetRestitution(std::stof(config.settings.at("restitution")));
+        getBody().GetFixtureList()->SetRestitution(std::stof(boost::any_cast<std::string>(config.settings.at("restitution"))));
     }
     if (config.settings.count("bodytype")) {
-        getBody().SetType(getBox2dBodyType(config.settings.at("bodytype")));
+        getBody().SetType(getBox2dBodyType(boost::any_cast<std::string>(config.settings.at("bodytype"))));
     }
 }
 

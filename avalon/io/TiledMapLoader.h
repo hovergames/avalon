@@ -2,6 +2,7 @@
 #define AVALON_IO_TILEDMAPLOADER_H
 
 #include "cocos2d.h"
+#include <boost/any.hpp>
 
 namespace avalon { namespace physics { class Box2dContainer; } }
 
@@ -11,7 +12,7 @@ namespace io {
 class TiledMapLoader
 {
 public:
-    using Dictionary = std::unordered_map<std::string, std::string>;
+    using Dictionary = std::map<std::string, boost::any>;
     struct Configuration
     {
         const Dictionary& settings;
