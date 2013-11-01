@@ -42,7 +42,7 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef)
     return world->CreateBody(&bodyDef);
 }
 
-b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node)
+b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, const cocos2d::Node& node)
 {
     if (!nodeToId.count(&node)) {
         auto newId = generateId();
@@ -55,7 +55,7 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node
     return body;
 }
 
-void Box2dContainer::removeNode(cocos2d::Node& node)
+void Box2dContainer::removeNode(const cocos2d::Node& node)
 {
     auto iter = nodeToId.find(&node);
     if (iter == nodeToId.end()) {

@@ -16,8 +16,8 @@ private:
 
     NodeId lastNodeId = nullptr;
     B2DebugDrawLayer* debugLayer = nullptr;
-    std::unordered_map<NodeId, cocos2d::Node*> idToNode;
-    std::unordered_map<cocos2d::Node*, NodeId> nodeToId;
+    std::unordered_map<NodeId, const cocos2d::Node*> idToNode;
+    std::unordered_map<const cocos2d::Node*, NodeId> nodeToId;
 
     NodeId generateId();
 
@@ -35,9 +35,9 @@ public:
     void enableDebugDraw(const bool enable);
 
     b2Body* createBody(const b2BodyDef& bodyDef);
-    b2Body* createBody(const b2BodyDef& bodyDef, cocos2d::Node& node);
+    b2Body* createBody(const b2BodyDef& bodyDef, const cocos2d::Node& node);
 
-    void removeNode(cocos2d::Node& node);
+    void removeNode(const cocos2d::Node& node);
 
     template<typename T>
     T* getNode(const b2Fixture& fixture)
