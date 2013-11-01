@@ -38,6 +38,7 @@ public:
     b2Body* createBody(const b2BodyDef& bodyDef);
     b2Body* createBody(const b2BodyDef& bodyDef, cocos2d::Node& node);
 
+    void removeNode(cocos2d::Node& node);
     template<typename T>
     T* getNode(const b2Body& body)
     {

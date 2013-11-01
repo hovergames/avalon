@@ -65,6 +65,22 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node
     return body;
 }
 
+void Box2dContainer::removeNode(cocos2d::Node& node)
+{
+    auto iter = nodeToId.find(&node);
+    if (iter == nodeToId.end()) {
+        return;
+    }
+
+    auto nodePtr = (*iter).first;
+    auto nodeId = (*iter).second;
+
+    nodeToId.erase(iter);
+    idToNode.erase(nodeId);
+
+    nodePtr->release();
+}
+
 Box2dContainer::NodeId Box2dContainer::generateId()
 {
     return ++lastNodeId;

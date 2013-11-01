@@ -6,6 +6,30 @@
 namespace avalon {
 namespace physics {
 
+Sprite::~Sprite()
+{
+    if (hasBody()) {
+        getBody().GetWorld()->DestroyBody(&getBody());
+    }
+    if (box2dContainer) {
+        box2dContainer->removeNode(*this);
+    }
+}
+
+bool Sprite::hasBody() const
+{
+    return !!body;
+}
+
+b2Body& Sprite::getBody()
+{
+    if (!body) {
+        throw new std::runtime_error("no body created yet");
+    }
+
+    return *body;
+}
+
 void Sprite::onConfiguration(const avalon::io::CCBLoader::Configuration& config)
 {
 }
@@ -28,6 +52,7 @@ void Sprite::onConfiguration(const avalon::io::TiledMapLoader::Configuration& co
     bodyDef.position.Set((pos.x + (w / 2.0f)) / config.box2dContainer->pixelsInMeter,
                          (pos.y + (h / 2.0f)) / config.box2dContainer->pixelsInMeter);
     auto body = config.box2dContainer->createBody(bodyDef, *this);
+    box2dContainer = config.box2dContainer;
 
     // define the shape
     b2PolygonShape shape;
