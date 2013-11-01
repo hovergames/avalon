@@ -32,7 +32,7 @@ private:
     void loadNamedFactories(cocos2d::TMXTiledMap& map);
     
 public:
-    TiledMapLoader(const std::string& mapFileName);
+    explicit TiledMapLoader(const std::string& mapFileName);
     std::shared_ptr<cocos2d::TMXTiledMap> load();
     void registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter = {});
     void setBox2dContainer(avalon::physics::Box2dContainer& container);
