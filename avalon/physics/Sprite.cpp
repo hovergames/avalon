@@ -164,11 +164,25 @@ void Sprite::update(float delta)
     cocos2d::Sprite::update(delta);
 
     if (hasBody()) {
-        float px = body->GetPosition().x * box2dContainer->pixelsInMeter;
-        float py = body->GetPosition().y * box2dContainer->pixelsInMeter;
-        float rotation = body->GetAngle();
+        auto size = getContentSize();
+        auto x = body->GetPosition().x;
+        auto y = body->GetPosition().y;
 
-        cocos2d::Sprite::setPosition({px, py});
+        // convert from box2d to cocos2dx units
+        x *= box2dContainer->pixelsInMeter;
+        y *= box2dContainer->pixelsInMeter;
+
+        // cocos2dx handle is in the lower left corner
+        x -= size.width / 2;
+        y -= size.height / 2;
+
+        // adjust to the current anchor point
+        x += getAnchorPoint().x * size.width;
+        y += getAnchorPoint().y * size.height;
+
+        cocos2d::Sprite::setPosition({x, y});
+
+        float rotation = body->GetAngle();
         cocos2d::Sprite::setRotation(-CC_RADIANS_TO_DEGREES(rotation));
     }
 }
@@ -178,8 +192,22 @@ void Sprite::setPosition(const cocos2d::Point& pos)
     cocos2d::Sprite::setPosition(pos);
 
     if (hasBody()) {
-        auto x = pos.x / box2dContainer->pixelsInMeter;
-        auto y = pos.y / box2dContainer->pixelsInMeter;
+        auto size = getContentSize();
+        auto x = pos.x;
+        auto y = pos.y;
+
+        // box2d handle is in the center
+        x += size.width * 0.5f;
+        y += size.height * 0.5f;
+
+        // adjust to the current anchor point
+        x -= getAnchorPoint().x * size.width;
+        y -= getAnchorPoint().y * size.height;
+
+        // convert from cocos2d to box2d units
+        x /= box2dContainer->pixelsInMeter;
+        y /= box2dContainer->pixelsInMeter;
+
         auto angle = getBody().GetTransform().q.GetAngle();
         getBody().SetTransform(b2Vec2(x, y), angle);
     }
