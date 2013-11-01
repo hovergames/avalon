@@ -12,12 +12,11 @@ namespace physics {
 class Box2dContainer : public cocos2d::Node
 {
 private:
-    using NodeId = unsigned int;
+    using NodeId = int*;
 
-    NodeId lastId = 0;
     B2DebugDrawLayer* debugLayer = nullptr;
-    std::unordered_map<NodeId*, cocos2d::Node*> idToNode;
-    std::unordered_map<cocos2d::Node*, NodeId*> nodeToId;
+    std::unordered_map<NodeId, cocos2d::Node*> idToNode;
+    std::unordered_map<cocos2d::Node*, NodeId> nodeToId;
 
     NodeId generateId();
 
@@ -46,8 +45,8 @@ public:
             throw new std::invalid_argument("b2Body does not contain any user data");
         }
 
-        auto nodeIdPtr = static_cast<NodeId*>(userDataPtr);
-        auto iter = idToNode.find(nodeIdPtr);
+        auto nodeId = static_cast<NodeId>(userDataPtr);
+        auto iter = idToNode.find(nodeId);
         if (iter == idToNode.end()) {
             throw new std::out_of_range("Unable to find node");
         }

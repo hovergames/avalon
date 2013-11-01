@@ -56,8 +56,8 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node
     if (!nodeToId.count(&node)) {
         node.retain();
         auto newId = generateId();
-        nodeToId[&node] = &newId;
-        idToNode[&newId] = &node;
+        nodeToId[&node] = newId;
+        idToNode[newId] = &node;
     }
 
     auto body = world->CreateBody(&bodyDef);
@@ -67,10 +67,15 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node
 
 Box2dContainer::NodeId Box2dContainer::generateId()
 {
+    NodeId result = nullptr;
     do {
-        ++lastId;
-    } while (idToNode.count(&lastId));
-    return lastId;
+        if (result) {
+            delete result;
+        }
+        result = new int(0);
+    } while (idToNode.count(result));
+    delete result;
+    return result;
 }
 
 } // namespace physics
