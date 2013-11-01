@@ -209,7 +209,7 @@ void Sprite::setPosition(const cocos2d::Point& pos)
         y /= box2dContainer->pixelsInMeter;
 
         auto angle = getBody().GetTransform().q.GetAngle();
-        getBody().SetTransform(b2Vec2(x, y), angle);
+        getBody().SetTransform({x, y}, angle);
     }
 }
 
