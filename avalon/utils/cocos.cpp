@@ -34,18 +34,20 @@ boost::any to_any(cocos2d::Object* object)
 std::list<boost::any> to_list(cocos2d::Array& array)
 {
     std::list<boost::any> data;
-    for (auto& valueObject : array) {
-        data.push_back(to_any(valueObject));
-    }
+    std::for_each(
+        array.begin(), array.end(),
+        [&data](cocos2d::Object* obj) { data.push_back(to_any(obj)); }
+    );
     return data;
 }
 
 std::list<boost::any> to_list(cocos2d::Set& set)
 {
     std::list<boost::any> data;
-    for (auto& valueObject : set) {
-        data.push_back(to_any(valueObject));
-    }
+    std::for_each(
+        set.begin(), set.end(),
+        [&data](cocos2d::Object* obj) { data.push_back(to_any(obj)); }
+    );
     return data;
 }
 
