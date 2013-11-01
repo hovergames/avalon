@@ -5,15 +5,6 @@
 namespace avalon {
 namespace physics {
 
-Box2dContainer::~Box2dContainer()
-{
-    for (auto& pair : nodeToId) {
-        pair.first->release();
-    }
-    nodeToId.clear();
-    idToNode.clear();
-}
-
 bool Box2dContainer::init()
 {
     if (!Node::init()) {
@@ -54,7 +45,6 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef)
 b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node)
 {
     if (!nodeToId.count(&node)) {
-        node.retain();
         auto newId = generateId();
         nodeToId[&node] = newId;
         idToNode[newId] = &node;
@@ -72,13 +62,8 @@ void Box2dContainer::removeNode(cocos2d::Node& node)
         return;
     }
 
-    auto nodePtr = (*iter).first;
-    auto nodeId = (*iter).second;
-
     nodeToId.erase(iter);
-    idToNode.erase(nodeId);
-
-    nodePtr->release();
+    idToNode.erase((*iter).second);
 }
 
 Box2dContainer::NodeId Box2dContainer::generateId()

@@ -29,7 +29,6 @@ public:
     float pixelsInMeter = 100; // todo: read only
 
     CREATE_FUNC(Box2dContainer);
-    ~Box2dContainer();
     bool init() override;
 
     void update(float delta) override;
