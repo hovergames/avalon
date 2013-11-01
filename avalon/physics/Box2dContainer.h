@@ -39,7 +39,27 @@ public:
     b2Body* createBody(const b2BodyDef& bodyDef, cocos2d::Node& bode);
 
     template<typename T>
-    T* getNode(const b2Body& body);
+    T* getNode(const b2Body& body)
+    {
+        auto userDataPtr = body.GetUserData();
+        if (!userDataPtr) {
+            throw new std::invalid_argument("b2Body does not contain any user data");
+        }
+
+        auto nodeIdPtr = static_cast<NodeId*>(userDataPtr);
+        auto iter = idToNode.find(*nodeIdPtr);
+        if (iter == idToNode.end()) {
+            throw new std::out_of_range("Unable to find node");
+        }
+
+        auto nodePtr = (*iter).second;
+        auto resultPtr = dynamic_cast<T*>(nodePtr);
+        if (!resultPtr) {
+            throw new std::invalid_argument("Wrong node type");
+        }
+
+        return resultPtr;
+    }
 };
 
 } // namespace physics
