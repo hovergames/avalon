@@ -38,6 +38,18 @@ public:
     b2Body* createBody(const b2BodyDef& bodyDef, cocos2d::Node& node);
 
     void removeNode(cocos2d::Node& node);
+
+    template<typename T>
+    T* getNode(const b2Fixture& fixture)
+    {
+        auto body = fixture.GetBody();
+        if (!body) {
+            throw new std::invalid_argument("Fixture is not attached to a body yet");
+        }
+
+        return getNode<T>(body);
+    }
+
     template<typename T>
     T* getNode(const b2Body& body)
     {
