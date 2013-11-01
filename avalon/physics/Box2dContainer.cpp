@@ -11,7 +11,7 @@ bool Box2dContainer::init()
         return false;
     }
 
-    world.reset(new b2World(b2Vec2(0, 0)));
+    world.reset(new b2World({0, 0}));
     scheduleUpdate();
 
     return true;
