@@ -52,7 +52,7 @@ namespace cocos2d {
 
 		void addShapesWithFile(const std::string &plist);
 		void addFixturesToBody(b2Body *body, const std::string &shape);
-		cocos2d::CCPoint anchorPointForShape(const std::string &shape);
+		cocos2d::Point anchorPointForShape(const std::string &shape);
 		void reset();
 		float getPtmRatio() { return ptmRatio; }
 		~GB2ShapeCache() {}
