@@ -67,7 +67,10 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node
 
 Box2dContainer::NodeId Box2dContainer::generateId()
 {
-    return lastId++;
+    do {
+        ++lastId;
+    } while (idToNode.count(&lastId));
+    return lastId;
 }
 
 } // namespace physics
