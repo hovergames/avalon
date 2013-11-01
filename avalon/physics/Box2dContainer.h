@@ -26,7 +26,7 @@ public:
     float32 timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 8;
     int32 positionIterations = 3;
-    float pixelsInMeter = 100; // todo: read only
+    float pixelsInMeter = 32; // todo: read only
 
     CREATE_FUNC(Box2dContainer);
     bool init() override;
