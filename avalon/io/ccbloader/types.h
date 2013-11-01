@@ -11,7 +11,7 @@ namespace avalon {
 namespace io {
 namespace ccbloader {
 
-using Dictionary = std::unordered_map<std::string, boost::any>;
+using Dictionary = std::map<std::string, boost::any>;
 struct Configuration
 {
     const Dictionary& settings;

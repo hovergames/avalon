@@ -45,6 +45,17 @@ std::shared_ptr<cocos2d::TMXTiledMap> TiledMapLoader::load()
     return map;
 }
 
+boost::any TiledMapLoader::convertToFloat(boost::any& value)
+{
+    if (value.type() == typeid(float)) {
+        return value;
+    } else {
+        auto valueString = boost::any_cast<std::string>(value);
+        auto valueFloat = std::stof(valueString);
+        return boost::any(valueFloat);
+    }
+}
+
 void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
 {
     for (auto& child : *map.getChildren()) {
@@ -59,9 +70,11 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
                 auto info = map.getPropertiesForGID(currentGID);
                 auto data = avalon::utils::cocos::to_map<std::string>(*info);
 
-                if (!data.count("x")) data["x"] = x;
-                if (!data.count("y")) data["y"] = y;
                 if (!data.count("gid")) data["gid"] = currentGID;
+                if (!data.count("x")) data["x"] = static_cast<float>(x);
+                if (!data.count("y")) data["y"] = static_cast<float>(y);
+                data["x"] = convertToFloat(data["x"]);
+                data["y"] = convertToFloat(data["y"]);
 
                 for (auto& obj : gidFactories) {
                     if (obj.first == currentGID) {
@@ -92,6 +105,11 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
             if (!data.count("name")) {
                 continue;
             }
+
+            if (data.count("x")) data["x"] = convertToFloat(data["x"]);
+            if (data.count("y")) data["y"] = convertToFloat(data["y"]);
+            if (data.count("width")) data["width"] = convertToFloat(data["width"]);
+            if (data.count("height")) data["height"] = convertToFloat(data["height"]);
 
             for (auto& obj : nameFactories) {
                 auto dataName = boost::any_cast<std::string>(data["name"]);

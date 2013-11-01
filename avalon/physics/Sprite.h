@@ -17,9 +17,11 @@ private:
     b2Body* body = nullptr;
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
 
-    void createBody(Box2dContainer& box2DContainer);
-    void createBodyWithPESShape(Box2dContainer& box2DContainer, const std::string& file, const std::string& shape);
+    void createBody();
+    void createBody(const std::map<std::string, boost::any>& settings);
+    void createBodyWithPESShape(const std::string& file, const std::string& shape);
     void addTextureShape();
+    void loadConfigurationSettings(const std::map<std::string, boost::any>& settings);
     b2BodyType getBox2dBodyType(const std::string& type);
 
 public:

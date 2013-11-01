@@ -11,7 +11,8 @@ Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, const ch
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithFile(filename)) return nullptr;
-    sprite->createBody(box2dContainer);
+    sprite->box2dContainer = &box2dContainer;
+    sprite->createBody();
     sprite->addTextureShape();
     return sprite;
 }
@@ -20,7 +21,8 @@ Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, const ch
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithFile(filename, rect)) return nullptr;
-    sprite->createBody(box2dContainer);
+    sprite->box2dContainer = &box2dContainer;
+    sprite->createBody();
     sprite->addTextureShape();
     return sprite;
 }
@@ -29,7 +31,8 @@ Sprite* Sprite::createWithTexture(avalon::physics::Box2dContainer& box2dContaine
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithTexture(texture)) return nullptr;
-    sprite->createBody(box2dContainer);
+    sprite->box2dContainer = &box2dContainer;
+    sprite->createBody();
     sprite->addTextureShape();
     return sprite;
 }
@@ -38,7 +41,8 @@ Sprite* Sprite::createWithTexture(avalon::physics::Box2dContainer& box2dContaine
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithTexture(texture, rect)) return nullptr;
-    sprite->createBody(box2dContainer);
+    sprite->box2dContainer = &box2dContainer;
+    sprite->createBody();
     sprite->addTextureShape();
     return sprite;
 }
@@ -47,7 +51,8 @@ Sprite* Sprite::createWithSpriteFrame(avalon::physics::Box2dContainer& box2dCont
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithSpriteFrame(pSpriteFrame)) return nullptr;
-    sprite->createBody(box2dContainer);
+    sprite->box2dContainer = &box2dContainer;
+    sprite->createBody();
     sprite->addTextureShape();
     return sprite;
 }
@@ -56,7 +61,8 @@ Sprite* Sprite::createWithSpriteFrameName(avalon::physics::Box2dContainer& box2d
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithSpriteFrameName(spriteFrameName)) return nullptr;
-    sprite->createBody(box2dContainer);
+    sprite->box2dContainer = &box2dContainer;
+    sprite->createBody();
     sprite->addTextureShape();
     return sprite;
 }
@@ -65,7 +71,8 @@ Sprite* Sprite::createWithPESShape(avalon::physics::Box2dContainer& box2dContain
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithFile(filename)) return nullptr;
-    sprite->createBodyWithPESShape(box2dContainer, pesFile, pesShape);
+    sprite->box2dContainer = &box2dContainer;
+    sprite->createBodyWithPESShape(pesFile, pesShape);
     return sprite;
 }
 
@@ -95,68 +102,49 @@ b2Body& Sprite::getBody()
 
 void Sprite::onConfiguration(const avalon::io::CCBLoader::Configuration& config)
 {
-    if (config.settings.count("pes.file")) {
-        if (!config.settings.count("pes.shape")) {
-            throw std::invalid_argument("pes.shape not defined!");
-        }
-
-        auto file = boost::any_cast<std::string>(config.settings.at("pes.file"));
-        auto shape = boost::any_cast<std::string>(config.settings.at("pes.shape"));
-        createBodyWithPESShape(*config.box2dContainer, file, shape);
-    } else {
-        createBody(*config.box2dContainer);
-        addTextureShape();
-    }
+    box2dContainer = config.box2dContainer;
+    createBody(config.settings);
 
     float x = getPositionX();
     float y = getPositionY();
     setPosition({x, y});
 
-    if (config.settings.count("friction")) {
-        getBody().GetFixtureList()->SetFriction(boost::any_cast<float>(config.settings.at("friction")));
-    }
-    if (config.settings.count("density")) {
-        getBody().GetFixtureList()->SetDensity(boost::any_cast<float>(config.settings.at("density")));
-    }
-    if (config.settings.count("restitution")) {
-        getBody().GetFixtureList()->SetRestitution(boost::any_cast<float>(config.settings.at("restitution")));
-    }
-    if (config.settings.count("bodytype")) {
-        getBody().SetType(getBox2dBodyType(boost::any_cast<std::string>(config.settings.at("bodytype"))));
-    }
+    loadConfigurationSettings(config.settings);
 }
 
 void Sprite::onConfiguration(const avalon::io::TiledMapLoader::Configuration& config)
 {
-    if (config.settings.count("pes.file")) {
-        if (!config.settings.count("pes.shape")) {
-            throw std::invalid_argument("pes.shape not defined!");
-        }
+    box2dContainer = config.box2dContainer;
+    createBody(config.settings);
 
-        auto file = boost::any_cast<std::string>(config.settings.at("pes.file"));
-        auto shape = boost::any_cast<std::string>(config.settings.at("pes.shape"));
-        createBodyWithPESShape(*config.box2dContainer, file, shape);
-    } else {
-        createBody(*config.box2dContainer);
-        addTextureShape();
-    }
-
-    float x = boost::any_cast<int>(config.settings.at("x"));
-    float y = boost::any_cast<int>(config.settings.at("y"));
+    auto x = boost::any_cast<float>(config.settings.at("x"));
+    auto y = boost::any_cast<float>(config.settings.at("y"));
     auto pos = avalon::utils::tiled::getPositionFromCoord(config.map, x, y);
     setPosition(pos);
 
-    if (config.settings.count("friction")) {
-        getBody().GetFixtureList()->SetFriction(std::stof(boost::any_cast<std::string>(config.settings.at("friction"))));
+    loadConfigurationSettings(config.settings);
+}
+
+void Sprite::loadConfigurationSettings(const std::map<std::string, boost::any>& settings)
+{
+    if (settings.count("friction")) {
+        auto value = boost::any_cast<float>(settings.at("friction"));
+        getBody().GetFixtureList()->SetFriction(value);
     }
-    if (config.settings.count("density")) {
-        getBody().GetFixtureList()->SetDensity(std::stof(boost::any_cast<std::string>(config.settings.at("density"))));
+
+    if (settings.count("density")) {
+        auto value = boost::any_cast<float>(settings.at("density"));
+        getBody().GetFixtureList()->SetDensity(value);
     }
-    if (config.settings.count("restitution")) {
-        getBody().GetFixtureList()->SetRestitution(std::stof(boost::any_cast<std::string>(config.settings.at("restitution"))));
+
+    if (settings.count("restitution")) {
+        auto value = boost::any_cast<float>(settings.at("restitution"));
+        getBody().GetFixtureList()->SetRestitution(value);
     }
-    if (config.settings.count("bodytype")) {
-        getBody().SetType(getBox2dBodyType(boost::any_cast<std::string>(config.settings.at("bodytype"))));
+
+    if (settings.count("bodytype")) {
+        auto value = boost::any_cast<std::string>(settings.at("bodytype"));
+        getBody().SetType(getBox2dBodyType(value));
     }
 }
 
@@ -189,19 +177,33 @@ void Sprite::addTextureShape()
     getBody().CreateFixture(&fixtureDef);
 }
 
-void Sprite::createBody(Box2dContainer& box2dContainer)
+void Sprite::createBody()
 {
-    this->box2dContainer = &box2dContainer;
-
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
-    body = box2dContainer.createBody(bodyDef, *this);
+    body = box2dContainer->createBody(bodyDef, *this);
 }
 
-void Sprite::createBodyWithPESShape(Box2dContainer& box2DContainer, const std::string& file, const std::string& shape)
+void Sprite::createBody(const std::map<std::string, boost::any>& settings)
+{
+    if (settings.count("pes.file")) {
+        if (!settings.count("pes.shape")) {
+            throw std::invalid_argument("pes.shape not defined!");
+        }
+
+        auto file = boost::any_cast<std::string>(settings.at("pes.file"));
+        auto shape = boost::any_cast<std::string>(settings.at("pes.shape"));
+        createBodyWithPESShape(file, shape);
+    } else {
+        createBody();
+        addTextureShape();
+    }
+}
+
+void Sprite::createBodyWithPESShape(const std::string& file, const std::string& shape)
 {
     if (!hasBody()) {
-        createBody(box2DContainer);
+        createBody();
     }
 
     auto cache = cocos2d::GB2ShapeCache::sharedGB2ShapeCache();

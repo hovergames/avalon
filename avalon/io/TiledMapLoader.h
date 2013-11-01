@@ -28,6 +28,7 @@ private:
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
     const std::string mapFileName;
 
+    boost::any convertToFloat(boost::any& value);
     bool isFiltered(const std::string& name, const std::list<std::string>& filter = {});
     void loadGidFactories(cocos2d::TMXTiledMap& map);
     void loadNamedFactories(cocos2d::TMXTiledMap& map);
