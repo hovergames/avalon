@@ -28,12 +28,12 @@ public:
     void onConfiguration(const avalon::io::CCBLoader::Configuration& config);
     void onConfiguration(const avalon::io::TiledMapLoader::Configuration& config);
 
-    void addFixtureToBodyFromPESFile(std::string pesFileName, std::string shapeName, Box2dContainer& box2DContainer);
+    void addFixtureToBodyFromPESFile(const std::string& file, const std::string& shape, Box2dContainer& box2DContainer);
 
     bool hasBody() const;
     b2Body& getBody();
 
-    virtual bool init(void) override;
+    virtual bool init() override;
     virtual void update(float delta) override;
     virtual void setPosition(const cocos2d::Point& pos) override;
 };
