@@ -56,12 +56,12 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node
     if (!nodeToId.count(&node)) {
         node.retain();
         auto newId = generateId();
-        nodeToId[&node] = newId;
-        idToNode[newId] = &node;
+        nodeToId[&node] = &newId;
+        idToNode[&newId] = &node;
     }
 
     auto body = world->CreateBody(&bodyDef);
-    body->SetUserData(static_cast<void*>(&nodeToId[&node]));
+    body->SetUserData(static_cast<void*>(nodeToId[&node]));
     return body;
 }
 

@@ -16,8 +16,8 @@ private:
 
     NodeId lastId = 0;
     B2DebugDrawLayer* debugLayer = nullptr;
-    std::unordered_map<NodeId, cocos2d::Node*> idToNode;
-    std::unordered_map<cocos2d::Node*, NodeId> nodeToId;
+    std::unordered_map<NodeId*, cocos2d::Node*> idToNode;
+    std::unordered_map<cocos2d::Node*, NodeId*> nodeToId;
 
     NodeId generateId();
 
@@ -47,7 +47,7 @@ public:
         }
 
         auto nodeIdPtr = static_cast<NodeId*>(userDataPtr);
-        auto iter = idToNode.find(*nodeIdPtr);
+        auto iter = idToNode.find(nodeIdPtr);
         if (iter == idToNode.end()) {
             throw new std::out_of_range("Unable to find node");
         }
