@@ -14,6 +14,7 @@ class Box2dContainer : public cocos2d::Node
 private:
     using NodeId = int*;
 
+    NodeId lastNodeId = nullptr;
     B2DebugDrawLayer* debugLayer = nullptr;
     std::unordered_map<NodeId, cocos2d::Node*> idToNode;
     std::unordered_map<cocos2d::Node*, NodeId> nodeToId;
