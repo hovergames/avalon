@@ -145,8 +145,6 @@ void Sprite::addFixtureToBodyFromPESFile(const std::string& file, const std::str
     auto cache = cocos2d::GB2ShapeCache::sharedGB2ShapeCache();
     cache->addShapesWithFile(file);
     cache->addFixturesToBody(&getBody(), shape);
-
-    setAnchorPoint(cache->anchorPointForShape(shape));
 }
 
 bool Sprite::init()
