@@ -12,7 +12,14 @@ namespace physics {
 class Box2dContainer : public cocos2d::Node
 {
 private:
+    using NodeId = unsigned int;
+
+    NodeId lastId = 0;
     B2DebugDrawLayer* debugLayer = nullptr;
+    std::unordered_map<NodeId, cocos2d::Node*> idToNode;
+    std::unordered_map<cocos2d::Node*, NodeId> nodeToId;
+
+    NodeId generateId();
 
 public:
     std::shared_ptr<b2World> world;
@@ -22,10 +29,16 @@ public:
     float pixelsInMeter = 100; // todo: read only
 
     CREATE_FUNC(Box2dContainer);
+    ~Box2dContainer();
     bool init() override;
 
     void update(float delta) override;
     void enableDebugDraw(const bool enable);
+
+    b2Body* addBody(cocos2d::Node& bode, const b2BodyDef& bodyDef);
+
+    template<typename T>
+    T* getNode(const b2Body& body);
 };
 
 } // namespace physics

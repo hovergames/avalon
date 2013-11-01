@@ -5,6 +5,15 @@
 namespace avalon {
 namespace physics {
 
+Box2dContainer::~Box2dContainer()
+{
+    for (auto& pair : nodeToId) {
+        pair.first->release();
+    }
+    nodeToId.clear();
+    idToNode.clear();
+}
+
 bool Box2dContainer::init()
 {
     if (!Node::init()) {
@@ -35,6 +44,48 @@ void Box2dContainer::enableDebugDraw(const bool enable)
     }
 
     debugLayer->setVisible(enable);
+}
+
+b2Body* Box2dContainer::addBody(cocos2d::Node& node, const b2BodyDef& bodyDef)
+{
+    if (!nodeToId.count(&node)) {
+        node.retain();
+        auto newId = generateId();
+        nodeToId[&node] = newId;
+        idToNode[newId] = &node;
+    }
+
+    auto body = world->CreateBody(&bodyDef);
+    body->SetUserData(static_cast<void*>(&nodeToId[&node]));
+    return body;
+}
+
+template<typename T>
+T* Box2dContainer::getNode(const b2Body& body)
+{
+    auto userDataPtr = body.GetUserData();
+    if (!userDataPtr) {
+        throw new std::invalid_argument("b2Body does not contain any user data");
+    }
+
+    auto nodeIdPtr = static_cast<NodeId*>(userDataPtr);
+    auto iter = idToNode.find(*nodeIdPtr);
+    if (iter == idToNode.end()) {
+        throw new std::out_of_range("Unable to find node");
+    }
+
+    auto nodePtr = (*iter).second;
+    auto resultPtr = dynamic_cast<T*>(nodePtr);
+    if (!resultPtr) {
+        throw new std::invalid_argument("Wrong node type");
+    }
+
+    return resultPtr;
+}
+
+Box2dContainer::NodeId Box2dContainer::generateId()
+{
+    return lastId++;
 }
 
 } // namespace physics
