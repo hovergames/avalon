@@ -27,7 +27,7 @@ void Sprite::onConfiguration(const avalon::io::TiledMapLoader::Configuration& co
     bodyDef.type = b2_staticBody;
     bodyDef.position.Set((pos.x + (w / 2.0f)) / config.box2dContainer->pixelsInMeter,
                          (pos.y + (h / 2.0f)) / config.box2dContainer->pixelsInMeter);
-    auto body = config.box2dContainer->addBody(*this, bodyDef);
+    auto body = config.box2dContainer->createBody(bodyDef, *this);
 
     // define the shape
     b2PolygonShape shape;

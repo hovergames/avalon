@@ -35,7 +35,8 @@ public:
     void update(float delta) override;
     void enableDebugDraw(const bool enable);
 
-    b2Body* addBody(cocos2d::Node& bode, const b2BodyDef& bodyDef);
+    b2Body* createBody(const b2BodyDef& bodyDef);
+    b2Body* createBody(const b2BodyDef& bodyDef, cocos2d::Node& bode);
 
     template<typename T>
     T* getNode(const b2Body& body);

@@ -46,7 +46,12 @@ void Box2dContainer::enableDebugDraw(const bool enable)
     debugLayer->setVisible(enable);
 }
 
-b2Body* Box2dContainer::addBody(cocos2d::Node& node, const b2BodyDef& bodyDef)
+b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef)
+{
+    return world->CreateBody(&bodyDef);
+}
+
+b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node)
 {
     if (!nodeToId.count(&node)) {
         node.retain();
