@@ -1,5 +1,6 @@
 #include <avalon/ui/Alert.h>
 
+#if TARGET_OS_IPHONE
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
@@ -24,12 +25,14 @@
     [alertView release];
 }
 @end
+#endif
 
 namespace avalon {
 namespace ui {
 
 void showAlert(const std::string& title, const std::string& message, const Alert::ButtonList& buttons, Alert::Callback& delegate)
 {
+#if TARGET_OS_IPHONE
     AlertViewProxy* proxy = [[[[AlertViewProxy alloc] init] autorelease] retain];
     proxy->delegate = delegate;
 
@@ -56,6 +59,7 @@ void showAlert(const std::string& title, const std::string& message, const Alert
     }
 
     [view show];
+#endif
 }
 
 } // namespace ui
