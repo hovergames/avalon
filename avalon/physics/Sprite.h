@@ -18,22 +18,40 @@ private:
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
 
     void createBody(Box2dContainer& box2DContainer);
-    void createDefaultShape();
+    void createBodyWithPESShape(Box2dContainer& box2DContainer, const std::string& file, const std::string& shape);
+    void addTextureShape();
     b2BodyType getBox2dBodyType(const std::string& type);
 
 public:
-    CREATE_FUNC(Sprite);
-    
     ~Sprite();
+    CREATE_FUNC(Sprite);
+    virtual bool init() override;
+
+    // delete "inherited" create methods
+    static Sprite* create(const char *filename) = delete;
+    static Sprite* create(const char *filename, const cocos2d::Rect& rect) = delete;
+    static Sprite* createWithTexture(cocos2d::Texture2D *texture) = delete;
+    static Sprite* createWithTexture(cocos2d::Texture2D *texture, const cocos2d::Rect& rect) = delete;
+    static Sprite* createWithSpriteFrame(cocos2d::SpriteFrame *pSpriteFrame) = delete;
+    static Sprite* createWithSpriteFrameName(const char *spriteFrameName) = delete;
+
+    // and re-define them with the required Box2dContainer
+    static Sprite* create(avalon::physics::Box2dContainer& box2dContainer, const char *filename);
+    static Sprite* create(avalon::physics::Box2dContainer& box2dContainer, const char *filename, const cocos2d::Rect& rect);
+    static Sprite* createWithTexture(avalon::physics::Box2dContainer& box2dContainer, cocos2d::Texture2D *texture);
+    static Sprite* createWithTexture(avalon::physics::Box2dContainer& box2dContainer, cocos2d::Texture2D *texture, const cocos2d::Rect& rect);
+    static Sprite* createWithSpriteFrame(avalon::physics::Box2dContainer& box2dContainer, cocos2d::SpriteFrame *pSpriteFrame);
+    static Sprite* createWithSpriteFrameName(avalon::physics::Box2dContainer& box2dContainer, const char *spriteFrameName);
+
+    // custom create methods
+    static Sprite* createWithPESShape(avalon::physics::Box2dContainer& box2dContainer, const char *filename, const std::string& pesFile, const std::string& pesShape);
+
     void onConfiguration(const avalon::io::CCBLoader::Configuration& config);
     void onConfiguration(const avalon::io::TiledMapLoader::Configuration& config);
-
-    void addFixtureToBodyFromPESFile(const std::string& file, const std::string& shape, Box2dContainer& box2DContainer);
 
     bool hasBody() const;
     b2Body& getBody();
 
-    virtual bool init() override;
     virtual void update(float delta) override;
     virtual void setPosition(const cocos2d::Point& pos) override;
 };

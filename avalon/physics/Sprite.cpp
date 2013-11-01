@@ -7,6 +7,68 @@
 namespace avalon {
 namespace physics {
 
+Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, const char *filename)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithFile(filename)) return nullptr;
+    sprite->createBody(box2dContainer);
+    sprite->addTextureShape();
+    return sprite;
+}
+
+Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, const char *filename, const cocos2d::Rect& rect)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithFile(filename, rect)) return nullptr;
+    sprite->createBody(box2dContainer);
+    sprite->addTextureShape();
+    return sprite;
+}
+
+Sprite* Sprite::createWithTexture(avalon::physics::Box2dContainer& box2dContainer, cocos2d::Texture2D *texture)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithTexture(texture)) return nullptr;
+    sprite->createBody(box2dContainer);
+    sprite->addTextureShape();
+    return sprite;
+}
+
+Sprite* Sprite::createWithTexture(avalon::physics::Box2dContainer& box2dContainer, cocos2d::Texture2D *texture, const cocos2d::Rect& rect)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithTexture(texture, rect)) return nullptr;
+    sprite->createBody(box2dContainer);
+    sprite->addTextureShape();
+    return sprite;
+}
+
+Sprite* Sprite::createWithSpriteFrame(avalon::physics::Box2dContainer& box2dContainer, cocos2d::SpriteFrame *pSpriteFrame)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithSpriteFrame(pSpriteFrame)) return nullptr;
+    sprite->createBody(box2dContainer);
+    sprite->addTextureShape();
+    return sprite;
+}
+
+Sprite* Sprite::createWithSpriteFrameName(avalon::physics::Box2dContainer& box2dContainer, const char *spriteFrameName)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithSpriteFrameName(spriteFrameName)) return nullptr;
+    sprite->createBody(box2dContainer);
+    sprite->addTextureShape();
+    return sprite;
+}
+
+Sprite* Sprite::createWithPESShape(avalon::physics::Box2dContainer& box2dContainer, const char *filename, const std::string& pesFile, const std::string& pesShape)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithFile(filename)) return nullptr;
+    sprite->createBodyWithPESShape(box2dContainer, pesFile, pesShape);
+    return sprite;
+}
+
 Sprite::~Sprite()
 {
     if (hasBody()) {
@@ -40,10 +102,10 @@ void Sprite::onConfiguration(const avalon::io::CCBLoader::Configuration& config)
 
         auto file = boost::any_cast<std::string>(config.settings.at("pes.file"));
         auto shape = boost::any_cast<std::string>(config.settings.at("pes.shape"));
-        addFixtureToBodyFromPESFile(file, shape, *config.box2dContainer);
+        createBodyWithPESShape(*config.box2dContainer, file, shape);
     } else {
         createBody(*config.box2dContainer);
-        createDefaultShape();
+        addTextureShape();
     }
 
     float x = getPositionX();
@@ -73,10 +135,10 @@ void Sprite::onConfiguration(const avalon::io::TiledMapLoader::Configuration& co
 
         auto file = config.settings.at("pes.file");
         auto shape = config.settings.at("pes.shape");
-        addFixtureToBodyFromPESFile(file, shape, *config.box2dContainer);
+        createBodyWithPESShape(*config.box2dContainer, file, shape);
     } else {
         createBody(*config.box2dContainer);
-        createDefaultShape();
+        addTextureShape();
     }
 
     float x = std::stoi(config.settings.at("x"));
@@ -111,7 +173,7 @@ b2BodyType Sprite::getBox2dBodyType(const std::string& type)
     }
 }
 
-void Sprite::createDefaultShape()
+void Sprite::addTextureShape()
 {
     float w = getContentSize().width;
     float h = getContentSize().height;
@@ -136,7 +198,7 @@ void Sprite::createBody(Box2dContainer& box2dContainer)
     body = box2dContainer.createBody(bodyDef, *this);
 }
 
-void Sprite::addFixtureToBodyFromPESFile(const std::string& file, const std::string& shape, Box2dContainer& box2DContainer)
+void Sprite::createBodyWithPESShape(Box2dContainer& box2DContainer, const std::string& file, const std::string& shape)
 {
     if (!hasBody()) {
         createBody(box2DContainer);
