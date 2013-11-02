@@ -115,6 +115,18 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
             if (data.count("width")) data["width"] = convertToFloat(data["width"]);
             if (data.count("height")) data["height"] = convertToFloat(data["height"]);
 
+            if (data.count("polylinePoints")) {
+                std::list<cocos2d::Point> pointList;
+                auto anyList = boost::any_cast<std::list<boost::any>>(data["polylinePoints"]);
+                for (auto& points : anyList) {
+                    auto map = boost::any_cast<std::map<std::string, boost::any>>(points);
+                    auto x = std::stof(boost::any_cast<std::string>(map["x"]));
+                    auto y = std::stof(boost::any_cast<std::string>(map["y"]));
+                    pointList.push_back(Point(x, y));
+                }
+                data["polylinePoints"] = pointList;
+            }
+
             for (auto& obj : nameFactories) {
                 auto dataName = boost::any_cast<std::string>(data["name"]);
                 if (obj.first != dataName) {
