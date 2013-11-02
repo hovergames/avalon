@@ -10,7 +10,7 @@ namespace ccbloader {
 class GenericLoaderInterface
 {
 public:
-    virtual void dispatchPendingProperties(avalon::physics::Box2dContainer* box2dContainer) = 0;
+    virtual void dispatchPendingProperties(cocosbuilder::CCBAnimationManager& animationManager, avalon::physics::Box2dContainer* box2dContainer) = 0;
 };
 
 } // namespace ccbloader

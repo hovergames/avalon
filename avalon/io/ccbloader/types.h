@@ -15,6 +15,7 @@ using Dictionary = std::map<std::string, boost::any>;
 struct Configuration
 {
     const Dictionary& settings;
+    cocosbuilder::CCBAnimationManager& animationManager;
     avalon::physics::Box2dContainer* box2dContainer;
 };
 

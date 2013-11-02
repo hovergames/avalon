@@ -45,7 +45,7 @@ cocos2d::Node* CCBLoader::load()
     }
 
     for (auto& loader : genericLoaders) {
-        loader->dispatchPendingProperties(box2dContainer);
+        loader->dispatchPendingProperties(*animationManager, box2dContainer);
     }
 
     return node;

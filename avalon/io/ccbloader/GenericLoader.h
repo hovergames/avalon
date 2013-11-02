@@ -59,10 +59,10 @@ public:
         nodeSettings[getTarget(pNode)][pPropertyName] = value;
     }
 
-    virtual void dispatchPendingProperties(avalon::physics::Box2dContainer* box2dContainer) override
+    virtual void dispatchPendingProperties(cocosbuilder::CCBAnimationManager& animationManager, avalon::physics::Box2dContainer* box2dContainer) override
     {
         for (auto& pair : nodeSettings) {
-            Configuration config{pair.second, box2dContainer};
+            Configuration config{pair.second, animationManager, box2dContainer};
             pair.first->onConfiguration(config);
         }
     }
