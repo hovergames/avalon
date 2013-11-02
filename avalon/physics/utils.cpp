@@ -14,16 +14,15 @@ std::shared_ptr<b2PolygonShape> initRectangleShape(float width, float height, fl
 
 std::shared_ptr<b2ChainShape> initChainShape(std::list<cocos2d::Point> points, float pixelsInMeter, bool loop = false)
 {
+    auto convert = [&pixelsInMeter](const cocos2d::Point& p) -> b2Vec2 {
+        return {p.x / pixelsInMeter, (p.y / pixelsInMeter) * -1};
+    };
+
     std::vector<b2Vec2> vecs;
     vecs.reserve(points.size());
-
-    for (auto& p : points) {
-        p = p / pixelsInMeter;
-        vecs.push_back({p.x, -p.y});
-    }
+    std::transform(points.begin(), points.end(), vecs.begin(), convert);
 
     auto shape = make_shared<b2ChainShape>();
-
     if (loop) {
         shape->CreateLoop(&vecs[0], points.size());
     } else {
