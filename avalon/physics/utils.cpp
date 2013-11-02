@@ -57,6 +57,36 @@ namespace avalon {
 namespace physics {
 namespace utils {
 
+b2Vec2 convertToBox2d(const avalon::physics::Box2dContainer& box2dContainer, const cocos2d::Point& pos, const cocos2d::Size& size)
+{
+    b2Vec2 result(pos.x, pos.y);
+
+    // box2d handle is in the center
+    result.x += size.width / 2;
+    result.y += size.height / 2;
+
+    // convert from cocos2d to box2d units
+    result.x /= box2dContainer.pixelsInMeter;
+    result.y /= box2dContainer.pixelsInMeter;
+
+    return result;
+}
+
+cocos2d::Point convertFromBox2d(const avalon::physics::Box2dContainer& box2dContainer, const b2Vec2& pos, const cocos2d::Size& size)
+{
+    cocos2d::Point result(pos.x, pos.y);
+
+    // convert from box2d to cocos2d units
+    result.x *= box2dContainer.pixelsInMeter;
+    result.y *= box2dContainer.pixelsInMeter;
+
+    // cocos2dx handle is in the lower left corner
+    result.x -= size.width / 2;
+    result.y -= size.height / 2;
+
+    return result;
+}
+
 b2BodyType getBodyTypeFromString(const std::string& type)
 {
     if      (type == "static")    return b2_staticBody;
@@ -107,8 +137,10 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
         fixtureDef.filter.groupIndex = 0;
 
         b2BodyDef bodyDef;
-        bodyDef.position.Set((x + (width / 2.0f)) / pixelsInMeter, (y + (height / 2.0f)) / pixelsInMeter);
         bodyDef.type = getBodyTypeFromString(bodytype);
+
+        auto pos = convertToBox2d(*config.box2dContainer, {x, y}, {width, height});
+        bodyDef.position.Set(pos.x, pos.y);
 
         auto body = config.box2dContainer->world->CreateBody(&bodyDef);
         body->CreateFixture(&fixtureDef);

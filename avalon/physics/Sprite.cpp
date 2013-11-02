@@ -216,23 +216,16 @@ void Sprite::update(float delta)
     cocos2d::Sprite::update(delta);
 
     if (hasBody()) {
+        using avalon::physics::utils::convertFromBox2d;
+
         auto size = getContentSize();
-        auto x = body->GetPosition().x;
-        auto y = body->GetPosition().y;
-
-        // convert from box2d to cocos2dx units
-        x *= box2dContainer->pixelsInMeter;
-        y *= box2dContainer->pixelsInMeter;
-
-        // cocos2dx handle is in the lower left corner
-        x -= size.width / 2;
-        y -= size.height / 2;
+        auto pos = convertFromBox2d(*box2dContainer, body->GetPosition(), size);
 
         // adjust to the current anchor point
-        x += getAnchorPoint().x * size.width;
-        y += getAnchorPoint().y * size.height;
+        pos.x += getAnchorPoint().x * size.width;
+        pos.y += getAnchorPoint().y * size.height;
 
-        cocos2d::Sprite::setPosition({x, y});
+        cocos2d::Sprite::setPosition({pos.x, pos.y});
 
         float rotation = body->GetAngle();
         cocos2d::Sprite::setRotation(-CC_RADIANS_TO_DEGREES(rotation));
@@ -244,24 +237,17 @@ void Sprite::setPosition(const cocos2d::Point& pos)
     cocos2d::Sprite::setPosition(pos);
 
     if (hasBody()) {
-        auto size = getContentSize();
-        auto x = pos.x;
-        auto y = pos.y;
+        using avalon::physics::utils::convertToBox2d;
 
-        // box2d handle is in the center
-        x += size.width * 0.5f;
-        y += size.height * 0.5f;
+        auto size = getContentSize();
+        auto b2Pos = convertToBox2d(*box2dContainer, pos, size);
 
         // adjust to the current anchor point
-        x -= getAnchorPoint().x * size.width;
-        y -= getAnchorPoint().y * size.height;
-
-        // convert from cocos2d to box2d units
-        x /= box2dContainer->pixelsInMeter;
-        y /= box2dContainer->pixelsInMeter;
+        b2Pos.x -= getAnchorPoint().x * size.width / box2dContainer->pixelsInMeter;
+        b2Pos.y -= getAnchorPoint().y * size.height / box2dContainer->pixelsInMeter;
 
         auto angle = getBody().GetTransform().q.GetAngle();
-        getBody().SetTransform({x, y}, angle);
+        getBody().SetTransform({b2Pos.x, b2Pos.y}, angle);
     }
 }
 
