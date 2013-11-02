@@ -8,11 +8,12 @@ namespace avalon {
 namespace physics {
 namespace loadercallbacks {
 
-avalon::io::TiledMapLoader::Callback createShapes(int filterCategory = 0, bool isSensor = false);
+avalon::io::TiledMapLoader::Callback createShapes(int filterCategory = 0x0001, bool isSensor = false);
 
 std::shared_ptr<b2PolygonShape> initRectangleShape(float width, float height, float pixelsInMeter);
 std::shared_ptr<b2ChainShape> initChainShape(std::list<cocos2d::Point> points, float pixelsInMeter, bool loop = false);
 std::shared_ptr<b2EdgeShape> initEdgeShape(cocos2d::Point p1, cocos2d::Point p2, float pixelsInMeter);
+std::shared_ptr<b2Shape> initShapeFromPoints(std::list<cocos2d::Point> pointList, float pixelsInMeter, bool loop = false);
 
 } // namespace loadercallbacks
 } // namespace physics
