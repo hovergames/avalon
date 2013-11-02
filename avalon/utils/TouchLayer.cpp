@@ -25,7 +25,7 @@ bool TouchLayer::onTouchLayerBegan(cocos2d::Touch* touch, cocos2d::Event* event)
     if (onTouchBegan)
         onTouchBegan(touch, event);
 
-    isPressed = true;
+    pressed = true;
     updateChildOpacity(this);
 
     return true;
@@ -36,7 +36,7 @@ void TouchLayer::onTouchLayerMoved(cocos2d::Touch* touch, cocos2d::Event* event)
     if (onTouchMoved)
         onTouchMoved(touch, event);
 
-    isPressed = true;
+    pressed = true;
     updateChildOpacity(this);
 }
 
@@ -45,7 +45,7 @@ void TouchLayer::onTouchLayerEnded(cocos2d::Touch* touch, cocos2d::Event* event)
     if (onTouchEnded)
         onTouchEnded(touch, event);
 
-    isPressed = false;
+    pressed = false;
     updateChildOpacity(this);
 }
 
@@ -54,7 +54,7 @@ void TouchLayer::onTouchLayerCancelled(cocos2d::Touch* touch, cocos2d::Event* ev
     if (onTouchCancelled)
         onTouchCancelled(touch, event);
 
-    isPressed = false;
+    pressed = false;
     updateChildOpacity(this);
 }
 
@@ -69,7 +69,7 @@ bool TouchLayer::isTouchInside(cocos2d::Touch *touch)
 void TouchLayer::updateChildOpacity(cocos2d::Node* parent)
 {
     GLubyte opacity = opacityInactive;
-    if (isPressed) opacity = opacityHover;
+    if (pressed) opacity = opacityHover;
 
     cocos2d::Object* element;
     CCARRAY_FOREACH(getChildren(), element) {
@@ -84,6 +84,11 @@ void TouchLayer::updateChildOpacity(cocos2d::Node* parent)
 
 void TouchLayer::onConfiguration(const avalon::io::CCBLoader::Configuration& config)
 {
+}
+
+bool TouchLayer::isPressed()
+{
+    return pressed;
 }
 
 } // namespace utils

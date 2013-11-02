@@ -12,8 +12,10 @@ class TouchLayer : public cocos2d::LayerGradient
 private:
     cocos2d::EventListenerTouchOneByOne* touchListener = nullptr;
 
+protected:
+    bool pressed = false;
+
 public:
-    bool isPressed = false;
 
     std::function<bool(cocos2d::Touch*, cocos2d::Event*)> onTouchBegan;
     std::function<void(cocos2d::Touch*, cocos2d::Event*)> onTouchMoved;
@@ -31,6 +33,8 @@ public:
     virtual void onTouchLayerMoved(cocos2d::Touch* touch, cocos2d::Event* event);
     virtual void onTouchLayerEnded(cocos2d::Touch* touch, cocos2d::Event* event);
     virtual void onTouchLayerCancelled(cocos2d::Touch* touch, cocos2d::Event* event);
+
+    bool isPressed();
 
     void onConfiguration(const avalon::io::CCBLoader::Configuration& config);
 

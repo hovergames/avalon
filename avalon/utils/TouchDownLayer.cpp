@@ -6,8 +6,8 @@ namespace utils {
 bool TouchDownLayer::onTouchLayerBegan(cocos2d::Touch* touch, cocos2d::Event* event)
 {
     if (isTouchInside(touch)) {
-        if (!isPressed) {
-            isPressed = true;
+        if (!pressed) {
+            pressed = true;
             updateChildOpacity(this);
 
             if (onTouchBegan)
@@ -21,8 +21,8 @@ bool TouchDownLayer::onTouchLayerBegan(cocos2d::Touch* touch, cocos2d::Event* ev
 void TouchDownLayer::onTouchLayerMoved(cocos2d::Touch* touch, cocos2d::Event* event)
 {
     if (isTouchInside(touch)) {
-        if (!isPressed) {
-            isPressed = true;
+        if (!pressed) {
+            pressed = true;
             updateChildOpacity(this);
 
             if (onTouchBegan)
@@ -32,8 +32,8 @@ void TouchDownLayer::onTouchLayerMoved(cocos2d::Touch* touch, cocos2d::Event* ev
                 onTouchMoved(touch, event);
         }
     } else {
-        if (isPressed) {
-            isPressed = false;
+        if (pressed) {
+            pressed = false;
             updateChildOpacity(this);
 
             if (onTouchEnded)
@@ -44,8 +44,8 @@ void TouchDownLayer::onTouchLayerMoved(cocos2d::Touch* touch, cocos2d::Event* ev
 
 void TouchDownLayer::onTouchLayerEnded(cocos2d::Touch* touch, cocos2d::Event* event)
 {
-    if (isPressed) {
-        isPressed = false;
+    if (pressed) {
+        pressed = false;
         updateChildOpacity(this);
 
         if (onTouchEnded)
