@@ -51,8 +51,12 @@ boost::any TiledMapLoader::convertToFloat(boost::any& value)
         return value;
     } else {
         auto valueString = boost::any_cast<std::string>(value);
-        auto valueFloat = std::stof(valueString);
-        return boost::any(valueFloat);
+        if (valueString.empty()) {
+            return boost::any(0.0f);
+        } else {
+            auto valueFloat = std::stof(valueString);
+            return boost::any(valueFloat);
+        }
     }
 }
 
