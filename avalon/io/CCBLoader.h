@@ -37,6 +37,10 @@ public:
     template<typename T>
     void assignObject(const std::string& name, T** destination)
     {
+        if (nameAssigner.count(name)) {
+            throw std::invalid_argument("Name already registered");
+        }
+
         nameAssigner[name] = [destination](cocos2d::Object* object) {
             *destination = dynamic_cast<T*>(object);
             if (!*destination) {
