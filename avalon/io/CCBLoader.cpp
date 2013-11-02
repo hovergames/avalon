@@ -15,6 +15,11 @@ CCBLoader::CCBLoader(const std::string& ccbFileName)
 {
 }
 
+void CCBLoader::assignAnimationManager(cocosbuilder::CCBAnimationManager** manager)
+{
+    managerReceiver = manager;
+}
+
 void CCBLoader::setBox2dContainer(avalon::physics::Box2dContainer& container)
 {
     box2dContainer = &container;
@@ -26,6 +31,10 @@ cocos2d::Node* CCBLoader::load()
 
     CCBReader ccbReader(nodeLoaderLibrary.get(), this, nullptr);
     auto node = ccbReader.readNodeGraphFromFile(ccbFileName.c_str(), this);
+
+    if (managerReceiver) {
+        *managerReceiver = ccbReader.getAnimationManager();
+    }
 
     for (auto& loader : genericLoaders) {
         loader->dispatchPendingProperties(box2dContainer);

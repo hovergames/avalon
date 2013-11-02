@@ -27,12 +27,14 @@ private:
     std::shared_ptr<cocosbuilder::NodeLoaderLibrary> nodeLoaderLibrary;
     std::list<ccbloader::GenericLoaderInterface*> genericLoaders;
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
+    cocosbuilder::CCBAnimationManager** managerReceiver = nullptr;
 
 public:
     explicit CCBLoader(const std::string& ccbFileName);
     cocos2d::Node* load();
     void setBox2dContainer(avalon::physics::Box2dContainer& container);
     virtual bool onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node);
+    void assignAnimationManager(cocosbuilder::CCBAnimationManager** manager);
 
     template<typename T>
     void assignObject(const std::string& name, T** destination)
