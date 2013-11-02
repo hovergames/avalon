@@ -251,5 +251,15 @@ void Sprite::setPosition(const cocos2d::Point& pos)
     }
 }
 
+void Sprite::setRotation(float rotation)
+{
+    cocos2d::Sprite::setRotation(rotation);
+
+    if (hasBody()) {
+        auto angle = CC_DEGREES_TO_RADIANS(rotation * -1);
+        getBody().SetTransform(getBody().GetPosition(), angle);
+    }
+}
+
 } // namespace physics
 } // namespace avalon

@@ -56,6 +56,7 @@ public:
 
     virtual void update(float delta) override;
     virtual void setPosition(const cocos2d::Point& pos) override;
+    virtual void setRotation(float rotation) override;
 };
 
 } // namespace physics
