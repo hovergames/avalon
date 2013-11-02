@@ -1,6 +1,5 @@
-#include <avalon/physics/loadercallbacks.h>
+#include <avalon/physics/utils.h>
 
-#include <Box2D/Box2D.h>
 #include <boost/any.hpp>
 #include <avalon/physics/Box2dContainer.h>
 
@@ -56,9 +55,17 @@ std::shared_ptr<b2Shape> initShapeFromPoints(const std::list<cocos2d::Point>& po
 
 namespace avalon {
 namespace physics {
-namespace loadercallbacks {
+namespace utils {
 
-avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSensor)
+b2BodyType getBodyTypeFromString(const std::string& type)
+{
+    if      (type == "static")    return b2_staticBody;
+    else if (type == "dynamic")   return b2_dynamicBody;
+    else if (type == "kinematic") return b2_kinematicBody;
+    else                          throw new std::invalid_argument("Unknown box2d type");
+}
+
+avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSensor)
 {
     return [filterCategory, isSensor](const avalon::io::TiledMapLoader::Configuration& config)
     {
@@ -101,17 +108,13 @@ avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSen
 
         b2BodyDef bodyDef;
         bodyDef.position.Set((x + (width / 2.0f)) / pixelsInMeter, (y + (height / 2.0f)) / pixelsInMeter);
-
-        if      (bodytype == "static")      bodyDef.type = b2_staticBody;
-        else if (bodytype == "dynamic")     bodyDef.type = b2_dynamicBody;
-        else if (bodytype == "kinematic")   bodyDef.type = b2_kinematicBody;
-        else                                throw new std::invalid_argument("Unknown box2d type");
+        bodyDef.type = getBodyTypeFromString(bodytype);
 
         auto body = config.box2dContainer->world->CreateBody(&bodyDef);
         body->CreateFixture(&fixtureDef);
     };
 }
 
-} // namespace loadercallbacks
+} // namespace utils
 } // namespace physics
 } // namespace avalon

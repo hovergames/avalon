@@ -3,6 +3,7 @@
 #include <avalon/utils/tiled.h>
 #include <avalon/physics/Box2dContainer.h>
 #include <avalon/physics/vendors/GB2ShapeCache.h>
+#include <avalon/physics/utils.h>
 
 namespace avalon {
 namespace physics {
@@ -144,21 +145,9 @@ void Sprite::loadConfigurationSettings(const std::map<std::string, boost::any>& 
     }
 
     if (settings.count("bodytype")) {
+        using avalon::physics::utils::getBodyTypeFromString;
         auto value = boost::any_cast<std::string>(settings.at("bodytype"));
-        getBody().SetType(getBox2dBodyType(value));
-    }
-}
-
-b2BodyType Sprite::getBox2dBodyType(const std::string& type)
-{
-    if (type == "static") {
-        return b2_staticBody;
-    } else if (type == "dynamic") {
-        return b2_dynamicBody;
-    } else if (type == "kinematic") {
-        return b2_kinematicBody;
-    } else {
-        throw new std::invalid_argument("Unknown box2d type");
+        getBody().SetType(getBodyTypeFromString(value));
     }
 }
 
