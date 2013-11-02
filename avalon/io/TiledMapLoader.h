@@ -43,7 +43,6 @@ private:
 public:
     explicit TiledMapLoader(const std::string& mapFileName);
     cocos2d::TMXTiledMap* load();
-    void registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter = {});
     void setBox2dContainer(avalon::physics::Box2dContainer& container);
 
     template<typename T>
@@ -83,6 +82,9 @@ public:
             list.push_back(target);
         });
     }
+
+    void registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter = {});
+    void registerCallbackForGID(const int gid, const Callback& callback, const std::list<std::string>& layerFilter = {});
 
     template<typename T>
     void registerTypeForGID(const int gid, const std::list<std::string>& layerFilter = {})

@@ -151,15 +151,26 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
     }
 }
 
-
 void TiledMapLoader::registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter)
 {
     if (!nameFactories.count(name)) {
         nameFactories[name] = CallbackList();
     }
 
-    nameFactories[name].push_back([this, layerFilter, callback](const Configuration& config)
-    {
+    nameFactories[name].push_back([this, callback, layerFilter](const Configuration& config) {
+        if (!isFiltered(config.layer, layerFilter)) {
+            callback(config);
+        }
+    });
+}
+
+void TiledMapLoader::registerCallbackForGID(const int gid, const Callback& callback, const std::list<std::string>& layerFilter)
+{
+    if (!gidFactories.count(gid)) {
+        gidFactories[gid] = CallbackList();
+    }
+
+    gidFactories[gid].push_back([this, callback, layerFilter](const Configuration& config) {
         if (!isFiltered(config.layer, layerFilter)) {
             callback(config);
         }
