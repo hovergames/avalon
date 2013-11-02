@@ -60,8 +60,8 @@ namespace loadercallbacks {
 
 avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSensor)
 {
-    return [filterCategory, isSensor](const avalon::io::TiledMapLoader::Configuration& config) {
-
+    return [filterCategory, isSensor](const avalon::io::TiledMapLoader::Configuration& config)
+    {
         float x = boost::any_cast<float>(config.settings.at("x"));
         float y = boost::any_cast<float>(config.settings.at("y"));
         float width = boost::any_cast<float>(config.settings.at("width"));
@@ -78,19 +78,7 @@ avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSen
         if (config.settings.count("restitution"))   restitution = boost::any_cast<float>(config.settings.at("restitution"));
         if (config.settings.count("bodytype"))      bodytype = boost::any_cast<std::string>(config.settings.at("bodytype"));
 
-        // create the body
-        b2BodyDef bodyDef;
-
-        if (bodytype == "static")           bodyDef.type = b2_staticBody;
-        else if (bodytype == "dynamic")     bodyDef.type = b2_dynamicBody;
-        else if (bodytype == "kinematic")   bodyDef.type = b2_kinematicBody;
-        else                                throw new std::invalid_argument("Unknown box2d type");
-
-        bodyDef.position.Set((x + (width / 2.0f)) / pixelsInMeter, (y + (height / 2.0f)) / pixelsInMeter);
-        b2Body* body = config.box2dContainer->world->CreateBody(&bodyDef);
-
         std::shared_ptr<b2Shape> shape;
-
         if (config.settings.count("polylinePoints")) {
             auto points = boost::any_cast<std::list<cocos2d::Point>>(config.settings.at("polylinePoints"));
             shape = initShapeFromPoints(points, pixelsInMeter);
@@ -110,7 +98,16 @@ avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSen
         fixtureDef.filter.categoryBits = filterCategory;
         fixtureDef.filter.maskBits = 0xFFFF;
         fixtureDef.filter.groupIndex = 0;
-        
+
+        b2BodyDef bodyDef;
+        bodyDef.position.Set((x + (width / 2.0f)) / pixelsInMeter, (y + (height / 2.0f)) / pixelsInMeter);
+
+        if      (bodytype == "static")      bodyDef.type = b2_staticBody;
+        else if (bodytype == "dynamic")     bodyDef.type = b2_dynamicBody;
+        else if (bodytype == "kinematic")   bodyDef.type = b2_kinematicBody;
+        else                                throw new std::invalid_argument("Unknown box2d type");
+
+        auto body = config.box2dContainer->world->CreateBody(&bodyDef);
         body->CreateFixture(&fixtureDef);
     };
 }
