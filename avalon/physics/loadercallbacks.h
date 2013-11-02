@@ -2,7 +2,6 @@
 #define AVALON_PHYSICS_LOADERCALLBACKS_H
 
 #include <avalon/io/TiledMapLoader.h>
-#include <Box2D/Box2D.h>
 
 namespace avalon {
 namespace physics {

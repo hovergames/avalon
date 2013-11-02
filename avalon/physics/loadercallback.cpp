@@ -1,7 +1,8 @@
 #include <avalon/physics/loadercallbacks.h>
-#include "Box2D/Box2D.h"
-#include <avalon/physics/Box2dContainer.h>
+
+#include <Box2D/Box2D.h>
 #include <boost/any.hpp>
+#include <avalon/physics/Box2dContainer.h>
 
 namespace {
 
