@@ -12,7 +12,7 @@ std::shared_ptr<b2PolygonShape> initRectangleShape(float width, float height, fl
     return shape;
 }
 
-std::shared_ptr<b2ChainShape> initChainShape(std::list<cocos2d::Point> points, float pixelsInMeter, bool loop = false)
+std::shared_ptr<b2ChainShape> initChainShape(const std::list<cocos2d::Point>& points, float pixelsInMeter, bool loop = false)
 {
     auto convert = [&pixelsInMeter](const cocos2d::Point& p) -> b2Vec2 {
         return {p.x / pixelsInMeter, (p.y / pixelsInMeter) * -1};
