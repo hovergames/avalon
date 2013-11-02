@@ -146,6 +146,7 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
     }
 }
 
+
 void TiledMapLoader::registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter)
 {
     nameFactories[name] = [this, layerFilter, callback](const Configuration& config)
