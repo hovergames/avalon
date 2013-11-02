@@ -32,15 +32,17 @@ bool TiledMapLoader::isFiltered(const std::string& name, const std::list<std::st
     return false;
 }
 
-void TiledMapLoader::load(cocos2d::TMXTiledMap** map)
+cocos2d::TMXTiledMap* TiledMapLoader::load()
 {
-    *map = TMXTiledMap::create(mapFileName.c_str());
-    if (!*map) {
+    auto map = TMXTiledMap::create(mapFileName.c_str());
+    if (!map) {
         throw std::invalid_argument("Mapfile not found!");
     }
 
-    loadGidFactories(**map);
-    loadNamedFactories(**map);
+    loadGidFactories(*map);
+    loadNamedFactories(*map);
+
+    return map;
 }
 
 std::list<cocos2d::Point> TiledMapLoader::convertToPointList(const boost::any& original)

@@ -30,7 +30,7 @@ private:
 
 public:
     explicit CCBLoader(const std::string& ccbFileName);
-    void load(cocos2d::Node** node);
+    cocos2d::Node* load();
     void setBox2dContainer(avalon::physics::Box2dContainer& container);
     virtual bool onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node);
 

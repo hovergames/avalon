@@ -20,16 +20,18 @@ void CCBLoader::setBox2dContainer(avalon::physics::Box2dContainer& container)
     box2dContainer = &container;
 }
 
-void CCBLoader::load(cocos2d::Node** node)
+cocos2d::Node* CCBLoader::load()
 {
     nodeLoaderLibrary->registerDefaultNodeLoaders();
 
     CCBReader ccbReader(nodeLoaderLibrary.get(), this, nullptr);
-    *node = ccbReader.readNodeGraphFromFile(ccbFileName.c_str(), this);
+    auto node = ccbReader.readNodeGraphFromFile(ccbFileName.c_str(), this);
 
     for (auto& loader : genericLoaders) {
         loader->dispatchPendingProperties(box2dContainer);
     }
+
+    return node;
 }
 
 bool CCBLoader::onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node)
