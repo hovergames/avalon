@@ -24,11 +24,13 @@ public:
 
 private:
     using Assigner = std::function<void(cocos2d::Node&)>;
+    using CallbackList = std::list<Callback>;
+    using AssignerList = std::list<Assigner>;
 
-    std::unordered_map<int, Callback> gidFactories;
-    std::unordered_map<std::string, Callback> nameFactories;
-    std::unordered_map<int, Assigner> gidAssigner;
-    std::unordered_map<std::string, Assigner> nameAssigner;
+    std::unordered_map<int, CallbackList> gidFactories;
+    std::unordered_map<std::string, CallbackList> nameFactories;
+    std::unordered_map<int, AssignerList> gidAssigner;
+    std::unordered_map<std::string, AssignerList> nameAssigner;
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
     const std::string mapFileName;
 
@@ -50,14 +52,17 @@ public:
         if (!gidFactories.count(gid)) {
             throw new std::runtime_error("GID not registered yet");
         }
+        if (!gidAssigner.count(gid)) {
+            gidAssigner[gid] = AssignerList();
+        }
 
-        gidAssigner[gid] = [&list](cocos2d::Node& node) {
+        gidAssigner[gid].push_back([&list](cocos2d::Node& node) {
             auto target = dynamic_cast<T*>(&node);
             if (!target) {
                 throw new std::invalid_argument("Wrong Object type");
             }
             list.push_back(target);
-        };
+        });
     }
 
     template<typename T>
@@ -66,56 +71,71 @@ public:
         if (!nameFactories.count(name)) {
             throw new std::runtime_error("Name not registered yet");
         }
+        if (!nameAssigner.count(name)) {
+            nameAssigner[name] = AssignerList();
+        }
 
-        nameAssigner[name] = [&list](cocos2d::Node& node) {
+        nameAssigner[name].push_back([&list](cocos2d::Node& node) {
             auto target = dynamic_cast<T*>(&node);
             if (!target) {
                 throw new std::invalid_argument("Wrong Object type");
             }
             list.push_back(target);
-        };
+        });
     }
 
     template<typename T>
     void registerObjectForGID(const int gid, const std::list<std::string>& layerFilter = {})
     {
-        if (gidFactories.count(gid)) {
-            throw new std::runtime_error("GID already registered");
+        if (!gidFactories.count(gid)) {
+            gidFactories[gid] = CallbackList();
         }
 
-        gidFactories[gid] = [this, gid, layerFilter](const Configuration& config)
+        gidFactories[gid].push_back([this, gid, layerFilter](const Configuration& config)
         {
-            if (!isFiltered(config.layer, layerFilter)) {
-                auto newObject = T::create();
-                newObject->onConfiguration(config);
-                config.map.addChild(newObject);
-
-                if (gidAssigner.count(gid)) {
-                    gidAssigner[gid](*newObject);
-                }
+            if (isFiltered(config.layer, layerFilter)) {
+                return;
             }
-        };
+
+            auto newObject = T::create();
+            newObject->onConfiguration(config);
+            config.map.addChild(newObject);
+
+            if (!gidAssigner.count(gid)) {
+                return;
+            }
+
+            for (auto& callback : gidAssigner.at(gid)) {
+                callback(*newObject);
+            }
+        });
     }
 
     template<typename T>
     void registerObjectForName(const std::string& name, const std::list<std::string>& layerFilter = {})
     {
-        if (nameFactories.count(name)) {
-            throw new std::runtime_error("Name already registered");
+        if (!nameFactories.count(name)) {
+            nameFactories[name] = CallbackList();
         }
 
-        nameFactories[name] = [this, name, layerFilter](const Configuration& config)
+        nameFactories[name].push_back([this, name, layerFilter](const Configuration& config)
         {
-            if (!isFiltered(config.layer, layerFilter)) {
-                auto newObject = T::create();
-                newObject->onConfiguration(config);
-                config.map.addChild(newObject);
-
-                if (nameAssigner.count(name)) {
-                    nameAssigner[name](*newObject);
-                }
+            if (isFiltered(config.layer, layerFilter)) {
+                return;
             }
-        };
+
+            auto newObject = T::create();
+            newObject->onConfiguration(config);
+            config.map.addChild(newObject);
+
+            if (!nameAssigner.count(name)) {
+                return;
+            }
+
+            for (auto& callback : nameAssigner.at(name)) {
+                callback(*newObject);
+            }
+        });
     }
 };
 

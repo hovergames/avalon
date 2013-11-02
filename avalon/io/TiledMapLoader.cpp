@@ -88,7 +88,12 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
 
         for (int x = 0; x < map.getMapSize().width; ++x) {
             for (int y = 0; y < map.getMapSize().height; ++y) {
+
                 auto currentGID = mapLayer->getTileGIDAt({x, y});
+                if (!gidFactories.count(currentGID)) {
+                    continue;
+                }
+
                 auto info = map.getPropertiesForGID(currentGID);
                 auto data = avalon::utils::cocos::to_map<std::string>(*info);
 
@@ -98,11 +103,9 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
                 data["x"] = convertToFloat(data["x"]);
                 data["y"] = convertToFloat(data["y"]);
 
-                for (auto& obj : gidFactories) {
-                    if (obj.first == currentGID) {
-                        Configuration config{data, mapLayer->getLayerName(), map, box2dContainer};
-                        obj.second(config);
-                    }
+                Configuration config{data, mapLayer->getLayerName(), map, box2dContainer};
+                for (auto& callback : gidFactories.at(currentGID)) {
+                    callback(config);
                 }
             }
         }
@@ -128,6 +131,11 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
                 continue;
             }
 
+            auto name = boost::any_cast<std::string>(data["name"]);
+            if (!nameFactories.count(name)) {
+                continue;
+            }
+
             if (data.count("x")) data["x"] = convertToFloat(data["x"]);
             if (data.count("y")) data["y"] = convertToFloat(data["y"]);
             if (data.count("width")) data["width"] = convertToFloat(data["width"]);
@@ -135,14 +143,9 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
             if (data.count("points")) data["points"] = convertToPointList(data["points"]);
             if (data.count("polylinePoints")) data["polylinePoints"] = convertToPointList(data["polylinePoints"]);
 
-            for (auto& obj : nameFactories) {
-                auto dataName = boost::any_cast<std::string>(data["name"]);
-                if (obj.first != dataName) {
-                    continue;
-                }
-
-                Configuration config{data, objectGroup->getGroupName(), map, box2dContainer};
-                obj.second(config);
+            Configuration config{data, objectGroup->getGroupName(), map, box2dContainer};
+            for (auto& callback : nameFactories.at(name)) {
+                callback(config);
             }
         }
     }
@@ -151,12 +154,16 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
 
 void TiledMapLoader::registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter)
 {
-    nameFactories[name] = [this, layerFilter, callback](const Configuration& config)
+    if (!nameFactories.count(name)) {
+        nameFactories[name] = CallbackList();
+    }
+
+    nameFactories[name].push_back([this, layerFilter, callback](const Configuration& config)
     {
         if (!isFiltered(config.layer, layerFilter)) {
             callback(config);
         }
-    };
+    });
 }
 
 } // namespace io
