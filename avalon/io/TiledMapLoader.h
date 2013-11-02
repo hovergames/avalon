@@ -33,6 +33,7 @@ private:
     const std::string mapFileName;
 
     boost::any convertToFloat(boost::any& value);
+    std::list<cocos2d::Point> convertToPointList(const boost::any& original);
     bool isFiltered(const std::string& name, const std::list<std::string>& filter = {});
     void loadGidFactories(cocos2d::TMXTiledMap& map);
     void loadNamedFactories(cocos2d::TMXTiledMap& map);

@@ -45,6 +45,24 @@ std::shared_ptr<cocos2d::TMXTiledMap> TiledMapLoader::load()
     return map;
 }
 
+std::list<cocos2d::Point> TiledMapLoader::convertToPointList(const boost::any& original)
+{
+    using AnyList = std::list<boost::any>;
+    using AnyMap = std::map<std::string, boost::any>;
+
+    std::list<cocos2d::Point> result;
+    auto list = boost::any_cast<AnyList>(original);
+
+    for (auto& record : list) {
+        auto values = boost::any_cast<AnyMap>(record);
+        auto x = std::stof(boost::any_cast<std::string>(values["x"]));
+        auto y = std::stof(boost::any_cast<std::string>(values["y"]));
+        result.push_back(Point(x, y));
+    }
+
+    return result;
+}
+
 boost::any TiledMapLoader::convertToFloat(boost::any& value)
 {
     if (value.type() == typeid(float)) {
@@ -114,30 +132,8 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
             if (data.count("y")) data["y"] = convertToFloat(data["y"]);
             if (data.count("width")) data["width"] = convertToFloat(data["width"]);
             if (data.count("height")) data["height"] = convertToFloat(data["height"]);
-
-            if (data.count("polylinePoints")) {
-                std::list<cocos2d::Point> pointList;
-                auto anyList = boost::any_cast<std::list<boost::any>>(data["polylinePoints"]);
-                for (auto& points : anyList) {
-                    auto map = boost::any_cast<std::map<std::string, boost::any>>(points);
-                    auto x = std::stof(boost::any_cast<std::string>(map["x"]));
-                    auto y = std::stof(boost::any_cast<std::string>(map["y"]));
-                    pointList.push_back(Point(x, y));
-                }
-                data["polylinePoints"] = pointList;
-            }
-
-            if (data.count("points")) {
-                std::list<cocos2d::Point> pointList;
-                auto anyList = boost::any_cast<std::list<boost::any>>(data["points"]);
-                for (auto& points : anyList) {
-                    auto map = boost::any_cast<std::map<std::string, boost::any>>(points);
-                    auto x = std::stof(boost::any_cast<std::string>(map["x"]));
-                    auto y = std::stof(boost::any_cast<std::string>(map["y"]));
-                    pointList.push_back(Point(x, y));
-                }
-                data["points"] = pointList;
-            }
+            if (data.count("points")) data["points"] = convertToPointList(data["points"]);
+            if (data.count("polylinePoints")) data["polylinePoints"] = convertToPointList(data["polylinePoints"]);
 
             for (auto& obj : nameFactories) {
                 auto dataName = boost::any_cast<std::string>(data["name"]);
