@@ -85,7 +85,7 @@ public:
     }
 
     template<typename T>
-    void registerObjectForGID(const int gid, const std::list<std::string>& layerFilter = {})
+    void registerTypeForGID(const int gid, const std::list<std::string>& layerFilter = {})
     {
         if (!gidFactories.count(gid)) {
             gidFactories[gid] = CallbackList();
@@ -112,7 +112,7 @@ public:
     }
 
     template<typename T>
-    void registerObjectForName(const std::string& name, const std::list<std::string>& layerFilter = {})
+    void registerTypeForName(const std::string& name, const std::list<std::string>& layerFilter = {})
     {
         if (!nameFactories.count(name)) {
             nameFactories[name] = CallbackList();
