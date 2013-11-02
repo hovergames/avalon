@@ -108,18 +108,6 @@ std::shared_ptr<b2PolygonShape> initRectangleShape(float width, float height, fl
     return shape;
 }
 
-std::shared_ptr<b2PolygonShape> initPolygonShape(int width, int height, float pixelsInMeter)
-{
-    auto shape = initRectangleShape(width, height, pixelsInMeter);
-    return shape;
-}
-
-std::shared_ptr<b2CircleShape> initCircleShape()
-{
-    auto shape = make_shared<b2CircleShape>();
-    return shape;
-}
-
 std::shared_ptr<b2ChainShape> initChainShape(std::list<cocos2d::Point> points, float pixelsInMeter, bool loop)
 {
 
