@@ -3,6 +3,56 @@
 #include <avalon/physics/Box2dContainer.h>
 #include <boost/any.hpp>
 
+namespace {
+
+std::shared_ptr<b2PolygonShape> initRectangleShape(float width, float height, float pixelsInMeter)
+{
+    auto shape = make_shared<b2PolygonShape>();
+    shape->SetAsBox((width / pixelsInMeter) * 0.5f, (height / pixelsInMeter) * 0.5f);
+    return shape;
+}
+
+std::shared_ptr<b2ChainShape> initChainShape(std::list<cocos2d::Point> points, float pixelsInMeter, bool loop = false)
+{
+    std::vector<b2Vec2> vecs;
+    vecs.reserve(points.size());
+
+    for (auto& p : points) {
+        p = p / pixelsInMeter;
+        vecs.push_back({p.x, -p.y});
+    }
+
+    auto shape = make_shared<b2ChainShape>();
+
+    if (loop) {
+        shape->CreateLoop(&vecs[0], points.size());
+    } else {
+        shape->CreateChain(&vecs[0], points.size());
+    }
+
+    return shape;
+}
+
+std::shared_ptr<b2EdgeShape> initEdgeShape(cocos2d::Point p1, cocos2d::Point p2, float pixelsInMeter)
+{
+    p1 = p1 / pixelsInMeter;
+    p2 = p2 / pixelsInMeter;
+    auto shape = make_shared<b2EdgeShape>();
+    shape->Set({p1.x, p1.y}, {p2.x, p2.y});
+    return shape;
+}
+
+std::shared_ptr<b2Shape> initShapeFromPoints(const std::list<cocos2d::Point>& points, float pixelsInMeter, bool loop = false)
+{
+    if (points.size() == 2) {
+        return initEdgeShape(points.front(), points.back(), pixelsInMeter);
+    } else {
+        return initChainShape(points, pixelsInMeter, loop);
+    }
+}
+
+} // namespace
+
 namespace avalon {
 namespace physics {
 namespace loadercallbacks {
@@ -64,53 +114,6 @@ avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSen
     };
 }
 
-std::shared_ptr<b2Shape> initShapeFromPoints(const std::list<cocos2d::Point>& points, float pixelsInMeter, bool loop)
-{
-    if (points.size() == 2) {
-        return initEdgeShape(points.front(), points.back(), pixelsInMeter);
-    } else {
-        return initChainShape(points, pixelsInMeter, loop);
-    }
-}
-
-std::shared_ptr<b2PolygonShape> initRectangleShape(float width, float height, float pixelsInMeter)
-{
-    auto shape = make_shared<b2PolygonShape>();
-    shape->SetAsBox((width / pixelsInMeter) * 0.5f, (height / pixelsInMeter) * 0.5f);
-    return shape;
-}
-
-std::shared_ptr<b2ChainShape> initChainShape(std::list<cocos2d::Point> points, float pixelsInMeter, bool loop)
-{
-    
-    std::vector<b2Vec2> vecs;
-    vecs.reserve(points.size());
-    
-    for (auto& p : points) {
-        p = p / pixelsInMeter;
-        vecs.push_back({p.x, -p.y});
-    }
-    
-    auto shape = make_shared<b2ChainShape>();
-    
-    if (loop) {
-        shape->CreateLoop(&vecs[0], points.size());
-    } else {
-        shape->CreateChain(&vecs[0], points.size());
-    }
-    
-    return shape;
-}
-
-std::shared_ptr<b2EdgeShape> initEdgeShape(cocos2d::Point p1, cocos2d::Point p2, float pixelsInMeter)
-{
-    p1 = p1 / pixelsInMeter;
-    p2 = p2 / pixelsInMeter;
-    auto shape = make_shared<b2EdgeShape>();
-    shape->Set({p1.x, p1.y}, {p2.x, p2.y});
-    return shape;
-}
-
-} // namesapce loadercallbacks
+} // namespace loadercallbacks
 } // namespace physics
 } // namespace avalon
