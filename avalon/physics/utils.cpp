@@ -99,11 +99,11 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
 {
     return [filterCategory, isSensor](const avalon::io::TiledMapLoader::Configuration& config)
     {
-        float x = boost::any_cast<float>(config.settings.at("x"));
-        float y = boost::any_cast<float>(config.settings.at("y"));
-        float width = boost::any_cast<float>(config.settings.at("width"));
-        float height = boost::any_cast<float>(config.settings.at("height"));
-        float pixelsInMeter = config.box2dContainer->pixelsInMeter;
+        const float x = boost::any_cast<float>(config.settings.at("x"));
+        const float y = boost::any_cast<float>(config.settings.at("y"));
+        const float width = boost::any_cast<float>(config.settings.at("width"));
+        const float height = boost::any_cast<float>(config.settings.at("height"));
+        const float pixelsInMeter = config.box2dContainer->pixelsInMeter;
 
         float density = 0.0;
         float friction = 1.0;
