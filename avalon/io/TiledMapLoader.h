@@ -83,8 +83,24 @@ public:
         });
     }
 
-    void registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter = {});
     void registerCallbackForGID(const int gid, const Callback& callback, const std::list<std::string>& layerFilter = {});
+    void registerCallbackForName(const std::string& name, const Callback& callback, const std::list<std::string>& layerFilter = {});
+
+    template<typename T>
+    void registerObjectForGID(const int gid, T& object, const std::list<std::string>& layerFilter = {})
+    {
+        registerCallbackForGID(gid, [&object](const Configuration& config) {
+            object->onConfiguration(config);
+        }, layerFilter);
+    }
+
+    template<typename T>
+    void registerObjectForName(const std::string& name, T& object, const std::list<std::string>& layerFilter = {})
+    {
+        registerCallbackForName(name, [&object](const Configuration& config) {
+            object->onConfiguration(config);
+        }, layerFilter);
+    }
 
     template<typename T>
     void registerTypeForGID(const int gid, const std::list<std::string>& layerFilter = {})
