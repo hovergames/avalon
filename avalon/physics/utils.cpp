@@ -104,16 +104,17 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
         const float width = boost::any_cast<float>(config.settings.at("width"));
         const float height = boost::any_cast<float>(config.settings.at("height"));
         const float pixelsInMeter = config.box2dContainer->pixelsInMeter;
+        const auto pos = convertToBox2d(*config.box2dContainer, {x, y}, {width, height});
 
-        float density = 0.0;
-        float friction = 1.0;
-        float restitution = 0.0;
+        auto fixtureDef = config.box2dContainer->defaultFixtureDef;
+        fixtureDef.isSensor = isSensor;
+        fixtureDef.filter.categoryBits = filterCategory;
+
         std::string bodytype = "static";
-
-        if (config.settings.count("friction"))      friction = boost::any_cast<float>(config.settings.at("friction"));
-        if (config.settings.count("density"))       density = boost::any_cast<float>(config.settings.at("density"));
-        if (config.settings.count("restitution"))   restitution = boost::any_cast<float>(config.settings.at("restitution"));
-        if (config.settings.count("bodytype"))      bodytype = boost::any_cast<std::string>(config.settings.at("bodytype"));
+        if (config.settings.count("friction"))    fixtureDef.friction = boost::any_cast<float>(config.settings.at("friction"));
+        if (config.settings.count("density"))     fixtureDef.density = boost::any_cast<float>(config.settings.at("density"));
+        if (config.settings.count("restitution")) fixtureDef.restitution = boost::any_cast<float>(config.settings.at("restitution"));
+        if (config.settings.count("bodytype"))    bodytype = boost::any_cast<std::string>(config.settings.at("bodytype"));
 
         std::shared_ptr<b2Shape> shape;
         if (config.settings.count("polylinePoints")) {
@@ -125,21 +126,10 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
         } else {
             shape = initRectangleShape(width, height, pixelsInMeter);
         }
-
-        b2FixtureDef fixtureDef;
         fixtureDef.shape = shape.get();
-        fixtureDef.isSensor = isSensor;
-        fixtureDef.friction = friction;
-        fixtureDef.restitution = restitution;
-        fixtureDef.density = density;
-        fixtureDef.filter.categoryBits = filterCategory;
-        fixtureDef.filter.maskBits = 0xFFFF;
-        fixtureDef.filter.groupIndex = 0;
 
         b2BodyDef bodyDef;
         bodyDef.type = getBodyTypeFromString(bodytype);
-
-        auto pos = convertToBox2d(*config.box2dContainer, {x, y}, {width, height});
         bodyDef.position.Set(pos.x, pos.y);
 
         auto body = config.box2dContainer->world->CreateBody(&bodyDef);
