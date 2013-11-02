@@ -25,9 +25,9 @@ private:
     b2BodyType getBox2dBodyType(const std::string& type);
 
 public:
-    ~Sprite();
     CREATE_FUNC(Sprite);
     virtual bool init() override;
+    virtual void cleanup() override;
 
     // delete "inherited" create methods
     static Sprite* create(const char *filename) = delete;

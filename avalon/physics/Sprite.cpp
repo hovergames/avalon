@@ -76,7 +76,7 @@ Sprite* Sprite::createWithPESShape(avalon::physics::Box2dContainer& box2dContain
     return sprite;
 }
 
-Sprite::~Sprite()
+void Sprite::cleanup()
 {
     if (hasBody()) {
         getBody().GetWorld()->DestroyBody(&getBody());
@@ -84,6 +84,7 @@ Sprite::~Sprite()
     if (box2dContainer) {
         box2dContainer->removeNode(*this);
     }
+    cocos2d::Sprite::cleanup();
 }
 
 bool Sprite::hasBody() const
