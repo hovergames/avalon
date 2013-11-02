@@ -20,7 +20,6 @@ avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSen
         float density = 0.0;
         float friction = 1.0;
         float restitution = 0.0;
-
         std::string bodytype = "static";
 
         if (config.settings.count("friction"))      friction = boost::any_cast<float>(config.settings.at("friction"));
@@ -31,12 +30,10 @@ avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSen
         // create the body
         b2BodyDef bodyDef;
 
-        std::string type = "static";
-
-        if (type == "static")           bodyDef.type = b2_staticBody;
-        else if (type == "dynamic")     bodyDef.type = b2_dynamicBody;
-        else if (type == "kinematic")   bodyDef.type = b2_kinematicBody;
-        else                            throw new std::invalid_argument("Unknown box2d type");
+        if (bodytype == "static")           bodyDef.type = b2_staticBody;
+        else if (bodytype == "dynamic")     bodyDef.type = b2_dynamicBody;
+        else if (bodytype == "kinematic")   bodyDef.type = b2_kinematicBody;
+        else                                throw new std::invalid_argument("Unknown box2d type");
 
         bodyDef.position.Set((x + (width / 2.0f)) / pixelsInMeter, (y + (height / 2.0f)) / pixelsInMeter);
         b2Body* body = config.box2dContainer->world->CreateBody(&bodyDef);
@@ -67,18 +64,12 @@ avalon::io::TiledMapLoader::Callback createShapes(int filterCategory, bool isSen
     };
 }
 
-std::shared_ptr<b2Shape> initShapeFromPoints(std::list<cocos2d::Point> pointList, float pixelsInMeter, bool loop)
+std::shared_ptr<b2Shape> initShapeFromPoints(const std::list<cocos2d::Point>& points, float pixelsInMeter, bool loop)
 {
-    if (pointList.size() == 2) {
-        int index = 0;
-        cocos2d::Point points[2];
-        for (auto& p : pointList) {
-            points[index] = p;
-            ++index;
-        }
-        return initEdgeShape(points[0], points[1], pixelsInMeter);
+    if (points.size() == 2) {
+        return initEdgeShape(points.front(), points.back(), pixelsInMeter);
     } else {
-        return initChainShape(pointList, pixelsInMeter, loop);
+        return initChainShape(points, pixelsInMeter, loop);
     }
 }
 
