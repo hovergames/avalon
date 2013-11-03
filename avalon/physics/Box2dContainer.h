@@ -46,8 +46,9 @@ public:
 
     void removeNode(cocos2d::Node& node);
 
-    void destroyBodyDelayed(b2Body& body);
-    void destroyBodyDelayed(b2Body& body, cocos2d::Node& node);
+    void destroyDelayed(b2Body& body);
+    void destroyDelayed(b2Body& body, cocos2d::Node& node);
+    void destroyDelayed(cocos2d::Node& node);
 
     template<typename T>
     T* getNode(const b2Fixture& fixture, const bool noException = false)

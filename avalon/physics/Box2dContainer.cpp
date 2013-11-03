@@ -82,23 +82,40 @@ void Box2dContainer::removeNode(cocos2d::Node& node)
 void Box2dContainer::executePendingDeletes()
 {
     for (auto& pair : pendingDeletes) {
-        world->DestroyBody(pair.first);
-        if (pair.second) {
-            removeNode(*pair.second);
+        auto body = pair.first;
+        auto node = pair.second;
+
+        if (body) {
+            world->DestroyBody(body);
+        }
+        if (body && node) {
+            removeNode(*node);
+            node->release();
+        }
+        if (!body && node) {
+            node->removeFromParent();
+            node->release();
         }
     }
 
     pendingDeletes.clear();
 }
 
-void Box2dContainer::destroyBodyDelayed(b2Body& body)
+void Box2dContainer::destroyDelayed(b2Body& body)
 {
     pendingDeletes.push_back(std::make_pair(&body, nullptr));
 }
 
-void Box2dContainer::destroyBodyDelayed(b2Body& body, cocos2d::Node& node)
+void Box2dContainer::destroyDelayed(b2Body& body, cocos2d::Node& node)
 {
+    node.retain();
     pendingDeletes.push_back(std::make_pair(&body, &node));
+}
+
+void Box2dContainer::destroyDelayed(cocos2d::Node& node)
+{
+    node.retain();
+    pendingDeletes.push_back(std::make_pair(nullptr, &node));
 }
 
 Box2dContainer::NodeId Box2dContainer::generateId()
