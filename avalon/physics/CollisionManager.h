@@ -4,6 +4,7 @@
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 #include <avalon/physics/Box2dContainer.h>
+#include <avalon/physics/CollisionManagerFallback.h>
 
 namespace avalon {
 namespace physics {
@@ -11,9 +12,9 @@ namespace physics {
 class CollisionManager : public b2ContactListener
 {
 private:
-    using ContactType = std::function<void(b2Contact&)>;
-    using PreSolveType = std::function<void(b2Contact&, const b2Manifold&)>;
-    using PostSolveType = std::function<void(b2Contact&, const b2ContactImpulse&)>;
+    using ContactType = std::function<bool(b2Contact&)>;
+    using PreSolveType = std::function<bool(b2Contact&, const b2Manifold&)>;
+    using PostSolveType = std::function<bool(b2Contact&, const b2ContactImpulse&)>;
 
     Box2dContainer& box2dContainer;
     std::list<ContactType> listBeginContact;
@@ -44,6 +45,8 @@ private:
     }
 
 public:
+    CollisionManagerFallback* fallback = nullptr;
+
     CollisionManager(Box2dContainer& box2dContainer);
 
     virtual void BeginContact(b2Contact* contact);
@@ -58,28 +61,36 @@ public:
             A* a = nullptr; B* b = nullptr;
             if (lookup(contact, &a, &b)) {
                 a->onBeginContact(box2dContainer, *b, contact);
+                return true;
             }
+            return false;
         });
         
         listEndContact.push_back([this](b2Contact& contact) {
             A* a = nullptr; B* b = nullptr;
             if (lookup(contact, &a, &b)) {
                 a->onEndContact(box2dContainer, *b, contact);
+                return true;
             }
+            return false;
         });
         
         listPreSolve.push_back([this](b2Contact& contact, const b2Manifold& oldManifold) {
             A* a = nullptr; B* b = nullptr;
             if (lookup(contact, &a, &b)) {
                 a->onPreSolve(box2dContainer, *b, contact, oldManifold);
+                return true;
             }
+            return false;
         });
         
         listPostSolve.push_back([this](b2Contact& contact, const b2ContactImpulse& impulse) {
             A* a = nullptr; B* b = nullptr;
             if (lookup(contact, &a, &b)) {
                 a->onPostSolve(box2dContainer, *b, contact, impulse);
+                return true;
             }
+            return false;
         });
     }
 };
