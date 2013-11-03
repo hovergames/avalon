@@ -1,6 +1,7 @@
 #include <avalon/physics/Box2dContainer.h>
 
 #include <avalon/physics/vendors/B2DebugDrawLayer.h>
+#include <avalon/physics/CollisionManager.h>
 
 namespace avalon {
 namespace physics {
@@ -17,9 +18,21 @@ bool Box2dContainer::init()
     return true;
 }
 
+std::shared_ptr<CollisionManager> Box2dContainer::getCollisionManager()
+{
+    if (!collisionManager) {
+        collisionManager.reset(new CollisionManager(*this));
+        world->SetContactListener(getCollisionManager().get());
+    }
+
+    return collisionManager;
+}
+
 void Box2dContainer::update(float delta)
 {
     Node::update(delta);
+
+    executePendingDeletes();
     world->Step(timeStep, velocityIterations, positionIterations);
 }
 
@@ -42,7 +55,7 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef)
     return world->CreateBody(&bodyDef);
 }
 
-b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, const cocos2d::Node& node)
+b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node)
 {
     if (!nodeToId.count(&node)) {
         auto newId = generateId();
@@ -55,7 +68,7 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, const cocos2d::Node
     return body;
 }
 
-void Box2dContainer::removeNode(const cocos2d::Node& node)
+void Box2dContainer::removeNode(cocos2d::Node& node)
 {
     auto iter = nodeToId.find(&node);
     if (iter == nodeToId.end()) {
@@ -64,6 +77,28 @@ void Box2dContainer::removeNode(const cocos2d::Node& node)
 
     nodeToId.erase(iter);
     idToNode.erase((*iter).second);
+}
+
+void Box2dContainer::executePendingDeletes()
+{
+    for (auto& pair : pendingDeletes) {
+        world->DestroyBody(pair.first);
+        if (pair.second) {
+            removeNode(*pair.second);
+        }
+    }
+
+    pendingDeletes.clear();
+}
+
+void Box2dContainer::destroyBodyDelayed(b2Body& body)
+{
+    pendingDeletes.push_back(std::make_pair(&body, nullptr));
+}
+
+void Box2dContainer::destroyBodyDelayed(b2Body& body, cocos2d::Node& node)
+{
+    pendingDeletes.push_back(std::make_pair(&body, &node));
 }
 
 Box2dContainer::NodeId Box2dContainer::generateId()
