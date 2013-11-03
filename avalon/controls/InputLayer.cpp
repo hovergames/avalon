@@ -5,18 +5,21 @@ namespace controls {
     
 bool InputLayer::init()
 {
-    if (!cocos2d::LayerGradient::init())
+    if (!cocos2d::LayerGradient::init()) {
         return false;
+    }
+
+    using namespace std::placeholders;
 
     touchListener = cocos2d::EventListenerTouchOneByOne::create();
-    touchListener->onTouchBegan = std::bind(&InputLayer::onTouchLayerBegan, this, std::placeholders::_1, std::placeholders::_2);
-    touchListener->onTouchMoved = std::bind(&InputLayer::onTouchLayerMoved, this, std::placeholders::_1, std::placeholders::_2);
-    touchListener->onTouchEnded = std::bind(&InputLayer::onTouchLayerEnded, this, std::placeholders::_1, std::placeholders::_2);
-    touchListener->onTouchCancelled = std::bind(&InputLayer::onTouchLayerCancelled, this, std::placeholders::_1, std::placeholders::_2);
+    touchListener->onTouchBegan = std::bind(&InputLayer::onTouchLayerBegan, this, _1, _2);
+    touchListener->onTouchMoved = std::bind(&InputLayer::onTouchLayerMoved, this, _1, _2);
+    touchListener->onTouchEnded = std::bind(&InputLayer::onTouchLayerEnded, this, _1, _2);
+    touchListener->onTouchCancelled = std::bind(&InputLayer::onTouchLayerCancelled, this, _1, _2);
 
     keyboardListener = cocos2d::EventListenerKeyboard::create();
-    keyboardListener->onKeyPressed =  std::bind(&InputLayer::onKeyPressed, this, std::placeholders::_1, std::placeholders::_2);
-    keyboardListener->onKeyReleased =  std::bind(&InputLayer::onKeyReleased, this, std::placeholders::_1, std::placeholders::_2);
+    keyboardListener->onKeyPressed = std::bind(&InputLayer::onKeyPressed, this, _1, _2);
+    keyboardListener->onKeyReleased = std::bind(&InputLayer::onKeyReleased, this, _1, _2);
 
     auto director = cocos2d::Director::getInstance()->getEventDispatcher();
     director->addEventListenerWithSceneGraphPriority(touchListener, this);
