@@ -139,26 +139,5 @@ void InputLayer::onConfiguration(const avalon::io::CCBLoader::Configuration& con
 {
 }
 
-void InputLayer::updateChildOpacity(cocos2d::Node& parent) const
-{
-    GLubyte opacity = opacityInactive;
-    if (pressed) {
-        opacity = opacityHover;
-    }
-
-    cocos2d::Object* element = nullptr;
-    CCARRAY_FOREACH(getChildren(), element) {
-        cocos2d::Sprite* sprite = dynamic_cast<cocos2d::Sprite*>(element);
-        if (!sprite) {
-            continue;
-        }
-
-        sprite->setOpacity(opacity);
-        if (sprite->getChildren()) {
-            updateChildOpacity(*sprite);
-        }
-    }
-};
-
 } // namespace controls
 } // namespace avalon

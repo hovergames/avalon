@@ -25,12 +25,7 @@ protected:
     virtual bool isFilteredEnded(cocos2d::Touch* touch, cocos2d::Event* event) { return false; }
     virtual bool isFilteredCancelled(cocos2d::Touch* touch, cocos2d::Event* event) { return false; }
 
-    void updateChildOpacity(cocos2d::Node& parent) const;
-
 public:
-    GLubyte opacityHover = 255;
-    GLubyte opacityInactive = 128;
-
     std::function<bool(cocos2d::Touch*, cocos2d::Event*)> onTouchBegan;
     std::function<void(cocos2d::Touch*, cocos2d::Event*)> onTouchMoved;
     std::function<void(cocos2d::Touch*, cocos2d::Event*)> onTouchEnded;
