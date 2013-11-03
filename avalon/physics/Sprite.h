@@ -14,7 +14,6 @@ namespace physics {
 class Sprite : public cocos2d::Sprite
 {
 private:
-    b2Body* body = nullptr;
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
 
     void createBody();
@@ -25,6 +24,8 @@ private:
     b2BodyType getBox2dBodyType(const std::string& type);
 
 public:
+    b2Body* body = nullptr;
+
     CREATE_FUNC(Sprite);
     virtual bool init() override;
     virtual void cleanup() override;
