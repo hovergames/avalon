@@ -11,6 +11,15 @@ AnimationManager::~AnimationManager()
 
 }
 
+
+void AnimationManager::addAnimation(int animationId, std::string spriteFramesFile, std::list<std::string> frameNames, cocos2d::Sprite *target, float speed)
+{
+    auto cache = cocos2d::SpriteFrameCache::getInstance();
+    cache->addSpriteFramesWithFile(spriteFramesFile.c_str());
+    
+    addAnimation(animationId, frameNames, target, speed);
+}
+
 void AnimationManager::addAnimation(int animationId, std::list<std::string> frameNames, cocos2d::Sprite *target, float speed)
 {
     if (animations.count(animationId)) {
