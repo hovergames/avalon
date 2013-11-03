@@ -15,9 +15,40 @@ bool TouchLayer::init()
     touchListener->onTouchEnded = std::bind(&TouchLayer::onTouchLayerEnded, this, std::placeholders::_1, std::placeholders::_2);
     touchListener->onTouchCancelled = std::bind(&TouchLayer::onTouchLayerCancelled, this, std::placeholders::_1, std::placeholders::_2);
 
+    keyboardListener = cocos2d::EventListenerKeyboard::create();
+    keyboardListener->onKeyPressed =  std::bind(&TouchLayer::onKeyPressed, this, std::placeholders::_1, std::placeholders::_2);
+    keyboardListener->onKeyReleased =  std::bind(&TouchLayer::onKeyReleased, this, std::placeholders::_1, std::placeholders::_2);
+
     cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
+    cocos2d::Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
     return true;
+}
+
+void TouchLayer::bindKey(cocos2d::EventKeyboard::KeyCode keyCode)
+{
+    bindedKey = keyCode;
+}
+
+void TouchLayer::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
+{
+    if (bindedKey != cocos2d::EventKeyboard::KeyCode::KEY_NONE && keyCode == bindedKey)
+    {
+        pressed = true;
+        if (onTouchBegan)
+            onTouchBegan(nullptr, event);
+
+    }
+}
+
+void TouchLayer::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
+{
+    if (bindedKey != cocos2d::EventKeyboard::KeyCode::KEY_NONE && keyCode == bindedKey)
+    {
+        pressed = false;
+        if (onTouchEnded)
+            onTouchEnded(nullptr, event);
+    }
 }
 
 bool TouchLayer::onTouchLayerBegan(cocos2d::Touch* touch, cocos2d::Event* event)

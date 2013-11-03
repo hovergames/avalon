@@ -12,6 +12,12 @@ class TouchLayer : public cocos2d::LayerGradient
 private:
     cocos2d::EventListenerTouchOneByOne* touchListener = nullptr;
 
+    cocos2d::EventListenerKeyboard* keyboardListener = nullptr;
+    cocos2d::EventKeyboard::KeyCode bindedKey = cocos2d::EventKeyboard::KeyCode::KEY_NONE;
+
+    void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+
 protected:
     bool pressed = false;
 
@@ -27,6 +33,7 @@ public:
 
     CREATE_FUNC(TouchLayer);
 
+    void bindKey(cocos2d::EventKeyboard::KeyCode keyCode);
     virtual bool init() override;
 
     virtual bool onTouchLayerBegan(cocos2d::Touch* touch, cocos2d::Event* event);
