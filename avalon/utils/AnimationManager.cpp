@@ -63,13 +63,13 @@ void AnimationManager::start(int animationId, bool loop)
     }
 }
 
-cocos2d::Animate* AnimationManager::getAnimation(int animationId)
+cocos2d::Animate& AnimationManager::getAnimation(int animationId)
 {
     if (!animations.count(animationId)) {
-        return nullptr;
+        throw new std::runtime_error("No animation found");
     }
 
-    return animations[animationId].animation;
+    return *animations[animationId].animation;
 }
 
 } // namespace utils

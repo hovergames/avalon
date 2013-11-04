@@ -30,7 +30,7 @@ public:
     bool isRunning();
     void stop();
     
-    cocos2d::Animate* getAnimation(int animationId);
+    cocos2d::Animate& getAnimation(int animationId);
 };
 
 } // namespace utils
