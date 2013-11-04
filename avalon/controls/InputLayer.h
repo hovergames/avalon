@@ -14,6 +14,7 @@ private:
     cocos2d::EventListenerKeyboard* keyboardListener = nullptr;
     std::set<cocos2d::EventKeyboard::KeyCode> listenKeys;
     std::set<cocos2d::EventKeyboard::KeyCode> activeKeys;
+    std::set<int> activeTouchIds;
 
     void onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
