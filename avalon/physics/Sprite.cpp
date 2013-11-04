@@ -280,7 +280,12 @@ void Sprite::update(float delta)
         using avalon::physics::utils::convertFromBox2d;
 
         auto size = getContentSize();
-        auto pos = convertFromBox2d(*box2dContainer, body->GetPosition(), size);
+
+        b2Vec2 localPos(center.x, center.y);
+        b2Rot rot(body->GetAngle());
+        localPos = b2Mul(rot, localPos) + body->GetPosition();
+
+        auto pos = convertFromBox2d(*box2dContainer, localPos, size);
 
         // adjust to the current anchor point
         pos.x += getAnchorPoint().x * size.width;
@@ -320,6 +325,16 @@ void Sprite::setRotation(float rotation)
         auto angle = CC_DEGREES_TO_RADIANS(rotation * -1);
         getBody().SetTransform(getBody().GetPosition(), angle);
     }
+}
+
+void Sprite::setCenter(const cocos2d::Point& point)
+{
+    center = point;
+}
+
+const cocos2d::Point& Sprite::getCenter()
+{
+    return center;
 }
 
 } // namespace physics
