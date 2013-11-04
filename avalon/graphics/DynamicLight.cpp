@@ -2,8 +2,7 @@
 
 using namespace cocos2d;
 
-namespace avalon {
-namespace graphics {
+namespace  {
 
 const GLchar* vertexShader =
 #include "shaders/pass.vsh"
@@ -13,6 +12,11 @@ const GLchar* shadowMapFragmentShader =
 
 const GLchar* shadowRenderFragmentShader =
 #include "shaders/shadowRender.fsh"
+
+} // namespace
+
+namespace avalon {
+namespace graphics {
 
 DynamicLight::~DynamicLight()
 {
