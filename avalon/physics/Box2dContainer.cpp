@@ -14,7 +14,7 @@ class QueryCallback : public b2QueryCallback
 {
 public:
     b2Vec2 point;
-    std::list<b2Body*> results;
+    std::vector<b2Body*> results;
 
     QueryCallback(const b2Vec2& point)
     : point(point)
@@ -233,7 +233,7 @@ Box2dContainer::NodeId Box2dContainer::generateId()
     return ++lastNodeId;
 }
 
-std::list<b2Body*> Box2dContainer::getBodiesFromTouch(cocos2d::Touch& touch)
+std::vector<b2Body*> Box2dContainer::getBodiesFromTouch(cocos2d::Touch& touch)
 {
     auto loc = convertTouchToNodeSpace(&touch);
     auto pos = utils::convertToBox2d(*this, loc, {0, 0});

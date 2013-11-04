@@ -110,12 +110,12 @@ public:
         return resultPtr;
     }
 
-    std::list<b2Body*> getBodiesFromTouch(cocos2d::Touch& touch);
+    std::vector<b2Body*> getBodiesFromTouch(cocos2d::Touch& touch);
 
     template<typename T>
-    std::list<T*> getNodesFromTouch(cocos2d::Touch& touch)
+    std::vector<T*> getNodesFromTouch(cocos2d::Touch& touch)
     {
-        std::list<T*> result;
+        std::vector<T*> result;
 
         for (auto& body : getBodiesFromTouch(touch)) {
             auto node = getNode<T>(*body, true);
