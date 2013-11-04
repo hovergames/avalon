@@ -17,10 +17,10 @@ private:
     };
 
     std::map<int, AnimationSequence> animations;
-
-public:
     int actionTagId = -2;
 
+public:
+    AnimationManager(int tagId = 2) : actionTagId(tagId) {}
     ~AnimationManager();
 
     void addAnimation(int animationId, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed = 1.0);
