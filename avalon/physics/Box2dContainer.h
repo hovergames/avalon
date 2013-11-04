@@ -46,6 +46,7 @@ public:
     b2Body* createBody(const b2BodyDef& bodyDef);
     b2Body* createBody(const b2BodyDef& bodyDef, cocos2d::Node& node);
 
+    void assignNode(b2Body& body, cocos2d::Node& node);
     void removeNode(cocos2d::Node& node);
 
     void destroyDelayed(b2Body& body);

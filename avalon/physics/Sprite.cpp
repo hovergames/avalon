@@ -77,9 +77,69 @@ Sprite* Sprite::createWithPESShape(avalon::physics::Box2dContainer& box2dContain
     return sprite;
 }
 
+Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, const char *filename)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithFile(filename)) return nullptr;
+    sprite->box2dContainer = &box2dContainer;
+    sprite->box2dContainer->assignNode(body, *sprite);
+    sprite->body = &body;
+    return sprite;
+}
+
+Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, const char *filename, const cocos2d::Rect& rect)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithFile(filename, rect)) return nullptr;
+    sprite->box2dContainer = &box2dContainer;
+    sprite->box2dContainer->assignNode(body, *sprite);
+    sprite->body = &body;
+    return sprite;
+}
+
+Sprite* Sprite::createWithTexture(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, cocos2d::Texture2D *texture)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithTexture(texture)) return nullptr;
+    sprite->box2dContainer = &box2dContainer;
+    sprite->box2dContainer->assignNode(body, *sprite);
+    sprite->body = &body;
+    return sprite;
+}
+
+Sprite* Sprite::createWithTexture(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, cocos2d::Texture2D *texture, const cocos2d::Rect& rect)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithTexture(texture, rect)) return nullptr;
+    sprite->box2dContainer = &box2dContainer;
+    sprite->box2dContainer->assignNode(body, *sprite);
+    sprite->body = &body;
+    return sprite;
+}
+
+Sprite* Sprite::createWithSpriteFrame(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, cocos2d::SpriteFrame *pSpriteFrame)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithSpriteFrame(pSpriteFrame)) return nullptr;
+    sprite->box2dContainer = &box2dContainer;
+    sprite->box2dContainer->assignNode(body, *sprite);
+    sprite->body = &body;
+    return sprite;
+}
+
+Sprite* Sprite::createWithSpriteFrameName(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, const char *spriteFrameName)
+{
+    auto sprite = Sprite::create();
+    if (!sprite || !sprite->initWithSpriteFrameName(spriteFrameName)) return nullptr;
+    sprite->box2dContainer = &box2dContainer;
+    sprite->box2dContainer->assignNode(body, *sprite);
+    sprite->body = &body;
+    return sprite;
+}
+
 void Sprite::cleanup()
 {
-    if (hasBody()) {
+    if (hasBody() && ownsBody) {
         getBody().GetWorld()->DestroyBody(&getBody());
     }
     if (box2dContainer) {
@@ -172,6 +232,7 @@ void Sprite::createBody()
     b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     body = box2dContainer->createBody(bodyDef, *this);
+    ownsBody = true;
 }
 
 void Sprite::createBody(const std::map<std::string, boost::any>& settings)

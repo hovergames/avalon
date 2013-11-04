@@ -57,15 +57,20 @@ b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef)
 
 b2Body* Box2dContainer::createBody(const b2BodyDef& bodyDef, cocos2d::Node& node)
 {
+    auto body = world->CreateBody(&bodyDef);
+    assignNode(*body, node);
+    return body;
+}
+
+void Box2dContainer::assignNode(b2Body& body, cocos2d::Node& node)
+{
     if (!nodeToId.count(&node)) {
         auto newId = generateId();
         nodeToId[&node] = newId;
         idToNode[newId] = &node;
     }
 
-    auto body = world->CreateBody(&bodyDef);
-    body->SetUserData(static_cast<void*>(nodeToId[&node]));
-    return body;
+    body.SetUserData(static_cast<void*>(nodeToId[&node]));
 }
 
 void Box2dContainer::removeNode(cocos2d::Node& node)

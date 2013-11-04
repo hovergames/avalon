@@ -14,8 +14,9 @@ namespace physics {
 class Sprite : public cocos2d::Sprite
 {
 private:
-    b2Body* body = nullptr;
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
+    b2Body* body = nullptr;
+    bool ownsBody = false;
 
     void createBody();
     void createBody(const std::map<std::string, boost::any>& settings);
@@ -44,6 +45,14 @@ public:
     static Sprite* createWithTexture(avalon::physics::Box2dContainer& box2dContainer, cocos2d::Texture2D *texture, const cocos2d::Rect& rect);
     static Sprite* createWithSpriteFrame(avalon::physics::Box2dContainer& box2dContainer, cocos2d::SpriteFrame *pSpriteFrame);
     static Sprite* createWithSpriteFrameName(avalon::physics::Box2dContainer& box2dContainer, const char *spriteFrameName);
+
+    // load a sprite next to a body without an own fixture
+    static Sprite* create(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, const char *filename);
+    static Sprite* create(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, const char *filename, const cocos2d::Rect& rect);
+    static Sprite* createWithTexture(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, cocos2d::Texture2D *texture);
+    static Sprite* createWithTexture(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, cocos2d::Texture2D *texture, const cocos2d::Rect& rect);
+    static Sprite* createWithSpriteFrame(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, cocos2d::SpriteFrame *pSpriteFrame);
+    static Sprite* createWithSpriteFrameName(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, const char *spriteFrameName);
 
     // custom create methods
     static Sprite* createWithPESShape(avalon::physics::Box2dContainer& box2dContainer, const char *filename, const std::string& pesFile, const std::string& pesShape);
