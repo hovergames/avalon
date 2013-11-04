@@ -1,5 +1,5 @@
-#ifndef AVALON_UTILS_OBJECTRETAINER_H
-#define AVALON_UTILS_OBJECTRETAINER_H
+#ifndef AVALON_UTILS_REPEATABLESPRITE_H
+#define AVALON_UTILS_REPEATABLESPRITE_H
 
 #include "cocos2d.h"
 
@@ -13,6 +13,8 @@ private:
     void initTextureRectAndPosition();
 
 public:
+    using cocos2d::Sprite::initWithTexture;
+
     CREATE_FUNC(RepeatableSprite);
 
     static RepeatableSprite* create(const char *filename);
@@ -21,7 +23,6 @@ public:
     static RepeatableSprite* createWithTexture(cocos2d::Texture2D *texture, const cocos2d::Rect& rect);
     static RepeatableSprite* createWithSpriteFrame(cocos2d::SpriteFrame *pSpriteFrame);
     static RepeatableSprite* createWithSpriteFrameName(const char *spriteFrameName);
-    using cocos2d::Sprite::initWithTexture;
     bool initWithTexture(cocos2d::Texture2D *texture, const cocos2d::Rect& rect, bool rotated) override;
 
     void setTextureOffset(const cocos2d::Point& point);
@@ -31,4 +32,4 @@ public:
 } // namespace utils
 } // namespace avalon
 
-#endif /* AVALON_UTILS_OBJECTRETAINER_H */
+#endif /* AVALON_UTILS_REPEATABLESPRITE_H */

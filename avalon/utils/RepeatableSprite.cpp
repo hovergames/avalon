@@ -1,5 +1,5 @@
 #include <avalon/utils/RepeatableSprite.h>
-#include "cocos2d.h"
+
 #include "ccUtils.h"
 
 namespace avalon {
@@ -7,7 +7,7 @@ namespace utils {
 
 RepeatableSprite* RepeatableSprite::create(const char *filename)
 {
-    auto *sprite = new RepeatableSprite();
+    auto sprite = new RepeatableSprite();
     if (sprite && sprite->initWithFile(filename))
     {
         sprite->autorelease();
@@ -92,20 +92,20 @@ bool RepeatableSprite::initWithTexture(cocos2d::Texture2D *texture, const cocos2
 
 void RepeatableSprite::initTextureRectAndPosition()
 {
-    auto size = cocos2d::EGLView::getInstance()->getDesignResolutionSize();
     setAnchorPoint({0, 0});
     setPosition({0, 0});
-    setTextureRect(cocos2d::Rect(0, 0, size.width, size.height));
+
+    auto size = cocos2d::EGLView::getInstance()->getDesignResolutionSize();
+    setTextureRect({0, 0, size.width, size.height});
 
     auto tex = getTexture();
     if (tex) {
-        cocos2d::Texture2D::TexParams params = { GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT };
-
-        if (tex->getPixelsWide() != cocos2d::ccNextPOT(tex->getPixelsWide()) || tex->getPixelsHigh() != cocos2d::ccNextPOT(tex->getPixelsHigh())) {
+        if (tex->getPixelsWide() != cocos2d::ccNextPOT(tex->getPixelsWide())
+         || tex->getPixelsHigh() != cocos2d::ccNextPOT(tex->getPixelsHigh())) {
             throw std::invalid_argument("RepeatableSprite Texture has to be a power of two!");
         }
         
-        getTexture()->setTexParameters(params);
+        tex->setTexParameters({ GL_LINEAR, GL_LINEAR, GL_REPEAT, GL_REPEAT });
     }
 }
 
