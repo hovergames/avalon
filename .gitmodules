@@ -7,3 +7,6 @@
 [submodule "vendors/appirater-ios"]
 	path = vendors/appirater-ios
 	url = https://github.com/arashpayan/appirater.git
+[submodule "vendors/b2dJson"]
+	path = vendors/b2dJson
+	url = https://github.com/iforce2d/b2dJson.git
