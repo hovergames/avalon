@@ -40,7 +40,7 @@ GLProgram* getWhiteShader()
 
 GLProgram* getDefaultShader()
 {
-    return ShaderCache::getInstance()->programForKey(kCCShader_PositionTexture);
+    return ShaderCache::getInstance()->getProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE);
 }
 
 } // namespace physics
