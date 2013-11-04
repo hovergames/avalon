@@ -5,7 +5,37 @@
 #include <avalon/physics/vendors/B2DebugDrawLayer.h>
 #include <avalon/physics/CollisionManager.h>
 #include <avalon/physics/Sprite.h>
+#include <avalon/physics/utils.h>
 #include <avalon/io/utils.h>
+
+namespace {
+
+class QueryCallback : public b2QueryCallback
+{
+public:
+    b2Vec2 point;
+    std::list<b2Body*> results;
+
+    QueryCallback(const b2Vec2& point)
+    : point(point)
+    {
+    }
+
+    bool ReportFixture(b2Fixture* fixture)
+    {
+        if (fixture->IsSensor()) {
+            return true;
+        }
+
+        if (fixture->TestPoint(point)) {
+            results.push_back(fixture->GetBody());
+        }
+
+        return true;
+    }
+};
+
+} // namespace
 
 namespace avalon {
 namespace physics {
@@ -201,6 +231,24 @@ void Box2dContainer::destroyDelayed(cocos2d::Node& node)
 Box2dContainer::NodeId Box2dContainer::generateId()
 {
     return ++lastNodeId;
+}
+
+std::list<b2Body*> Box2dContainer::getBodiesFromTouch(cocos2d::Touch& touch)
+{
+    auto loc = convertTouchToNodeSpace(&touch);
+    auto pos = utils::convertToBox2d(*this, loc, {0, 0});
+
+    // Make a small box.
+    b2AABB aabb;
+    b2Vec2 d(0.001f, 0.001f);
+    aabb.lowerBound = pos - d;
+    aabb.upperBound = pos + d;
+
+    // Query the world for overlapping shapes.
+    QueryCallback callback(pos);
+    getWorld().QueryAABB(&callback, aabb);
+
+    return callback.results;
 }
 
 } // namespace physics
