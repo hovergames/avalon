@@ -24,7 +24,7 @@ public:
     static RepeatableSprite* createWithSpriteFrame(cocos2d::SpriteFrame *pSpriteFrame);
     static RepeatableSprite* createWithSpriteFrameName(const char *spriteFrameName);
     bool initWithTexture(cocos2d::Texture2D *texture, const cocos2d::Rect& rect, bool rotated) override;
-
+    
     void setTextureOffset(const cocos2d::Point& point);
     void moveTexture(const cocos2d::Point& point);
 };

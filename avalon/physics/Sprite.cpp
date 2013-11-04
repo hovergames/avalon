@@ -150,7 +150,7 @@ void Sprite::cleanup()
 
 bool Sprite::hasBody() const
 {
-    return !!body;
+    return body;
 }
 
 b2Body& Sprite::getBody()
