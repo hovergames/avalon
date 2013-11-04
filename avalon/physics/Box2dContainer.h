@@ -3,6 +3,7 @@
 
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
+#include <boost/noncopyable.hpp>
 
 class B2DebugDrawLayer;
 namespace avalon { namespace physics { class CollisionManager; } }
@@ -10,7 +11,7 @@ namespace avalon { namespace physics { class CollisionManager; } }
 namespace avalon {
 namespace physics {
 
-class Box2dContainer : public cocos2d::Node
+class Box2dContainer : public cocos2d::Node, public boost::noncopyable
 {
 private:
     using NodeId = int*;
