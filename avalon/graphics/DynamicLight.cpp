@@ -1,4 +1,5 @@
 #include <avalon/graphics/DynamicLight.h>
+#include <avalon/graphics/shaderhelper.h>
 
 using namespace cocos2d;
 
@@ -34,8 +35,8 @@ bool DynamicLight::init()
     if (!Node::init())
         return false;
 
-    shadowMapShader = this->loadShader(vertexShader, shadowMapFragmentShader);
-    shadowRenderShader = this->loadShader(vertexShader, shadowRenderFragmentShader);
+    shadowMapShader = avalon::graphics::loadShader(vertexShader, shadowMapFragmentShader);
+    shadowRenderShader = avalon::graphics::loadShader(vertexShader, shadowRenderFragmentShader);
 
     initOcclusionMap();
     initShadowMap1D();
@@ -165,23 +166,7 @@ void DynamicLight::debugDraw()
     shadowMap1D->visit();
 }
 
-GLProgram* DynamicLight::loadShader(const GLchar* vertexShader, const GLchar* fragmentShader)
-{
-    GLProgram* shader = ShaderCache::getInstance()->getProgram(fragmentShader);
-    if (!shader) {
-        shader = new GLProgram();
-        shader->retain();
-        shader->initWithVertexShaderByteArray(vertexShader, fragmentShader);
-        shader->addAttribute(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_POSITION);
-        shader->addAttribute(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
-        shader->addAttribute(GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTRIB_COLOR);
-        shader->link();
-        shader->updateUniforms();
-        shader->use();
-    }
 
-    return shader;
-}
 
 void DynamicLight::updateUniforms()
 {

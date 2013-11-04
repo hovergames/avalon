@@ -28,8 +28,6 @@ private:
     cocos2d::GLProgram *shadowMapShader = nullptr;
     cocos2d::GLProgram *shadowRenderShader = nullptr;
 
-    cocos2d::GLProgram* loadShader(const GLchar* vertexShader, const GLchar* fragmentShader);
-
     void initOcclusionMap();
     void initShadowMap1D();
     void initFinalShadowMap();
