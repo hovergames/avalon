@@ -1,10 +1,72 @@
 #include <avalon/physics/Box2dContainer.h>
 
+#include <avalon/physics/vendors/b2dJson/b2dJson.h>
+#include <avalon/physics/vendors/b2dJson/b2dJsonImage.h>
 #include <avalon/physics/vendors/B2DebugDrawLayer.h>
 #include <avalon/physics/CollisionManager.h>
+#include <avalon/physics/Sprite.h>
+#include <avalon/io/utils.h>
 
 namespace avalon {
 namespace physics {
+
+Box2dContainer* Box2dContainer::createFromJson(const std::string& jsonFile)
+{
+    auto container = new Box2dContainer();
+    if (container && container->initFromJson(jsonFile)) {
+        container->autorelease();
+        return container;
+    } else {
+        delete container;
+        return nullptr;
+    }
+}
+
+bool Box2dContainer::initFromJson(const std::string& jsonFile)
+{
+    using avalon::io::utils::getStringFromFile;
+
+    if (!Node::init()) {
+        return false;
+    }
+
+    std::string error;
+    json.reset(new b2dJson());
+    world.reset(json->readFromString(getStringFromFile(jsonFile), error));
+    if (error.length() > 0) {
+        throw new std::runtime_error(error);
+    }
+
+    loadAllImagesFromJson();
+    scheduleUpdate();
+
+    return true;
+}
+
+void Box2dContainer::loadAllImagesFromJson()
+{
+    std::vector<b2dJsonImage*> b2dImages;
+    json->getAllImages(b2dImages);
+
+    cocos2d::Sprite* sprite = nullptr;
+    for (auto& image : b2dImages) {
+        if (image->body) {
+            auto physicSprite = avalon::physics::Sprite::create(*this, *image->body, image->file.c_str());
+            physicSprite->setCenter({image->center.x, image->center.y});
+            sprite = physicSprite;
+        } else {
+            sprite = cocos2d::Sprite::create(image->file.c_str());
+            sprite->setPosition({image->center.x, image->center.y});
+        }
+
+        sprite->setFlippedX(image->flip);
+        sprite->setColor({image->colorTint[0], image->colorTint[1], image->colorTint[2]});
+        sprite->setOpacity(image->colorTint[3]);
+        sprite->setScale(image->scale);
+        sprite->setRotation(CC_RADIANS_TO_DEGREES(-image->angle));
+        addChild(sprite, image->renderOrder);
+    }
+}
 
 bool Box2dContainer::init()
 {
@@ -89,6 +151,14 @@ b2World& Box2dContainer::getWorld()
     return *world.get();
 }
 
+b2dJson& Box2dContainer::getJson()
+{
+    if (!json) {
+        throw new std::runtime_error("World not loaded from a json file");
+    }
+    return *json.get();
+}
+
 void Box2dContainer::executePendingDeletes()
 {
     for (auto& pair : pendingDeletes) {
@@ -135,3 +205,13 @@ Box2dContainer::NodeId Box2dContainer::generateId()
 
 } // namespace physics
 } // namespace avalon
+
+namespace std {
+
+std::string to_string(avalon::physics::Box2dContainer& box2dContainer)
+{
+    b2dJson json;
+    return json.writeToString(&box2dContainer.getWorld());
+}
+
+} // namespace std
