@@ -40,7 +40,7 @@ public:
     void update(float delta) override;
     void enableDebugDraw(const bool enable);
 
-    std::shared_ptr<CollisionManager> getCollisionManager();
+    CollisionManager& getCollisionManager();
 
     b2Body* createBody(const b2BodyDef& bodyDef);
     b2Body* createBody(const b2BodyDef& bodyDef, cocos2d::Node& node);

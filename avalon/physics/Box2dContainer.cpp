@@ -18,14 +18,14 @@ bool Box2dContainer::init()
     return true;
 }
 
-std::shared_ptr<CollisionManager> Box2dContainer::getCollisionManager()
+CollisionManager& Box2dContainer::getCollisionManager()
 {
     if (!collisionManager) {
         collisionManager.reset(new CollisionManager(*this));
-        world->SetContactListener(getCollisionManager().get());
+        world->SetContactListener(collisionManager.get());
     }
 
-    return collisionManager;
+    return *collisionManager.get();
 }
 
 void Box2dContainer::update(float delta)
