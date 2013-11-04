@@ -8,6 +8,9 @@ const GLchar* whiteShader =
 const GLchar* vertexShader =
 #include "shaders/pass.vsh"
 
+const GLchar* grassShader =
+#include "shaders/grass.fsh"
+
 }
 
 namespace avalon {
@@ -20,7 +23,6 @@ GLProgram* loadShader(const GLchar* vertexShader, const GLchar* fragmentShader)
     GLProgram* shader = ShaderCache::getInstance()->getProgram(fragmentShader);
     if (!shader) {
         shader = new GLProgram();
-        shader->retain();
         shader->initWithVertexShaderByteArray(vertexShader, fragmentShader);
         shader->addAttribute(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_POSITION);
         shader->addAttribute(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
@@ -36,6 +38,11 @@ GLProgram* loadShader(const GLchar* vertexShader, const GLchar* fragmentShader)
 GLProgram* getWhiteShader()
 {
     return loadShader(vertexShader, whiteShader);
+}
+
+GLProgram* getGrassShader()
+{
+    return loadShader(vertexShader, grassShader);
 }
 
 GLProgram* getDefaultShader()

@@ -8,6 +8,7 @@ namespace graphics {
 
 cocos2d::GLProgram* loadShader(const GLchar* vertexShader, const GLchar* fragmentShader);
 cocos2d::GLProgram* getWhiteShader();
+cocos2d::GLProgram* getGrassShader();
 cocos2d::GLProgram* getDefaultShader();
 
 } // namespace physics
