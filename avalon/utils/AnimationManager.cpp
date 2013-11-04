@@ -48,10 +48,10 @@ void AnimationManager::addAnimation(int animationId, const std::list<std::string
 void AnimationManager::start(int animationId, bool loop)
 {
     if (!animations.count(animationId)) {
-        return;
+        throw new std::runtime_error("No animation found");
     }
 
-    auto sequence = &animations.at(animationId);
+    auto sequence = &animations[animationId];
     sequence->target->stopActionByTag(actionTagId);
 
     if (loop) {
@@ -61,6 +61,26 @@ void AnimationManager::start(int animationId, bool loop)
     } else {
         sequence->target->runAction(sequence->animation);
     }
+}
+
+void AnimationManager::stop(int animationId)
+{
+    if (!animations.count(animationId)) {
+        throw new std::runtime_error("No animation found");
+    }
+
+    auto sequence = &animations[animationId];
+    sequence->target->stopActionByTag(actionTagId);
+}
+
+bool AnimationManager::isRunning(int animationId)
+{
+    if (!animations.count(animationId)) {
+        throw new std::runtime_error("No animation found");
+    }
+
+    auto sequence = &animations[animationId];
+    return !!sequence->target->getActionByTag(actionTagId);
 }
 
 cocos2d::Animate& AnimationManager::getAnimation(int animationId)

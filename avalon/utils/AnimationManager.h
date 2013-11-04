@@ -27,9 +27,9 @@ public:
     void addAnimation(int animationId, const std::string& spriteFramesFile, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed = 1.0);
 
     void start(int animationId, bool loop = false);
-    bool isRunning();
-    void stop();
-    
+    void stop(int animationId);
+    bool isRunning(int animationId);
+
     cocos2d::Animate& getAnimation(int animationId);
 };
 
