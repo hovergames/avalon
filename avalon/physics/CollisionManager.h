@@ -5,6 +5,7 @@
 #include "cocos2d.h"
 #include <avalon/physics/Box2dContainer.h>
 #include <avalon/physics/CollisionManagerFallback.h>
+#include <avalon/physics/ContactContainer.h>
 
 namespace avalon {
 namespace physics {
@@ -12,9 +13,9 @@ namespace physics {
 class CollisionManager : public b2ContactListener
 {
 private:
-    using ContactType = std::function<bool(b2Contact&)>;
-    using PreSolveType = std::function<bool(b2Contact&, const b2Manifold&)>;
-    using PostSolveType = std::function<bool(b2Contact&, const b2ContactImpulse&)>;
+    using ContactType = std::function<bool(ContactContainer&)>;
+    using PreSolveType = std::function<bool(ContactContainer&, const b2Manifold&)>;
+    using PostSolveType = std::function<bool(ContactContainer&, const b2ContactImpulse&)>;
 
     Box2dContainer& box2dContainer;
     std::list<ContactType> listBeginContact;
@@ -22,20 +23,25 @@ private:
     std::list<PreSolveType> listPreSolve;
     std::list<PostSolveType> listPostSolve;
 
+    ContactContainer contactContainer{nullptr, nullptr, true};
+
     template<typename A, typename B>
-    bool lookup(b2Contact& contact, A** a, B** b)
+    bool lookup(ContactContainer& contact, A** a, B** b)
     {
-        *a = box2dContainer.getNode<A>(*contact.GetFixtureA(), true);
+        auto box2dContact = contact.getContact();
+        *a = box2dContainer.getNode<A>(*box2dContact->GetFixtureA(), true);
+        contactContainer.iAmInFixtureA = true;
         if (!*a) {
-            *a = box2dContainer.getNode<A>(*contact.GetFixtureB(), true);
+            *a = box2dContainer.getNode<A>(*box2dContact->GetFixtureB(), true);
+            contactContainer.iAmInFixtureA = false;
         }
         if (!*a) {
             return false;
         }
 
-        *b = box2dContainer.getNode<B>(*contact.GetFixtureB(), true);
+        *b = box2dContainer.getNode<B>(*box2dContact->GetFixtureB(), true);
         if (!*b) {
-            *b = box2dContainer.getNode<B>(*contact.GetFixtureA(), true);
+            *b = box2dContainer.getNode<B>(*box2dContact->GetFixtureA(), true);
         }
         if (!*b) {
             return false;
@@ -57,37 +63,37 @@ public:
     template<typename A, typename B>
     void registerPair()
     {
-        listBeginContact.push_back([this](b2Contact& contact) {
+        listBeginContact.push_back([this](ContactContainer& contact) {
             A* a = nullptr; B* b = nullptr;
             if (lookup(contact, &a, &b)) {
-                a->onBeginContact(box2dContainer, *b, contact);
+                a->onBeginContact(*b, contact);
                 return true;
             }
             return false;
         });
         
-        listEndContact.push_back([this](b2Contact& contact) {
+        listEndContact.push_back([this](ContactContainer& contact) {
             A* a = nullptr; B* b = nullptr;
             if (lookup(contact, &a, &b)) {
-                a->onEndContact(box2dContainer, *b, contact);
+                a->onEndContact(*b, contact);
                 return true;
             }
             return false;
         });
         
-        listPreSolve.push_back([this](b2Contact& contact, const b2Manifold& oldManifold) {
+        listPreSolve.push_back([this](ContactContainer& contact, const b2Manifold& oldManifold) {
             A* a = nullptr; B* b = nullptr;
             if (lookup(contact, &a, &b)) {
-                a->onPreSolve(box2dContainer, *b, contact, oldManifold);
+                a->onPreSolve(*b, contact, oldManifold);
                 return true;
             }
             return false;
         });
         
-        listPostSolve.push_back([this](b2Contact& contact, const b2ContactImpulse& impulse) {
+        listPostSolve.push_back([this](ContactContainer& contact, const b2ContactImpulse& impulse) {
             A* a = nullptr; B* b = nullptr;
             if (lookup(contact, &a, &b)) {
-                a->onPostSolve(box2dContainer, *b, contact, impulse);
+                a->onPostSolve(*b, contact, impulse);
                 return true;
             }
             return false;
