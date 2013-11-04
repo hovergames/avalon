@@ -7,11 +7,11 @@ namespace avalon {
 namespace utils {
 namespace texture {
 
-void setAntialias(cocos2d::Sprite *sprite, bool mode);
-void setAntialias(cocos2d::Texture2D *tex, bool mode);
+void setAntialias(cocos2d::Sprite& sprite, bool mode);
+void setAntialias(cocos2d::Texture2D& tex, bool mode);
 
 }
 } // namespace utils
 } // namespace avalon
 
-#endif /* AVALON_UTILS_OBJECTRETAINER_H */
+#endif /* AVALON_UTILS_TEXTUREHELPER_H */
