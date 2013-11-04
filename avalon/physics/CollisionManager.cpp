@@ -1,5 +1,7 @@
 #include <avalon/physics/CollisionManager.h>
 
+#include <avalon/physics/CollisionManagerFallback.h>
+
 namespace avalon {
 namespace physics {
 

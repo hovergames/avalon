@@ -4,9 +4,10 @@
 #include "Box2D/Box2D.h"
 #include "cocos2d.h"
 #include <avalon/physics/Box2dContainer.h>
-#include <avalon/physics/CollisionManagerFallback.h>
 #include <avalon/physics/ContactContainer.h>
 #include <boost/noncopyable.hpp>
+
+namespace avalon { namespace physics { class CollisionManagerFallback; } }
 
 namespace avalon {
 namespace physics {

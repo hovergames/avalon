@@ -1,5 +1,7 @@
 #include <avalon/physics/ContactContainer.h>
 
+#include <avalon/physics/Box2dContainer.h>
+
 namespace avalon {
 namespace physics {
 
