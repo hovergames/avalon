@@ -131,7 +131,7 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
         bodyDef.type = getBodyTypeFromString(bodytype);
         bodyDef.position.Set(pos.x, pos.y);
 
-        auto body = config.box2dContainer->world->CreateBody(&bodyDef);
+        auto body = config.box2dContainer->getWorld().CreateBody(&bodyDef);
         body->CreateFixture(&fixtureDef);
     };
 }

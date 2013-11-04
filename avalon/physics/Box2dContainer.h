@@ -22,12 +22,12 @@ private:
     std::unordered_map<NodeId, cocos2d::Node*> idToNode;
     std::unordered_map<cocos2d::Node*, NodeId> nodeToId;
     std::list<std::pair<b2Body*, cocos2d::Node*>> pendingDeletes;
+    std::shared_ptr<b2World> world;
 
     NodeId generateId();
     void executePendingDeletes();
 
 public:
-    std::shared_ptr<b2World> world;
     float32 timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 8;
     int32 positionIterations = 3;
@@ -40,6 +40,7 @@ public:
     void update(float delta) override;
     void enableDebugDraw(const bool enable);
 
+    b2World& getWorld();
     CollisionManager& getCollisionManager();
 
     b2Body* createBody(const b2BodyDef& bodyDef);

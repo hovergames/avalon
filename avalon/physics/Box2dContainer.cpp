@@ -79,6 +79,11 @@ void Box2dContainer::removeNode(cocos2d::Node& node)
     idToNode.erase((*iter).second);
 }
 
+b2World& Box2dContainer::getWorld()
+{
+    return *world.get();
+}
+
 void Box2dContainer::executePendingDeletes()
 {
     for (auto& pair : pendingDeletes) {
