@@ -3,11 +3,12 @@
 
 #include "Box2D/Box2D.h"
 #include <avalon/physics/Box2dContainer.h>
+#include <boost/noncopyable.hpp>
 
 namespace avalon {
 namespace physics {
 
-class ContactContainer
+class ContactContainer : public boost::noncopyable
 {
 private:
     friend CollisionManager;
