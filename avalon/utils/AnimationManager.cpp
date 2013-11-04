@@ -21,7 +21,7 @@ void AnimationManager::addAnimation(int animationId, const std::string& spriteFr
 void AnimationManager::addAnimation(int animationId, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed)
 {
     if (animations.count(animationId)) {
-        CC_SAFE_RELEASE(animations.at(animationId).animation);
+        animations[animationId].animation->release();
         animations.erase(animationId);
     }
 
