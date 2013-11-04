@@ -43,8 +43,9 @@ private:
             return false;
         }
 
-        *b = box2dContainer.getNode<B>(fixtureB, true);
-        if (!*b) {
+        if (contactContainer.iAmInFixtureA) {
+            *b = box2dContainer.getNode<B>(fixtureB, true);
+        } else {
             *b = box2dContainer.getNode<B>(fixtureA, true);
         }
         if (!*b) {
