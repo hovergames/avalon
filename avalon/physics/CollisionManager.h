@@ -6,11 +6,12 @@
 #include <avalon/physics/Box2dContainer.h>
 #include <avalon/physics/CollisionManagerFallback.h>
 #include <avalon/physics/ContactContainer.h>
+#include <boost/noncopyable.hpp>
 
 namespace avalon {
 namespace physics {
 
-class CollisionManager : public b2ContactListener
+class CollisionManager : public b2ContactListener, public boost::noncopyable
 {
 private:
     using ContactType = std::function<bool(ContactContainer&)>;
