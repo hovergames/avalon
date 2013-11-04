@@ -19,7 +19,7 @@ void CollisionManager::BeginContact(b2Contact* contact)
     }
 
     if (!handled && fallback) {
-        fallback->onBeginContact(contactContainer);
+        fallback->onBeginContact(box2dContainer, *contact);
     }
 }
 
@@ -33,7 +33,7 @@ void CollisionManager::EndContact(b2Contact* contact)
     }
 
     if (!handled && fallback) {
-        fallback->onEndContact(contactContainer);
+        fallback->onEndContact(box2dContainer, *contact);
     }
 }
 
@@ -47,7 +47,7 @@ void CollisionManager::PreSolve(b2Contact* contact, const b2Manifold* oldManifol
     }
 
     if (!handled && fallback) {
-        fallback->onPreSolve(contactContainer, *oldManifold);
+        fallback->onPreSolve(box2dContainer, *contact, *oldManifold);
     }
 }
 
@@ -61,7 +61,7 @@ void CollisionManager::PostSolve(b2Contact* contact, const b2ContactImpulse* imp
     }
 
     if (!handled && fallback) {
-        fallback->onPostSolve(contactContainer, *impulse);
+        fallback->onPostSolve(box2dContainer, *contact, *impulse);
     }
 }
 

@@ -28,20 +28,22 @@ private:
     template<typename A, typename B>
     bool lookup(ContactContainer& contact, A** a, B** b)
     {
-        auto box2dContact = contact.getContact();
-        *a = box2dContainer.getNode<A>(*box2dContact->GetFixtureA(), true);
+        auto& fixtureA = *contact.getContact().GetFixtureA();
+        auto& fixtureB = *contact.getContact().GetFixtureB();
+
+        *a = box2dContainer.getNode<A>(fixtureA, true);
         contactContainer.iAmInFixtureA = true;
         if (!*a) {
-            *a = box2dContainer.getNode<A>(*box2dContact->GetFixtureB(), true);
+            *a = box2dContainer.getNode<A>(fixtureB, true);
             contactContainer.iAmInFixtureA = false;
         }
         if (!*a) {
             return false;
         }
 
-        *b = box2dContainer.getNode<B>(*box2dContact->GetFixtureB(), true);
+        *b = box2dContainer.getNode<B>(fixtureB, true);
         if (!*b) {
-            *b = box2dContainer.getNode<B>(*box2dContact->GetFixtureA(), true);
+            *b = box2dContainer.getNode<B>(fixtureA, true);
         }
         if (!*b) {
             return false;

@@ -10,24 +10,24 @@ ContactContainer::ContactContainer(Box2dContainer* container, b2Contact* contact
 {
 }
 
-Box2dContainer* ContactContainer::getContainer()
+Box2dContainer& ContactContainer::getContainer()
 {
-    return container;
+    return *container;
 }
 
-const Box2dContainer* ContactContainer::getContainer() const
+const Box2dContainer& ContactContainer::getContainer() const
 {
-    return container;
+    return *container;
 }
 
-b2Contact* ContactContainer::getContact()
+b2Contact& ContactContainer::getContact()
 {
-    return contact;
+    return *contact;
 }
 
-const b2Contact* ContactContainer::getContact() const
+const b2Contact& ContactContainer::getContact() const
 {
-    return contact;
+    return *contact;
 }
 
 b2Fixture& ContactContainer::getMyFixture()

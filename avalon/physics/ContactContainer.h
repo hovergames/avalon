@@ -19,11 +19,11 @@ private:
 public:
     ContactContainer(Box2dContainer* container, b2Contact* contact, bool meInFixtureA);
 
-    Box2dContainer* getContainer();
-    const Box2dContainer* getContainer() const;
+    Box2dContainer& getContainer();
+    const Box2dContainer& getContainer() const;
 
-    b2Contact* getContact();
-    const b2Contact* getContact() const;
+    b2Contact& getContact();
+    const b2Contact& getContact() const;
 
     b2Fixture& getMyFixture();
     const b2Fixture& getMyFixture() const;
