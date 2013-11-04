@@ -1,5 +1,7 @@
 #include <avalon/utils/AnimationManager.h>
 
+using namespace cocos2d;
+
 namespace avalon {
 namespace utils {
 
@@ -12,7 +14,7 @@ AnimationManager::~AnimationManager()
 
 void AnimationManager::addAnimation(int animationId, const std::string& spriteFramesFile, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed)
 {
-    auto cache = cocos2d::SpriteFrameCache::getInstance();
+    auto cache = SpriteFrameCache::getInstance();
     cache->addSpriteFramesWithFile(spriteFramesFile.c_str());
     
     addAnimation(animationId, frameNames, target, speed);
@@ -25,8 +27,8 @@ void AnimationManager::addAnimation(int animationId, const std::list<std::string
         animations.erase(animationId);
     }
 
-    auto cache = cocos2d::SpriteFrameCache::getInstance();
-    auto frames = cocos2d::Array::createWithCapacity(frameNames.size());
+    auto cache = SpriteFrameCache::getInstance();
+    auto frames = Array::createWithCapacity(frameNames.size());
 
     for (auto& name : frameNames) {
         auto frame = cache->getSpriteFrameByName(name.c_str());
@@ -36,7 +38,7 @@ void AnimationManager::addAnimation(int animationId, const std::list<std::string
         frames->addObject(frame);
     }
 
-    auto animation = cocos2d::Animate::create(cocos2d::Animation::createWithSpriteFrames(frames, speed));
+    auto animation = Animate::create(Animation::createWithSpriteFrames(frames, speed));
     animation->setTag(actionTagId);
     animation->retain();
 
@@ -53,7 +55,7 @@ void AnimationManager::start(int animationId, bool loop)
     sequence->target->stopActionByTag(actionTagId);
 
     if (loop) {
-        auto action = cocos2d::RepeatForever::create(sequence->animation);
+        auto action = RepeatForever::create(sequence->animation);
         action->setTag(actionTagId);
         sequence->target->runAction(action);
     } else {

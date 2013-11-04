@@ -30,7 +30,6 @@ public:
     bool isRunning();
     void stop();
     
-    cocos2d::Animate* getCurrentAnimation();
     cocos2d::Animate* getAnimation(int animationId);
 };
 
