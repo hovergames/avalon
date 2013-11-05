@@ -47,7 +47,7 @@ public:
     static Sprite* createWithSpriteFrame(avalon::physics::Box2dContainer& box2dContainer, cocos2d::SpriteFrame *pSpriteFrame);
     static Sprite* createWithSpriteFrameName(avalon::physics::Box2dContainer& box2dContainer, const char *spriteFrameName);
 
-    // load a sprite next to a body without an own fixture
+    // load a sprite next to a body without creating a new fixture at all
     static Sprite* create(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, const char *filename);
     static Sprite* create(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, const char *filename, const cocos2d::Rect& rect);
     static Sprite* createWithTexture(avalon::physics::Box2dContainer& box2dContainer, b2Body& body, cocos2d::Texture2D *texture);

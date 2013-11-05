@@ -34,7 +34,7 @@ public:
     float32 timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 8;
     int32 positionIterations = 3;
-    float pixelsInMeter = 32; // todo: read only
+    float pixelsInMeter = 32; // FIXME: Read only
     b2FixtureDef defaultFixtureDef;
 
     CREATE_FUNC(Box2dContainer);

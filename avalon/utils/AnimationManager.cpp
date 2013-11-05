@@ -14,6 +14,7 @@ AnimationManager::~AnimationManager()
 
 void AnimationManager::addAnimation(int animationId, const std::string& spriteFramesFile, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed)
 {
+    // FIXME: target->retain()?
     auto cache = SpriteFrameCache::getInstance();
     cache->addSpriteFramesWithFile(spriteFramesFile.c_str());
     
@@ -22,6 +23,7 @@ void AnimationManager::addAnimation(int animationId, const std::string& spriteFr
 
 void AnimationManager::addAnimation(int animationId, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed)
 {
+    // FIXME: target->retain()?
     if (animations.count(animationId)) {
         animations[animationId].animation->release();
         animations.erase(animationId);

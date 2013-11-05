@@ -1,6 +1,5 @@
 #include <avalon/utils/url.h>
 
-
 #if TARGET_OS_IPHONE
     #include <Foundation/Foundation.h>
     #include <UIKit/UIKit.h>

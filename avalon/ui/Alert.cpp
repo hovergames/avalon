@@ -15,7 +15,7 @@ Alert::Alert(Callback delegate)
 {
 }
 
-void Alert::addButton(const unsigned int index, std::string label)
+void Alert::addButton(const unsigned int index, const std::string& label)
 {
     buttons[index] = label;
 }

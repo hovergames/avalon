@@ -1,10 +1,10 @@
 #include <avalon/graphics/DynamicLight.h>
 
 #include <avalon/graphics/shaderhelper.h>
-#include <avalon/utils/cocos.h>
+#include <avalon/utils/color.h>
 
 using namespace cocos2d;
-using namespace avalon::utils::cocos;
+using namespace avalon::utils::color;
 
 namespace  {
 

@@ -21,7 +21,7 @@ public:
     Alert();
     explicit Alert(Callback delegate);
 
-    void addButton(const unsigned int index, const std::string label);
+    void addButton(const unsigned int index, const std::string& label);
     void removeButton(const unsigned int index);
     std::string getButtonLabel(const unsigned int index) const;
 

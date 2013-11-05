@@ -1,7 +1,6 @@
 #include "CCBLoader.h"
 
 #include "cocos2d.h"
-#include <avalon/utils/cocos.h>
 #include <avalon/utils/ObjectRetainer.h>
 
 using namespace cocos2d;
