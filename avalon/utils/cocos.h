@@ -8,6 +8,9 @@ namespace avalon {
 namespace utils {
 namespace cocos {
 
+bool isSameColor(const cocos2d::Color3B& a, const cocos2d::Color3B& b);
+bool isSameColor(const cocos2d::Color4B& a, const cocos2d::Color4B& b);
+bool isSameColor(const cocos2d::Color4F& a, const cocos2d::Color4F& b);
 boost::any to_any(cocos2d::Object* object);
 std::list<boost::any> to_list(cocos2d::Array& array);
 std::list<boost::any> to_list(cocos2d::Set& set);

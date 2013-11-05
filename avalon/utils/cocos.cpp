@@ -4,6 +4,21 @@ namespace avalon {
 namespace utils {
 namespace cocos {
 
+bool isSameColor(const cocos2d::Color3B& a, const cocos2d::Color3B& b)
+{
+    return (a.r == b.r && a.g == b.g && a.b == b.b);
+}
+
+bool isSameColor(const cocos2d::Color4B& a, const cocos2d::Color4B& b)
+{
+    return (a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a);
+}
+
+bool isSameColor(const cocos2d::Color4F& a, const cocos2d::Color4F& b)
+{
+    return (a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a);
+}
+
 boost::any to_any(cocos2d::Object* object)
 {
     if (!object) {
