@@ -45,8 +45,7 @@ bool DynamicLight::init()
     initShadowMap1D();
     initFinalShadowMap();
     initBakedShadowMap();
-
-    updateUniforms();
+    bakedMapIsValid = false;
 
     return true;
 }
@@ -90,6 +89,10 @@ void DynamicLight::initBakedShadowMap()
 
 void DynamicLight::setShadowCasters(Node& casters)
 {
+    CC_SAFE_RELEASE(shadowCasters);
+
+    bakedMapIsValid = false;
+
     shadowCasters = &casters;
     shadowCasters->retain();
 }
@@ -102,19 +105,23 @@ void DynamicLight::updateShadowMap()
 
 void DynamicLight::setPosition(const Point& position)
 {
+    if (position.x == getPosition().x && position.y == getPosition().y) {
+        return;
+    }
+
     Node::setPosition(position);
-    invalidateBakedMap();
+
+    ++updateCount;
+    if (updateCount > updateFrequency) {
+        updateCount = 0;
+        bakedMapIsValid = false;
+    }
 }
 
 void DynamicLight::draw()
 {
     if (!bakedMapIsValid) {
         bakedMapIsValid = true;
-
-        if (dirty) {
-            dirty = false;
-            updateUniforms();
-        }
 
         updateUniforms();
         updateShadowMap();
@@ -144,24 +151,15 @@ void DynamicLight::draw()
     }
 }
 
-void DynamicLight::invalidateBakedMap()
-{
-    ++updateCount;
-    if (updateCount > updateFrequency) {
-        updateCount = 0;
-        bakedMapIsValid = false;
-    }
-}
-
 void DynamicLight::debugDraw()
 {
     auto width = EGLView::getInstance()->getDesignResolutionSize().width;
     auto height = EGLView::getInstance()->getDesignResolutionSize().height;
 
-    auto occlusionX = width - lightSize/2 - getPositionX();
-    auto occlusionY = height - lightSize/2 - getPositionY();
+    auto occlusionX = width - lightSize / 2 - getPositionX();
+    auto occlusionY = height - lightSize / 2 - getPositionY();
 
-    auto shadowX = width - lightSize/2 - getPositionX();
+    auto shadowX = width - lightSize / 2 - getPositionX();
     auto shadowY = height - lightSize - 15 - getPositionY();
 
     occlusionMap->getSprite()->setColor(Color3B::RED);
@@ -212,11 +210,12 @@ void DynamicLight::createOcclusionMap()
     Point p1 = shadowCasters->getAnchorPoint();
     Point p2 = shadowCasters->getPosition();
 
+    auto x = -getPositionX() + lightSize / 2 + shadowCasters->getPositionX();
+    auto y = -getPositionY() + lightSize / 2 + shadowCasters->getPositionY();
+
     // Render light region to occluder FBO
     occlusionMap->beginWithClear(0.0, 0.0, 0.0, 0.0);
     shadowCasters->setAnchorPoint({0, 0});
-    auto x = -getPositionX() + lightSize/2 + shadowCasters->getPositionX();
-    auto y = -getPositionY() + lightSize/2 + shadowCasters->getPositionY();
     shadowCasters->setPosition({x, y});
     shadowCasters->visit();
     occlusionMap->end();
@@ -240,15 +239,15 @@ void DynamicLight::setSoftShadows(bool shadows)
 {
     if (softShadows != shadows) {
         softShadows = shadows;
-        dirty = true;
+        bakedMapIsValid = false;
     }
 }
 
-void DynamicLight::setLightSize(int size)
+void DynamicLight::setLightSize(int lightSize)
 {
-    if (lightSize != size) {
-        lightSize = size;
-        dirty = true;
+    if (this->lightSize != lightSize) {
+        this->lightSize = lightSize;
+        bakedMapIsValid = false;
     }
 }
 
@@ -256,7 +255,7 @@ void DynamicLight::setUpScale(float upScale)
 {
     if (this->upScale != upScale) {
         this->upScale = upScale;
-        dirty = true;
+        bakedMapIsValid = false;
     }
 }
 
@@ -264,7 +263,7 @@ void DynamicLight::setAccuracy(float accuracy)
 {
     if (this->accuracy != accuracy) {
         this->accuracy = accuracy;
-        dirty = true;
+        bakedMapIsValid = false;
     }
 }
 
@@ -272,7 +271,7 @@ void DynamicLight::setAdditive(bool additive)
 {
     if (this->additive != additive) {
         this->additive = additive;
-        dirty = true;
+        bakedMapIsValid = false;
     }
 }
 
@@ -280,7 +279,7 @@ void DynamicLight::setColor(const Color4B& color)
 {
     if (!avalon::utils::cocos::isSameColor(this->color, color)) {
         this->color = color;
-        dirty = true;
+        bakedMapIsValid = false;
     }
 }
 

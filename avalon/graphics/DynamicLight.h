@@ -9,10 +9,9 @@ namespace graphics {
 class DynamicLight : public cocos2d::Node
 {
 private:
-    bool dirty = true;
+    bool bakedMapIsValid = false;
     bool softShadows = true;
     bool additive = true;
-    bool bakedMapIsValid = false;
     float upScale = 1.0;
     float finalSize = lightSize * upScale;
     float accuracy = 1.0;
@@ -35,7 +34,6 @@ private:
     void updateUniforms();
     void createOcclusionMap();
     void createShadowMap();
-    void invalidateBakedMap();
     void updateShadowMap();
 
 public:
@@ -52,11 +50,11 @@ public:
 
     void setPosition(const cocos2d::Point& position) override;
     void setSoftShadows(bool shadows);
-    void setLightSize(int size);
+    void setLightSize(int lightSize);
     void setUpScale(float upScale);
     void setAccuracy(float accuracy);
     void setAdditive(bool additive);
-    void setColor(const cocos2d::Color4B& ccolor);
+    void setColor(const cocos2d::Color4B& color);
     void setShadowCasters(cocos2d::Node& casters);
 };
 
