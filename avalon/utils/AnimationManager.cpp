@@ -1,5 +1,7 @@
 #include <avalon/utils/AnimationManager.h>
 
+#include <avalon/utils/OnCleanupCallback.h>
+
 using namespace cocos2d;
 
 namespace avalon {
@@ -14,7 +16,6 @@ AnimationManager::~AnimationManager()
 
 void AnimationManager::addAnimation(int animationId, const std::string& spriteFramesFile, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed)
 {
-    // FIXME: target->retain()?
     auto cache = SpriteFrameCache::getInstance();
     cache->addSpriteFramesWithFile(spriteFramesFile.c_str());
     
@@ -23,7 +24,6 @@ void AnimationManager::addAnimation(int animationId, const std::string& spriteFr
 
 void AnimationManager::addAnimation(int animationId, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed)
 {
-    // FIXME: target->retain()?
     if (animations.count(animationId)) {
         animations[animationId].animation->release();
         animations.erase(animationId);
@@ -44,7 +44,44 @@ void AnimationManager::addAnimation(int animationId, const std::list<std::string
     animation->setTag(actionTagId);
     animation->retain();
 
+    if (!retainedSprites.count(&target)) {
+        retainedSprites.insert(&target);
+        target.retain();
+        addReleaseOnCleanup(target);
+    }
+
     animations[animationId] = {animation, &target};
+}
+
+void AnimationManager::addReleaseOnCleanup(cocos2d::Sprite& target)
+{
+    auto onCleanup = OnCleanupCallback::create();
+    target.addChild(onCleanup);
+
+    onCleanup->set("", [this](const std::string& name, cocos2d::Node& node) {
+        auto spriteNode = dynamic_cast<cocos2d::Sprite*>(&node);
+        if (!spriteNode) {
+            return;
+        }
+
+        std::vector<int> removeIds;
+        for (auto& animation : animations) {
+            auto id = animation.first;
+            auto sequence = animation.second;
+
+            if (sequence.target == spriteNode) {
+                sequence.animation->release();
+                removeIds.push_back(id);
+            }
+        }
+
+        for (auto& id : removeIds) {
+            animations.erase(id);
+        }
+
+        spriteNode->release();
+        retainedSprites.erase(spriteNode);
+    });
 }
 
 void AnimationManager::start(int animationId, bool loop)

@@ -17,7 +17,10 @@ private:
     };
 
     std::map<int, AnimationSequence> animations;
+    std::set<cocos2d::Sprite*> retainedSprites;
     int actionTagId = -2;
+
+    void addReleaseOnCleanup(cocos2d::Sprite& target);
 
 public:
     AnimationManager(int tagId = 2) : actionTagId(tagId) {}
