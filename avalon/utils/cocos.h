@@ -21,12 +21,12 @@ cocos2d::Color4F toRGBA(const cocos2d::extension::HSV& color);
 cocos2d::Color3B toRGB(const cocos2d::Color4F& color);
 cocos2d::Color4F toRGBA(const cocos2d::Color3B& color);
 
-boost::any to_any(cocos2d::Object* object);
-std::list<boost::any> to_list(cocos2d::Array& array);
-std::list<boost::any> to_list(cocos2d::Set& set);
+boost::any toAny(cocos2d::Object* object);
+std::list<boost::any> toList(cocos2d::Array& array);
+std::list<boost::any> toList(cocos2d::Set& set);
 
 template<typename Key>
-std::map<Key, boost::any> to_map(cocos2d::Dictionary& dict)
+std::map<Key, boost::any> toMap(cocos2d::Dictionary& dict)
 {
     // The following lines may look weird but CCDICT_FOREACH is
     // a little bit broken ...
@@ -44,7 +44,7 @@ std::map<Key, boost::any> to_map(cocos2d::Dictionary& dict)
             key = dictElement->getIntKey();
         }
 
-        data[key] = to_any(dictElement->getObject());
+        data[key] = toAny(dictElement->getObject());
     }
 
     return data;

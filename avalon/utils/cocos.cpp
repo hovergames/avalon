@@ -58,7 +58,7 @@ cocos2d::Color4F toRGBA(const cocos2d::Color3B& color)
     return {color.r / 255.0, color.g / 255.0, color.b / 255.0, 1.0};
 }
 
-boost::any to_any(cocos2d::Object* object)
+boost::any toAny(cocos2d::Object* object)
 {
     if (!object) {
         return nullptr;
@@ -75,32 +75,32 @@ boost::any to_any(cocos2d::Object* object)
     } else if (auto value = dynamic_cast<cocos2d::Dictionary*>(object)) {
         // We're unable to detect the right key type WITHOUT messing
         // around with UT_HASH and .. well .. std::string is good enough here :)
-        return to_map<std::string>(*value);
+        return toMap<std::string>(*value);
     } else if (auto value = dynamic_cast<cocos2d::Array*>(object)) {
-        return to_list(*value);
+        return toList(*value);
     } else if (auto value = dynamic_cast<cocos2d::Set*>(object)) {
-        return to_list(*value);
+        return toList(*value);
     } else {
         throw new std::runtime_error("Unknown type");
     }
 }
 
-std::list<boost::any> to_list(cocos2d::Array& array)
+std::list<boost::any> toList(cocos2d::Array& array)
 {
     std::list<boost::any> data;
     std::for_each(
         array.begin(), array.end(),
-        [&data](cocos2d::Object* obj) { data.push_back(to_any(obj)); }
+        [&data](cocos2d::Object* obj) { data.push_back(toAny(obj)); }
     );
     return data;
 }
 
-std::list<boost::any> to_list(cocos2d::Set& set)
+std::list<boost::any> toList(cocos2d::Set& set)
 {
     std::list<boost::any> data;
     std::for_each(
         set.begin(), set.end(),
-        [&data](cocos2d::Object* obj) { data.push_back(to_any(obj)); }
+        [&data](cocos2d::Object* obj) { data.push_back(toAny(obj)); }
     );
     return data;
 }

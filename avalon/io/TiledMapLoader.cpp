@@ -95,7 +95,7 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
                 }
 
                 auto info = map.getPropertiesForGID(currentGID);
-                auto data = avalon::utils::cocos::to_map<std::string>(*info);
+                auto data = avalon::utils::cocos::toMap<std::string>(*info);
 
                 if (!data.count("gid")) data["gid"] = currentGID;
                 if (!data.count("x")) data["x"] = static_cast<float>(x);
@@ -126,7 +126,7 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
                 continue;
             }
 
-            auto data = avalon::utils::cocos::to_map<std::string>(*objectDictonary);
+            auto data = avalon::utils::cocos::toMap<std::string>(*objectDictonary);
             if (!data.count("name")) {
                 continue;
             }
