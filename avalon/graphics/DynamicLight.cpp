@@ -4,6 +4,7 @@
 #include <avalon/utils/cocos.h>
 
 using namespace cocos2d;
+using namespace avalon::utils::cocos;
 
 namespace  {
 
@@ -277,7 +278,7 @@ void DynamicLight::setAdditive(bool additive)
 
 void DynamicLight::setColor(const Color4B& color)
 {
-    if (!avalon::utils::cocos::isSameColor(this->color, color)) {
+    if (this->color != color) {
         this->color = color;
         bakedMapIsValid = false;
     }

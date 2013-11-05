@@ -16,7 +16,7 @@ private:
     float finalSize = lightSize * upScale;
     float accuracy = 1.0;
     int lightSize = 256;
-    cocos2d::Color4B color = {64,130,77,255};
+    cocos2d::Color4B color = {64, 130, 77, 255};
     cocos2d::Node* shadowCasters = nullptr;
 
     cocos2d::RenderTexture* occlusionMap = nullptr;
