@@ -2,6 +2,7 @@
 #define AVALON_UTILS_COCOS2D_H
 
 #include "cocos2d.h"
+#include "cocos-ext.h"
 #include <boost/any.hpp>
 
 namespace avalon {
@@ -11,6 +12,15 @@ namespace cocos {
 bool isSameColor(const cocos2d::Color3B& a, const cocos2d::Color3B& b);
 bool isSameColor(const cocos2d::Color4B& a, const cocos2d::Color4B& b);
 bool isSameColor(const cocos2d::Color4F& a, const cocos2d::Color4F& b);
+
+cocos2d::extension::HSV toHSV(const cocos2d::Color3B& color);
+cocos2d::extension::HSV toHSV(const cocos2d::Color4B& color);
+cocos2d::extension::HSV toHSV(const cocos2d::Color4F& color);
+cocos2d::Color3B toRGB(const cocos2d::extension::HSV& color);
+cocos2d::Color4F toRGBA(const cocos2d::extension::HSV& color);
+cocos2d::Color3B toRGB(const cocos2d::Color4F& color);
+cocos2d::Color4F toRGBA(const cocos2d::Color3B& color);
+
 boost::any to_any(cocos2d::Object* object);
 std::list<boost::any> to_list(cocos2d::Array& array);
 std::list<boost::any> to_list(cocos2d::Set& set);
