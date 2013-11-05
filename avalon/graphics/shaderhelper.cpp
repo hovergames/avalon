@@ -3,15 +3,15 @@
 namespace {
 
 const GLchar* whiteShader =
-#include "shaders/white.fsh"
+#include <avalon/graphics/shaders/white.fsh>
 
 const GLchar* vertexShader =
-#include "shaders/pass.vsh"
+#include <avalon/graphics/shaders/pass.vsh>
 
 const GLchar* grassShader =
-#include "shaders/grass.fsh"
+#include <avalon/graphics/shaders/grass.fsh>
 
-}
+} // namespace
 
 namespace avalon {
 namespace graphics {
@@ -20,7 +20,7 @@ using namespace cocos2d;
 
 GLProgram* loadShader(const GLchar* vertexShader, const GLchar* fragmentShader)
 {
-    GLProgram* shader = ShaderCache::getInstance()->getProgram(fragmentShader);
+    auto shader = ShaderCache::getInstance()->getProgram(fragmentShader);
     if (!shader) {
         shader = new GLProgram();
         shader->initWithVertexShaderByteArray(vertexShader, fragmentShader);

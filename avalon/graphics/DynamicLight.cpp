@@ -1,18 +1,20 @@
 #include <avalon/graphics/DynamicLight.h>
+
 #include <avalon/graphics/shaderhelper.h>
+#include <avalon/utils/cocos.h>
 
 using namespace cocos2d;
 
 namespace  {
 
 const GLchar* vertexShader =
-#include "shaders/pass.vsh"
+#include <avalon/graphics/shaders/pass.vsh>
 
 const GLchar* shadowMapFragmentShader =
-#include "shaders/shadowMap.fsh"
+#include <avalon/graphics/shaders/shadowMap.fsh>
 
 const GLchar* shadowRenderFragmentShader =
-#include "shaders/shadowRender.fsh"
+#include <avalon/graphics/shaders/shadowRender.fsh>
 
 } // namespace
 
@@ -32,8 +34,9 @@ DynamicLight::~DynamicLight()
 
 bool DynamicLight::init()
 {
-    if (!Node::init())
+    if (!Node::init()) {
         return false;
+    }
 
     shadowMapShader = avalon::graphics::loadShader(vertexShader, shadowMapFragmentShader);
     shadowRenderShader = avalon::graphics::loadShader(vertexShader, shadowRenderFragmentShader);
@@ -85,30 +88,32 @@ void DynamicLight::initBakedShadowMap()
     bakedShadowMap->retain();
 }
 
-void DynamicLight::setShadowCasters(Node* casters)
+void DynamicLight::setShadowCasters(Node& casters)
 {
-    this->shadowCasters = casters;
-    this->shadowCasters->retain();
+    shadowCasters = &casters;
+    shadowCasters->retain();
 }
 
 void DynamicLight::updateShadowMap()
 {
-    this->createOcclusionMap();
-    this->createShadowMap();
+    createOcclusionMap();
+    createShadowMap();
 }
 
 void DynamicLight::setPosition(const Point& position)
 {
     Node::setPosition(position);
-    this->invalidateBakedMap();
+    invalidateBakedMap();
 }
 
 void DynamicLight::draw()
 {
     if (!bakedMapIsValid) {
+        bakedMapIsValid = true;
+
         if (dirty) {
-            updateUniforms();
             dirty = false;
+            updateUniforms();
         }
 
         updateUniforms();
@@ -127,23 +132,22 @@ void DynamicLight::draw()
         bakedShadowMap->end();
         bakedShadowMap->setPosition({0, 0});
 
-        if (additive)
+        if (additive) {
             bakedShadowMap->getSprite()->setBlendFunc({GL_SRC_ALPHA, GL_ONE});
-
-        bakedMapIsValid = true;
+        }
     }
 
     bakedShadowMap->visit();
 
-    if (debugDrawEnabled)
+    if (debugDrawEnabled) {
         debugDraw();
+    }
 }
 
 void DynamicLight::invalidateBakedMap()
 {
     ++updateCount;
-    if (updateCount > updateFrequency)
-    {
+    if (updateCount > updateFrequency) {
         updateCount = 0;
         bakedMapIsValid = false;
     }
@@ -151,22 +155,25 @@ void DynamicLight::invalidateBakedMap()
 
 void DynamicLight::debugDraw()
 {
-    //debug rendering
-    float width = EGLView::getInstance()->getDesignResolutionSize().width;
-    float height = EGLView::getInstance()->getDesignResolutionSize().height;
+    auto width = EGLView::getInstance()->getDesignResolutionSize().width;
+    auto height = EGLView::getInstance()->getDesignResolutionSize().height;
 
-    occlusionMap->getSprite()->setColor({255, 0, 0});
+    auto occlusionX = width - lightSize/2 - getPositionX();
+    auto occlusionY = height - lightSize/2 - getPositionY();
+
+    auto shadowX = width - lightSize/2 - getPositionX();
+    auto shadowY = height - lightSize - 15 - getPositionY();
+
+    occlusionMap->getSprite()->setColor(Color3B::RED);
     occlusionMap->setAnchorPoint({0, 0});
-    occlusionMap->setPosition({width - lightSize/2 - getPositionX(), height - lightSize/2 - getPositionY()});
+    occlusionMap->setPosition({occlusionX, occlusionY});
     occlusionMap->visit();
-    occlusionMap->getSprite()->setColor({255, 255, 255});
+    occlusionMap->getSprite()->setColor(Color3B::WHITE);
 
     shadowMap1D->setAnchorPoint({0, 0});
-    shadowMap1D->setPosition({width - lightSize/2 - getPositionX(), height - lightSize - 15 - getPositionY()});
+    shadowMap1D->setPosition({shadowX, shadowY});
     shadowMap1D->visit();
 }
-
-
 
 void DynamicLight::updateUniforms()
 {
@@ -196,8 +203,7 @@ void DynamicLight::updateUniforms()
 
 void DynamicLight::createOcclusionMap()
 {
-    if (!shadowCasters)
-    {
+    if (!shadowCasters) {
         occlusionMap->beginWithClear(0.0 ,0.0, 0.0, 0.0);
         occlusionMap->end();
         return;
@@ -209,9 +215,9 @@ void DynamicLight::createOcclusionMap()
     // Render light region to occluder FBO
     occlusionMap->beginWithClear(0.0, 0.0, 0.0, 0.0);
     shadowCasters->setAnchorPoint({0, 0});
-
-    //ugly....
-    shadowCasters->setPosition({-getPositionX() + lightSize/2 + shadowCasters->getPositionX(), -getPositionY() + lightSize/2 + shadowCasters->getPositionY()});
+    auto x = -getPositionX() + lightSize/2 + shadowCasters->getPositionX();
+    auto y = -getPositionY() + lightSize/2 + shadowCasters->getPositionY();
+    shadowCasters->setPosition({x, y});
     shadowCasters->visit();
     occlusionMap->end();
 
@@ -221,7 +227,7 @@ void DynamicLight::createOcclusionMap()
 
 void DynamicLight::createShadowMap()
 {
-    //STEP 2. build a 1D shadow map from occlude FBO
+    // Build a 1D shadow map from occlude FBO
     occlusionMap->getSprite()->setShaderProgram(shadowMapShader);
     shadowMap1D->beginWithClear(0.0, 0.0, 0.0, 0.0);
     occlusionMap->setAnchorPoint({0.5, 0.5});
@@ -233,44 +239,50 @@ void DynamicLight::createShadowMap()
 void DynamicLight::setSoftShadows(bool shadows)
 {
     if (softShadows != shadows) {
-        dirty = true;
         softShadows = shadows;
+        dirty = true;
     }
 }
 
 void DynamicLight::setLightSize(int size)
 {
     if (lightSize != size) {
-        dirty = true;
         lightSize = size;
+        dirty = true;
     }
 }
 
 void DynamicLight::setUpScale(float upScale)
 {
     if (this->upScale != upScale) {
-        dirty = true;
         this->upScale = upScale;
+        dirty = true;
     }
 }
 
 void DynamicLight::setAccuracy(float accuracy)
 {
     if (this->accuracy != accuracy) {
-        dirty = true;
         this->accuracy = accuracy;
+        dirty = true;
     }
 }
 
 void DynamicLight::setAdditive(bool additive)
 {
-    this->additive = additive;
+    if (this->additive != additive) {
+        this->additive = additive;
+        dirty = true;
+    }
 }
 
-void DynamicLight::setColor(const Color4B& c)
+void DynamicLight::setColor(const Color4B& color)
 {
-    this->color = c;
+    if (!avalon::utils::cocos::isSameColor(this->color, color)) {
+        this->color = color;
+        dirty = true;
+    }
 }
 
-} // namespace physics
+} // namespace graphics
 } // namespace avalon

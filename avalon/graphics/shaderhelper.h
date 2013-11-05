@@ -11,7 +11,7 @@ cocos2d::GLProgram* getWhiteShader();
 cocos2d::GLProgram* getGrassShader();
 cocos2d::GLProgram* getDefaultShader();
 
-} // namespace physics
+} // namespace graphics
 } // namespace avalon
 
 #endif /* AVALON_GRAPHICS_SHADERHELPER_H */
