@@ -19,12 +19,10 @@ private:
     cocos2d::Point positionOffset;
     float rotationOffset = 0;
     cocos2d::Node* parent = nullptr;
-    cocos2d::Point anchorPoint{0.5, 0.5};
+    const cocos2d::Point anchorPoint{0.5, 0.5};
     cocos2d::Point position;
-    float nodeScaleX = 1;
-    float nodeScaleY = 1;
-    float realScaleY = 1;
-    float realScaleX = 1;
+    cocos2d::Point nodeScale{1, 1};
+    cocos2d::Point realScale{1, 1};
     float rotation = 0;
 
 public:

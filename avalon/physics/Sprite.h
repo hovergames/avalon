@@ -18,6 +18,8 @@ private:
     std::shared_ptr<Body> bodyImpl;
     bool ownsBody = false;
 
+    void syncBody();
+    void resetBodyImpl(Box2dContainer& box2dContainer, b2Body& body);
     void createBody(Box2dContainer& box2dContainer);
     void createBody(Box2dContainer& box2dContainer, const std::map<std::string, boost::any>& settings);
     void addPESShapeFixture(const std::string& file, const std::string& shape);

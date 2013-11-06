@@ -77,7 +77,7 @@ Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, b2Body& 
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithFile(filename)) return nullptr;
-    sprite->bodyImpl.reset(new Body(box2dContainer, body));
+    sprite->resetBodyImpl(box2dContainer, body);
     sprite->getBox2dContainer().assignNode(body, *sprite);
     return sprite;
 }
@@ -86,7 +86,7 @@ Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, b2Body& 
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithFile(filename, rect)) return nullptr;
-    sprite->bodyImpl.reset(new Body(box2dContainer, body));
+    sprite->resetBodyImpl(box2dContainer, body);
     sprite->getBox2dContainer().assignNode(body, *sprite);
     return sprite;
 }
@@ -95,7 +95,7 @@ Sprite* Sprite::createWithTexture(avalon::physics::Box2dContainer& box2dContaine
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithTexture(texture)) return nullptr;
-    sprite->bodyImpl.reset(new Body(box2dContainer, body));
+    sprite->resetBodyImpl(box2dContainer, body);
     sprite->getBox2dContainer().assignNode(body, *sprite);
     return sprite;
 }
@@ -104,7 +104,7 @@ Sprite* Sprite::createWithTexture(avalon::physics::Box2dContainer& box2dContaine
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithTexture(texture, rect)) return nullptr;
-    sprite->bodyImpl.reset(new Body(box2dContainer, body));
+    sprite->resetBodyImpl(box2dContainer, body);
     sprite->getBox2dContainer().assignNode(body, *sprite);
     return sprite;
 }
@@ -113,7 +113,7 @@ Sprite* Sprite::createWithSpriteFrame(avalon::physics::Box2dContainer& box2dCont
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithSpriteFrame(pSpriteFrame)) return nullptr;
-    sprite->bodyImpl.reset(new Body(box2dContainer, body));
+    sprite->resetBodyImpl(box2dContainer, body);
     sprite->getBox2dContainer().assignNode(body, *sprite);
     return sprite;
 }
@@ -122,7 +122,7 @@ Sprite* Sprite::createWithSpriteFrameName(avalon::physics::Box2dContainer& box2d
 {
     auto sprite = Sprite::create();
     if (!sprite || !sprite->initWithSpriteFrameName(spriteFrameName)) return nullptr;
-    sprite->bodyImpl.reset(new Body(box2dContainer, body));
+    sprite->resetBodyImpl(box2dContainer, body);
     sprite->getBox2dContainer().assignNode(body, *sprite);
     return sprite;
 }
@@ -184,6 +184,12 @@ void Sprite::loadConfigurationSettings(const std::map<std::string, boost::any>& 
     }
 }
 
+void Sprite::resetBodyImpl(Box2dContainer& box2dContainer, b2Body& body)
+{
+    bodyImpl.reset(new Body(box2dContainer, body));
+    syncBody();
+}
+
 void Sprite::createBody(Box2dContainer& box2dContainer)
 {
     b2BodyDef bodyDef;
@@ -192,7 +198,7 @@ void Sprite::createBody(Box2dContainer& box2dContainer)
     auto body = box2dContainer.createBody(bodyDef, *this);
     ownsBody = true;
 
-    bodyImpl.reset(new Body(box2dContainer, *body));
+    resetBodyImpl(box2dContainer, *body);
 }
 
 void Sprite::createBody(Box2dContainer& box2dContainer, const std::map<std::string, boost::any>& settings)
@@ -247,8 +253,12 @@ bool Sprite::init()
 
 void Sprite::update(float delta)
 {
+    syncBody();
     cocos2d::Sprite::update(delta);
+}
 
+void Sprite::syncBody()
+{
     bodyImpl->sync(this);
     cocos2d::Node::setAnchorPoint(bodyImpl->getAnchorPoint());
     cocos2d::Node::setRotation(bodyImpl->getRotation());

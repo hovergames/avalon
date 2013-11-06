@@ -70,8 +70,8 @@ void Body::sync(cocos2d::Node* node)
     if (parentScaleXAbs == 0) parentScaleXAbs = 1;
     if (parentScaleYAbs == 0) parentScaleYAbs = 1;
 
-    realScaleX = nodeScaleX / parentScaleXAbs;
-    realScaleY = nodeScaleY / parentScaleYAbs;
+    realScale.x = nodeScale.x / parentScaleXAbs;
+    realScale.y = nodeScale.y / parentScaleYAbs;
 
     // -- Rotation
     rotation = body.GetAngle() - parentRotationAbs;
@@ -95,34 +95,34 @@ float Body::getRotation()
 
 float Body::getScaleX()
 {
-    return realScaleX;
+    return realScale.x;
 }
 
 float Body::getScaleY()
 {
-    return realScaleY;
+    return realScale.y;
 }
 
 void Body::setScale(float scale)
 {
-    nodeScaleX = scale;
-    nodeScaleY = scale;
+    nodeScale.x = scale;
+    nodeScale.y = scale;
 };
 
 void Body::setScale(float scaleX, float scaleY)
 {
-    nodeScaleX = scaleX;
-    nodeScaleY = scaleY;
+    nodeScale.x = scaleX;
+    nodeScale.y = scaleY;
 };
 
 void Body::setScaleX(float scaleX)
 {
-    nodeScaleX = scaleX;
+    nodeScale.x = scaleX;
 };
 
 void Body::setScaleY(float scaleY)
 {
-    nodeScaleY = scaleY;
+    nodeScale.y = scaleY;
 };
 
 void Body::setPosition(const cocos2d::Point& pos)

@@ -24,6 +24,8 @@ class Node : public cocos2d::Node
 private:
     std::shared_ptr<Body> bodyImpl;
 
+    void syncBody();
+    
 public:
     CREATE_FUNC_PHYSICAL(Node);
     virtual bool init(avalon::physics::Box2dContainer& box2dContainer, b2Body& body);

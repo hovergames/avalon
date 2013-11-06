@@ -13,7 +13,8 @@ bool Node::init(avalon::physics::Box2dContainer& box2dContainer, b2Body& body)
 
     bodyImpl.reset(new Body(box2dContainer, body));
     getBox2dContainer().assignNode(getBody(), *this);
-
+    syncBody();
+    
     scheduleUpdate();
 
     return true;
@@ -29,14 +30,18 @@ void Node::cleanup()
 
 void Node::update(float delta)
 {
+    syncBody();
+    cocos2d::Node::update(delta);
+}
+
+void Node::syncBody()
+{
     bodyImpl->sync(this);
     cocos2d::Node::setAnchorPoint(bodyImpl->getAnchorPoint());
     cocos2d::Node::setPosition(bodyImpl->getPosition());
     cocos2d::Node::setRotation(bodyImpl->getRotation());
     cocos2d::Node::setScaleX(bodyImpl->getScaleX());
     cocos2d::Node::setScaleY(bodyImpl->getScaleY());
-
-    cocos2d::Node::update(delta);
 }
 
 } // namespace physics
