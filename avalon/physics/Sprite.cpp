@@ -291,10 +291,15 @@ void Sprite::update(float delta)
         pos.x += getAnchorPoint().x * size.width;
         pos.y += getAnchorPoint().y * size.height;
 
-        cocos2d::Sprite::setPosition({pos.x, pos.y});
+        if (box2dContainer && getParent()) {
+            pos = box2dContainer->convertToWorldSpace(pos);
+            pos = getParent()->convertToNodeSpace(pos);
+        }
 
-        float rotation = body->GetAngle();
-        cocos2d::Sprite::setRotation(rotationOffset - CC_RADIANS_TO_DEGREES(rotation));
+        cocos2d::Sprite::setPosition({pos.x, pos.y});
+        
+//        float rotation = body->GetAngle();
+//        cocos2d::Sprite::setRotation(rotationOffset - CC_RADIANS_TO_DEGREES(rotation));
     }
 }
 

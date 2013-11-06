@@ -41,10 +41,9 @@ void Node::loadFromBox2d()
     pos.x += getAnchorPoint().x * size.width;
     pos.y += getAnchorPoint().y * size.height;
 
-    auto parent = getParent();
-    if (parent) {
-        pos.x *= parent->getScaleX();
-        pos.y *= parent->getScaleY();
+    if (box2dContainer && getParent()) {
+        pos = box2dContainer->convertToWorldSpace(pos);
+        pos = getParent()->convertToNodeSpace(pos);
     }
 
     cocos2d::Node::setPosition({pos.x, pos.y});

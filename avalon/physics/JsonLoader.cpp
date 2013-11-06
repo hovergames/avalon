@@ -90,7 +90,8 @@ void JsonLoader::applyCommonSettings(b2dJsonImage& def, cocos2d::Sprite& sprite)
     auto widthInPixel = size.width * heightScale * def.aspectScale;
     auto widthScale = widthInPixel / size.width;
 
-    sprite.setScale(widthScale, heightScale);
+    sprite.setScaleX(widthScale);
+    sprite.setScaleY(heightScale);
 }
 
 std::shared_ptr<b2dJson> JsonLoader::getJson()
