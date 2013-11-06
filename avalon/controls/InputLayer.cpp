@@ -92,8 +92,14 @@ void InputLayer::onTouchLayerMoved(cocos2d::Touch* touch, cocos2d::Event* event)
         return;
     }
 
-    activeTouchIds.insert(touch->getID());
+    if (!pressed) {
+        activeTouchIds.insert(touch->getID());
+    }
     pressed = true;
+
+    if (!activeTouchIds.count(touch->getID())) {
+        return;
+    }
 
     if (onTouchMoved) {
         onTouchMoved(touch, event);
