@@ -6,7 +6,8 @@
 #include <avalon/io/CCBLoader.h>
 #include <avalon/io/TiledMapLoader.h>
 
-namespace avalon { namespace physics { class Box2dContainer; } }
+#include <avalon/physics/Box2dContainer.h>
+//namespace avalon { namespace physics { class Box2dContainer; } }
 
 namespace avalon {
 namespace physics {
@@ -19,6 +20,8 @@ private:
     bool ownsBody = false;
     cocos2d::Point positionOffset;
     float rotationOffset = 0;
+    float myScaleX = 1;
+    float myScaleY = 1;
 
     void createBody();
     void createBody(const std::map<std::string, boost::any>& settings);
@@ -72,8 +75,19 @@ public:
     float getRotationOffset();
 
     virtual void update(float delta) override;
-    virtual void setPosition(const cocos2d::Point& pos) override;
-    virtual void setRotation(float rotation) override;
+
+    virtual void setScaleX(float scaleX) override { myScaleX = scaleX; };
+    virtual void setScaleY(float scaleY) override { myScaleY = scaleY; };
+    virtual void setScale(float scaleX, float scaleY) override { myScaleX = scaleX; myScaleY = scaleY; };
+    virtual void setScale(float scale) override { myScaleX = scale; myScaleY = scale; };
+
+    virtual void setPosition(const cocos2d::Point& pos) override { throw std::invalid_argument("NOT ALLOWERD"); };
+    virtual void setRotation(float rotation) override { throw std::invalid_argument("NOT ALLOWERD"); };
+    virtual void setRotationX(float rotationX) override { throw std::invalid_argument("NOT ALLOWERD"); };
+    virtual void setRotationY(float rotationY) override { throw std::invalid_argument("NOT ALLOWERD"); };
+    virtual void setPosition(float x, float y) override { throw std::invalid_argument("NOT ALLOWERD"); };
+    virtual void setAnchorPoint(const cocos2d::Point& anchor) override {};
+    virtual void ignoreAnchorPointForPosition(bool value) override { throw std::invalid_argument("NOT ALLOWERD"); };
 };
 
 } // namespace physics

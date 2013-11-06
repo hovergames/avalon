@@ -42,6 +42,9 @@ public:
     void update(float delta) override;
     void enableDebugDraw(const bool enable);
 
+    b2Vec2 convertToBox2d(const cocos2d::Point& pos);
+    cocos2d::Point convertFromBox2d(const b2Vec2& pos);
+
     b2World& getWorld();
     CollisionManager& getCollisionManager();
 

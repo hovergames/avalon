@@ -56,36 +56,6 @@ namespace avalon {
 namespace physics {
 namespace utils {
 
-b2Vec2 convertToBox2d(const avalon::physics::Box2dContainer& box2dContainer, const cocos2d::Point& pos, const cocos2d::Size& size)
-{
-    b2Vec2 result(pos.x, pos.y);
-
-    // box2d handle is in the center
-    result.x += size.width / 2;
-    result.y += size.height / 2;
-
-    // convert from cocos2d to box2d units
-    result.x /= box2dContainer.pixelsInMeter;
-    result.y /= box2dContainer.pixelsInMeter;
-
-    return result;
-}
-
-cocos2d::Point convertFromBox2d(const avalon::physics::Box2dContainer& box2dContainer, const b2Vec2& pos, const cocos2d::Size& size)
-{
-    cocos2d::Point result(pos.x, pos.y);
-
-    // convert from box2d to cocos2d units
-    result.x *= box2dContainer.pixelsInMeter;
-    result.y *= box2dContainer.pixelsInMeter;
-
-    // cocos2dx handle is in the lower left corner
-    result.x -= size.width / 2;
-    result.y -= size.height / 2;
-
-    return result;
-}
-
 b2BodyType getBodyTypeFromString(const std::string& type)
 {
     if      (type == "static")    return b2_staticBody;
@@ -103,7 +73,7 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
         const float width = boost::any_cast<float>(config.settings.at("width"));
         const float height = boost::any_cast<float>(config.settings.at("height"));
         const float pixelsInMeter = config.box2dContainer->pixelsInMeter;
-        const auto pos = convertToBox2d(*config.box2dContainer, {x, y}, {width, height});
+        const auto pos = config.box2dContainer->convertToBox2d({x, y});
 
         auto fixtureDef = config.box2dContainer->defaultFixtureDef;
         fixtureDef.isSensor = isSensor;

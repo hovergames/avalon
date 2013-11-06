@@ -166,7 +166,7 @@ Box2dContainer::NodeId Box2dContainer::generateId()
 std::vector<b2Body*> Box2dContainer::getBodiesFromTouch(cocos2d::Touch& touch)
 {
     auto loc = convertTouchToNodeSpace(&touch);
-    auto pos = utils::convertToBox2d(*this, loc, {0, 0});
+    auto pos = convertToBox2d(loc);
 
     // Make a small box.
     b2AABB aabb;
@@ -179,6 +179,16 @@ std::vector<b2Body*> Box2dContainer::getBodiesFromTouch(cocos2d::Touch& touch)
     getWorld().QueryAABB(&callback, aabb);
 
     return callback.results;
+}
+
+b2Vec2 Box2dContainer::convertToBox2d(const cocos2d::Point& pos)
+{
+    return {pos.x / pixelsInMeter, pos.y / pixelsInMeter};
+}
+
+cocos2d::Point Box2dContainer::convertFromBox2d(const b2Vec2& pos)
+{
+    return {pos.x * pixelsInMeter, pos.y * pixelsInMeter};
 }
 
 } // namespace physics

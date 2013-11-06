@@ -267,8 +267,10 @@ bool Sprite::init()
     if (!cocos2d::Sprite::init()) {
         return false;
     }
-    
+
+    cocos2d::Sprite::setAnchorPoint({0.5, 0.5});
     scheduleUpdate();
+
     return true;
 }
 
@@ -276,60 +278,44 @@ void Sprite::update(float delta)
 {
     cocos2d::Sprite::update(delta);
 
-    if (hasBody()) {
-        using avalon::physics::utils::convertFromBox2d;
-
-        auto size = getContentSize();
-
-        b2Vec2 localPos(positionOffset.x, positionOffset.y);
-        b2Rot rot(body->GetAngle());
-        localPos = b2Mul(rot, localPos) + body->GetPosition();
-
-        auto pos = convertFromBox2d(*box2dContainer, localPos, size);
-
-        // adjust to the current anchor point
-        pos.x += getAnchorPoint().x * size.width;
-        pos.y += getAnchorPoint().y * size.height;
-
-        if (box2dContainer && getParent()) {
-            pos = box2dContainer->convertToWorldSpace(pos);
-            pos = getParent()->convertToNodeSpace(pos);
-        }
-
-        cocos2d::Sprite::setPosition({pos.x, pos.y});
-        
-//        float rotation = body->GetAngle();
-//        cocos2d::Sprite::setRotation(rotationOffset - CC_RADIANS_TO_DEGREES(rotation));
+    if (!hasBody()) {
+        return;
     }
-}
 
-void Sprite::setPosition(const cocos2d::Point& pos)
-{
-    cocos2d::Sprite::setPosition(pos);
+    b2Vec2 box2PosWithOffset(positionOffset.x, positionOffset.y);
+    b2Rot rot(body->GetAngle());
+    box2PosWithOffset = b2Mul(rot, box2PosWithOffset) + body->GetPosition();
 
-    if (hasBody()) {
-        using avalon::physics::utils::convertToBox2d;
+    auto pos = box2dContainer->convertFromBox2d(box2PosWithOffset);
+    pos = box2dContainer->convertToWorldSpace(pos);
+    pos = getParent()->convertToNodeSpace(pos);
+    cocos2d::Sprite::setPosition({pos.x, pos.y});
 
-        auto size = getContentSize();
-        auto b2Pos = convertToBox2d(*box2dContainer, pos, size);
+    auto b = box2dContainer->getNodeToWorldTransform();
+    auto bScaleX = sqrt(b.a * b.a + b.c * b.c);
+    auto bScaleY = sqrt(b.b * b.b + b.d * b.d);
+    auto bRotation = atan2(b.b, b.a);
 
-        // adjust to the current anchor point
-        b2Pos.x -= getAnchorPoint().x * size.width / box2dContainer->pixelsInMeter;
-        b2Pos.y -= getAnchorPoint().y * size.height / box2dContainer->pixelsInMeter;
+    auto p = getParent()->getNodeToWorldTransform();
+    auto pScaleX = sqrt(p.a * p.a + p.c * p.c);
+    auto pScaleY = sqrt(p.b * p.b + p.d * p.d);
+    auto pRotation = atan2(p.b, p.a);
 
-        auto angle = getBody().GetTransform().q.GetAngle();
-        getBody().SetTransform({b2Pos.x, b2Pos.y}, angle);
-    }
-}
+    if (bScaleX == 0) bScaleX = 1;
+    if (bScaleY == 0) bScaleY = 1;
 
-void Sprite::setRotation(float rotation)
-{
-    cocos2d::Sprite::setRotation(rotation);
+    auto pScaleXAbs = pScaleX / bScaleX;
+    auto pScaleYAbs = pScaleY / bScaleY;
+    auto pRotationAbs = pRotation - bRotation;
 
-    if (hasBody()) {
-        auto angle = CC_DEGREES_TO_RADIANS(rotation * -1);
-        getBody().SetTransform(getBody().GetPosition(), angle);
-    }
+    if (pScaleXAbs == 0) pScaleXAbs = 1;
+    if (pScaleYAbs == 0) pScaleYAbs = 1;
+
+    cocos2d::Sprite::setScaleX(myScaleX / pScaleXAbs);
+    cocos2d::Sprite::setScaleY(myScaleY / pScaleYAbs);
+
+    float rotation = body->GetAngle() - pRotationAbs;
+    cocos2d::Sprite::setRotation(rotationOffset - CC_RADIANS_TO_DEGREES(rotation));
 }
 
 void Sprite::setPositionOffset(const cocos2d::Point& point)

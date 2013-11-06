@@ -12,6 +12,7 @@ bool Node::init()
         return false;
     }
 
+    cocos2d::Node::setAnchorPoint({0.5, 0.5});
     scheduleUpdate();
 
     return true;
@@ -27,27 +28,40 @@ void Node::update(float delta)
 {
     cocos2d::Node::update(delta);
 
-    if (body && box2dContainer) {
-        loadFromBox2d();
+    if (!body || !box2dContainer) {
+        return;
     }
-}
-
-void Node::loadFromBox2d()
-{
-    auto size = getContentSize();
-    auto pos = utils::convertFromBox2d(*box2dContainer, body->GetPosition(), size);
-
-    // adjust to the current anchor point
-    pos.x += getAnchorPoint().x * size.width;
-    pos.y += getAnchorPoint().y * size.height;
-
-    if (box2dContainer && getParent()) {
-        pos = box2dContainer->convertToWorldSpace(pos);
-        pos = getParent()->convertToNodeSpace(pos);
-    }
-
+    
+    auto pos = box2dContainer->convertFromBox2d(body->GetPosition());
+    pos = box2dContainer->convertToWorldSpace(pos);
+    if (getParent()) pos = getParent()->convertToNodeSpace(pos);
     cocos2d::Node::setPosition({pos.x, pos.y});
-    cocos2d::Node::setRotation(-CC_RADIANS_TO_DEGREES(body->GetAngle()));
+
+    auto b = box2dContainer->getNodeToWorldTransform();
+    auto bScaleX = sqrt(b.a * b.a + b.c * b.c);
+    auto bScaleY = sqrt(b.b * b.b + b.d * b.d);
+    auto bRotation = atan2(b.b, b.a);
+
+    auto p = getParent()->getNodeToWorldTransform();
+    auto pScaleX = sqrt(p.a * p.a + p.c * p.c);
+    auto pScaleY = sqrt(p.b * p.b + p.d * p.d);
+    auto pRotation = atan2(p.b, p.a);
+
+    if (bScaleX == 0) bScaleX = 1;
+    if (bScaleY == 0) bScaleY = 1;
+
+    auto pScaleXAbs = pScaleX / bScaleX;
+    auto pScaleYAbs = pScaleY / bScaleY;
+    auto pRotationAbs = pRotation - bRotation;
+
+    if (pScaleXAbs == 0) pScaleXAbs = 1;
+    if (pScaleYAbs == 0) pScaleYAbs = 1;
+
+    cocos2d::Node::setScaleX(myScaleX / pScaleXAbs);
+    cocos2d::Node::setScaleY(myScaleY / pScaleYAbs);
+
+    float rotation = body->GetAngle() - pRotationAbs;
+    cocos2d::Node::setRotation(-CC_RADIANS_TO_DEGREES(rotation));
 }
 
 bool Node::hasBody() const
@@ -57,6 +71,10 @@ bool Node::hasBody() const
 
 b2Body& Node::getBody()
 {
+    if (!body) {
+        throw new std::runtime_error("not attached to any body yet");
+    }
+
     return *body;
 }
 
@@ -66,7 +84,6 @@ void Node::setBody(b2Body& body)
 
     this->body = &body;
     getBox2dContainer().assignNode(*this->body, *this);
-    loadFromBox2d();
 }
 
 void Node::removeOldBody()
@@ -82,6 +99,10 @@ void Node::removeOldBody()
 
 Box2dContainer& Node::getBox2dContainer()
 {
+    if (!box2dContainer) {
+        throw new std::runtime_error("not attached to any box2dContainer yet");
+    }
+
     return *box2dContainer;
 }
 
@@ -89,36 +110,6 @@ void Node::setBox2dContainer(Box2dContainer& box2dContainer)
 {
     this->box2dContainer = &box2dContainer;
 }
-
-void Node::setPosition(const cocos2d::Point& pos)
-{
-    cocos2d::Node::setPosition(pos);
-
-    if (hasBody()) {
-        using avalon::physics::utils::convertToBox2d;
-
-        auto size = getContentSize();
-        auto b2Pos = convertToBox2d(*box2dContainer, pos, size);
-
-        // adjust to the current anchor point
-        b2Pos.x -= getAnchorPoint().x * size.width / box2dContainer->pixelsInMeter;
-        b2Pos.y -= getAnchorPoint().y * size.height / box2dContainer->pixelsInMeter;
-
-        auto angle = getBody().GetTransform().q.GetAngle();
-        getBody().SetTransform({b2Pos.x, b2Pos.y}, angle);
-    }
-}
-
-void Node::setRotation(float rotation)
-{
-    cocos2d::Node::setRotation(rotation);
-
-    if (hasBody()) {
-        auto angle = CC_DEGREES_TO_RADIANS(rotation * -1);
-        getBody().SetTransform(getBody().GetPosition(), angle);
-    }
-}
-
 
 } // namespace physics
 } // namespace avalon
