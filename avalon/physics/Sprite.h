@@ -6,8 +6,7 @@
 #include <avalon/io/CCBLoader.h>
 #include <avalon/io/TiledMapLoader.h>
 
-#include <avalon/physics/Box2dContainer.h>
-//namespace avalon { namespace physics { class Box2dContainer; } }
+namespace avalon { namespace physics { class Box2dContainer; } }
 
 namespace avalon {
 namespace physics {
