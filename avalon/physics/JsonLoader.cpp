@@ -12,8 +12,28 @@ JsonLoader::JsonLoader(Box2dContainer& box2dContainer, const std::string& filena
 : box2dContainer(box2dContainer)
 , filename(filename)
 {
+}
+
+std::shared_ptr<b2dJson> JsonLoader::load()
+{
+    if (getJson()) {
+        throw new std::runtime_error("Already loaded");
+    }
+
     readFromString(filename);
     createSprites();
+    triggerFactories();
+
+    return getJson();
+}
+
+void JsonLoader::triggerFactories()
+{
+    for (auto& factory : bodyNameFactories) {
+        for (auto& callback : factory.second) {
+            callback(factory.first);
+        }
+    }
 }
 
 void JsonLoader::readFromString(const std::string& filename)
@@ -32,7 +52,7 @@ void JsonLoader::readFromString(const std::string& filename)
 void JsonLoader::createSprites()
 {
     std::vector<b2dJsonImage*> b2dImages;
-    json->getAllImages(b2dImages);
+    getJson()->getAllImages(b2dImages);
 
     cocos2d::Sprite* sprite = nullptr;
     for (auto& def : b2dImages) {
@@ -101,8 +121,12 @@ std::shared_ptr<b2dJson> JsonLoader::getJson()
 
 void JsonLoader::moveAllBy(const b2Vec2& delta)
 {
+    if (!getJson()) {
+        throw new std::runtime_error("Nothing loaded yet");
+    }
+    
     vector<b2Body*> bodies;
-    json->getAllBodies(bodies);
+    getJson()->getAllBodies(bodies);
 
     for (auto& body : bodies) {
         body->SetTransform(body->GetPosition() + delta, body->GetAngle());

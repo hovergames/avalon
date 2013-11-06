@@ -29,65 +29,66 @@ public:
 private:
     using Assigner = std::function<void(Node&)>;
     using AssignerList = std::list<Assigner>;
+    using Callback = std::function<void(const std::string& name)>;
+    using CallbackList = std::list<Callback>;
 
     std::shared_ptr<b2dJson> json;
     std::string filename;
     Box2dContainer& box2dContainer;
     std::map<b2Body*, SpriteList> bodySprites;
-    std::set<std::string> registeredNames;
     std::map<std::string, AssignerList> bodyNameAssigner;
+    std::map<std::string, CallbackList> bodyNameFactories;
 
     void readFromString(const std::string& filename);
     void createSprites();
+    void triggerFactories();
     cocos2d::Sprite& createPhysicsSprites(b2dJsonImage& def);
     cocos2d::Sprite& createStaticSprites(b2dJsonImage& def);
     void applyCommonSettings(b2dJsonImage& def, cocos2d::Sprite& sprite);
     
 public:
     JsonLoader(Box2dContainer& box2dContainer, const std::string& filename);
-
+    std::shared_ptr<b2dJson> load();
+    
     std::shared_ptr<b2dJson> getJson();
     void moveAllBy(const b2Vec2& offset);
 
     template<typename T>
     void registerTypeForBodyName(const std::string& name)
     {
-        if (registeredNames.count(name)) {
+        if (bodyNameFactories.count(name)) {
             throw new std::invalid_argument("Name already registered");
         }
-        registeredNames.insert(name);
 
-        Configuration configNoSprites{*this, filename, box2dContainer, SpriteList()};
-        std::vector<b2Body*> bodies;
-        json->getBodiesByName(name, bodies);
+        bodyNameFactories[name].push_back([this](const std::string& name){
+            Configuration configNoSprites{*this, filename, box2dContainer, SpriteList()};
+            std::vector<b2Body*> bodies;
+            getJson()->getBodiesByName(name, bodies);
 
-        for (auto& body : bodies) {
-            T* obj = T::create(box2dContainer, *body);
-            box2dContainer.addChild(obj);
+            for (auto& body : bodies) {
+                T* obj = T::create(box2dContainer, *body);
+                box2dContainer.addChild(obj);
 
-            if (!bodySprites.count(body)) {
-                obj->onConfiguration(configNoSprites);
-            } else {
-                Configuration config{*this, filename, box2dContainer, bodySprites[body]};
-                obj->onConfiguration(config);
-                bodySprites.erase(body);
+                if (!bodySprites.count(body)) {
+                    obj->onConfiguration(configNoSprites);
+                } else {
+                    Configuration config{*this, filename, box2dContainer, bodySprites[body]};
+                    obj->onConfiguration(config);
+                    bodySprites.erase(body);
+                }
+
+                for (auto& cb : bodyNameAssigner[name]) {
+                    cb(*obj);
+                }
             }
-
-            if (!bodyNameAssigner.count(name)) {
-                continue;
-            }
-
-            for (auto& cb : bodyNameAssigner[name]) {
-                cb(*obj);
-            }
-        }
+        });
     }
 
     template<typename T>
     void assignObjectsByBodyName(const std::string& name, std::list<T*>& list)
     {
-        if (registeredNames.count(name)) {
-            throw new std::runtime_error("Name already registered -- call assign before!");
+        if (!bodyNameFactories.count(name)) {
+            throw new std::runtime_error("Name not registered yet");
         }
 
         bodyNameAssigner[name].push_back([&list](Node& node) {
