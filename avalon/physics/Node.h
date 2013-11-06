@@ -16,6 +16,7 @@ private:
     b2Body* body = nullptr;
 
     void removeOldBody();
+    void loadFromBox2d();
     
 public:
     CREATE_FUNC(Node);
@@ -23,6 +24,10 @@ public:
     virtual void cleanup() override;
     virtual void update(float delta) override;
 
+    virtual void setPosition(const cocos2d::Point& pos) override;
+    virtual void setRotation(float rotation) override;
+
+    bool hasBody() const;
     b2Body& getBody();
     void setBody(b2Body& body);
 
