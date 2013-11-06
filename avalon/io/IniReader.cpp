@@ -11,7 +11,7 @@ namespace io {
 
 void IniReader::loadFile(const char* iniFile)
 {
-    unsigned long fileSize = 0;
+    long fileSize = 0;
     unsigned char* fileContents = NULL;
     std::string line, fullPath, contents;
 

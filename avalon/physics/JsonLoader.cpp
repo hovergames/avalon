@@ -49,7 +49,7 @@ void JsonLoader::createSprites()
 
 cocos2d::Sprite& JsonLoader::createPhysicsSprites(b2dJsonImage& def)
 {
-    auto sprite = Sprite::create(box2dContainer, *def.body, def.file.c_str());
+    auto sprite = Sprite::create(box2dContainer, *def.body, def.file);
     if (!sprite) {
         throw new std::invalid_argument(std::string("Unable to load sprite: " + def.file));
     }
@@ -63,7 +63,7 @@ cocos2d::Sprite& JsonLoader::createPhysicsSprites(b2dJsonImage& def)
 
 cocos2d::Sprite& JsonLoader::createStaticSprites(b2dJsonImage& def)
 {
-    auto sprite = cocos2d::Sprite::create(def.file.c_str());
+    auto sprite = cocos2d::Sprite::create(def.file);
     if (!sprite) {
         throw new std::invalid_argument(std::string("Unable to load sprite: " + def.file));
     }

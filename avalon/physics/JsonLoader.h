@@ -62,9 +62,7 @@ public:
         json->getBodiesByName(name, bodies);
 
         for (auto& body : bodies) {
-            T* obj = T::create();
-            obj->setBox2dContainer(box2dContainer);
-            obj->setBody(*body);
+            T* obj = T::create(box2dContainer, *body);
             box2dContainer.addChild(obj);
 
             if (!bodySprites.count(body)) {

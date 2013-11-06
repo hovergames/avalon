@@ -8,7 +8,7 @@ namespace utils {
 
 std::string getStringFromFile(const std::string& file)
 {
-    unsigned long size = 0;
+    long size = 0;
     unsigned char* data = cocos2d::FileUtils::getInstance()->getFileData(file.c_str(), "r", &size);
     if (size == 0) {
         throw new std::invalid_argument("Unable to load from file");

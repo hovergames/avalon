@@ -2,9 +2,19 @@
 #define AVALON_PHYSICS_NODE_H
 
 #include "cocos2d.h"
+#include <avalon/physics/Body.h>
 
-class b2Body;
-namespace avalon { namespace physics { class Box2dContainer; } }
+#define CREATE_FUNC_PHYSICAL(__TYPE__) \
+    static __TYPE__* create(avalon::physics::Box2dContainer& box2dContainer, b2Body& body) \
+    { \
+        __TYPE__ *result = new __TYPE__(); \
+        if (result && result->init(box2dContainer, body)) { \
+            result->autorelease(); \
+            return result; \
+        } \
+        delete result; \
+        return nullptr; \
+    }
 
 namespace avalon {
 namespace physics {
@@ -12,38 +22,33 @@ namespace physics {
 class Node : public cocos2d::Node
 {
 private:
-    Box2dContainer* box2dContainer = nullptr;
-    b2Body* body = nullptr;
-    float myScaleX = 1;
-    float myScaleY = 1;
-    
-    void removeOldBody();
-    
+    std::shared_ptr<Body> bodyImpl;
+
 public:
-    CREATE_FUNC(Node);
-    virtual bool init() override;
+    CREATE_FUNC_PHYSICAL(Node);
+    virtual bool init(avalon::physics::Box2dContainer& box2dContainer, b2Body& body);
+
     virtual void cleanup() override;
     virtual void update(float delta) override;
 
-    bool hasBody() const;
-    b2Body& getBody();
-    void setBody(b2Body& body);
-
-    Box2dContainer& getBox2dContainer();
-    void setBox2dContainer(Box2dContainer& box2dContainer);
-
-    virtual void setScaleX(float scaleX) override { myScaleX = scaleX; };
-    virtual void setScaleY(float scaleY) override { myScaleY = scaleY; };
-    virtual void setScale(float scaleX, float scaleY) override { myScaleX = scaleX; myScaleY = scaleY; };
-    virtual void setScale(float scale) override { myScaleX = scale; myScaleY = scale; };
-
-    virtual void setPosition(const cocos2d::Point& pos) override { throw std::invalid_argument("NOT ALLOWERD"); };
-    virtual void setRotation(float rotation) override { throw std::invalid_argument("NOT ALLOWERD"); };
-    virtual void setRotationX(float rotationX) override { throw std::invalid_argument("NOT ALLOWERD"); };
-    virtual void setRotationY(float rotationY) override { throw std::invalid_argument("NOT ALLOWERD"); };
-    virtual void setPosition(float x, float y) override { throw std::invalid_argument("NOT ALLOWERD"); };
-    virtual void setAnchorPoint(const cocos2d::Point& anchor) override { throw std::invalid_argument("NOT ALLOWERD"); };
-    virtual void ignoreAnchorPointForPosition(bool value) override { throw std::invalid_argument("NOT ALLOWERD"); };
+    // Redirect all important methods
+    b2Body& getBody()                                                  { return bodyImpl->getBody(); }
+    Box2dContainer& getBox2dContainer()                                { return bodyImpl->getBox2dContainer(); }
+    virtual void setScaleX(float scaleX) override                      { bodyImpl->setScaleX(scaleX); }
+    virtual void setScaleY(float scaleY) override                      { bodyImpl->setScaleY(scaleY); }
+    virtual void setScale(float scaleX, float scaleY) override         { bodyImpl->setScale(scaleX, scaleY); }
+    virtual void setScale(float scale) override                        { bodyImpl->setScale(scale); }
+    virtual void setPosition(const cocos2d::Point& pos) override       { bodyImpl->setPosition(pos); }
+    virtual void setPosition(float x, float y) override                { bodyImpl->setPosition(x, y); }
+    virtual void setRotation(float rotation) override                  { bodyImpl->setRotation(rotation); }
+    virtual void setRotationX(float rotationX) override                { bodyImpl->setRotationX(rotationX); }
+    virtual void setRotationY(float rotationY) override                { bodyImpl->setRotationY(rotationY); }
+    virtual void setAnchorPoint(const cocos2d::Point& anchor) override { bodyImpl->setAnchorPoint(anchor); }
+    virtual void ignoreAnchorPointForPosition(bool value) override     { bodyImpl->ignoreAnchorPointForPosition(value); }
+    void setPositionOffset(const cocos2d::Point& point)                { bodyImpl->setPositionOffset(point); }
+    void setRotationOffset(float rotation)                             { bodyImpl->setRotationOffset(rotation); }
+    const cocos2d::Point& getPositionOffset()                          { return bodyImpl->getPositionOffset(); }
+    float getRotationOffset()                                          { return bodyImpl->getRotationOffset(); }
 };
 
 } // namespace physics
