@@ -21,8 +21,9 @@ public:
 
 private:
     using Assigner = std::function<void(cocos2d::Object*)>;
+    using AssignerList = std::list<Assigner>;
 
-    std::unordered_map<std::string, Assigner> nameAssigner;
+    std::unordered_map<std::string, AssignerList> nameAssigner;
     const std::string ccbFileName;
     std::shared_ptr<cocosbuilder::NodeLoaderLibrary> nodeLoaderLibrary;
     std::list<ccbloader::GenericLoaderInterface*> genericLoaders;
@@ -40,16 +41,12 @@ public:
     template<typename T>
     void assignObject(const std::string& name, T** destination)
     {
-        if (nameAssigner.count(name)) {
-            throw std::invalid_argument("Name already registered");
-        }
-
-        nameAssigner[name] = [destination](cocos2d::Object* object) {
+        nameAssigner[name].push_back([destination](cocos2d::Object* object) {
             *destination = dynamic_cast<T*>(object);
             if (!*destination) {
                 throw std::invalid_argument("Wrong Object type");
             }
-        };
+        });
     }
 
     template<typename T, typename L>

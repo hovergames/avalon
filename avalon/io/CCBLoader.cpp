@@ -54,7 +54,9 @@ bool CCBLoader::onAssignCCBMemberVariable(cocos2d::Object* target, const char* m
 {
     for (auto& pair : nameAssigner) {
         if (pair.first == memberVariableName) {
-            pair.second(node);
+            for (auto& callback : pair.second) {
+                callback(node);
+            }
             return true;
         }
     }
