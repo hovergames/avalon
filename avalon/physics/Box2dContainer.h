@@ -6,8 +6,8 @@
 #include <boost/noncopyable.hpp>
 
 class B2DebugDrawLayer;
-class b2dJson;
 namespace avalon { namespace physics { class CollisionManager; } }
+namespace avalon { namespace physics { class Sprite; } }
 
 namespace avalon {
 namespace physics {
@@ -16,19 +16,18 @@ class Box2dContainer : public cocos2d::Node, public boost::noncopyable
 {
 private:
     using NodeId = int*;
+    using DeletePair = std::pair<b2Body*, cocos2d::Node*>;
 
     NodeId lastNodeId = nullptr;
     B2DebugDrawLayer* debugLayer = nullptr;
     std::shared_ptr<CollisionManager> collisionManager;
     std::unordered_map<NodeId, cocos2d::Node*> idToNode;
     std::unordered_map<cocos2d::Node*, NodeId> nodeToId;
-    std::list<std::pair<b2Body*, cocos2d::Node*>> pendingDeletes;
+    std::list<DeletePair> pendingDeletes;
     std::shared_ptr<b2World> world;
-    std::shared_ptr<b2dJson> json;
 
     NodeId generateId();
     void executePendingDeletes();
-    void loadAllImagesFromJson();
 
 public:
     float32 timeStep = 1.0f / 60.0f;
@@ -40,14 +39,10 @@ public:
     CREATE_FUNC(Box2dContainer);
     bool init() override;
 
-    static Box2dContainer* createFromJson(const std::string& jsonFile);
-    bool initFromJson(const std::string& jsonFile);
-
     void update(float delta) override;
     void enableDebugDraw(const bool enable);
 
     b2World& getWorld();
-    b2dJson& getJson();
     CollisionManager& getCollisionManager();
 
     b2Body* createBody(const b2BodyDef& bodyDef);
@@ -130,11 +125,5 @@ public:
 
 } // namespace physics
 } // namespace avalon
-
-namespace std {
-
-std::string to_string(avalon::physics::Box2dContainer& box2dContainer);
-
-} // namespace std
 
 #endif /* AVALON_PHYSICS_BOX2DCONTAINER_H */
