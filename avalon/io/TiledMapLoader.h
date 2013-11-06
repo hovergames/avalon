@@ -51,9 +51,6 @@ public:
         if (!gidFactories.count(gid)) {
             throw new std::runtime_error("GID not registered yet");
         }
-        if (!gidAssigner.count(gid)) {
-            gidAssigner[gid] = AssignerList();
-        }
 
         gidAssigner[gid].push_back([&list](cocos2d::Node& node) {
             auto target = dynamic_cast<T*>(&node);
@@ -69,9 +66,6 @@ public:
     {
         if (!nameFactories.count(name)) {
             throw new std::runtime_error("Name not registered yet");
-        }
-        if (!nameAssigner.count(name)) {
-            nameAssigner[name] = AssignerList();
         }
 
         nameAssigner[name].push_back([&list](cocos2d::Node& node) {
@@ -105,10 +99,6 @@ public:
     template<typename T>
     void registerTypeForGID(const int gid, const std::list<std::string>& layerFilter = {})
     {
-        if (!gidFactories.count(gid)) {
-            gidFactories[gid] = CallbackList();
-        }
-
         gidFactories[gid].push_back([this, gid, layerFilter](const Configuration& config)
         {
             if (isFiltered(config.layer, layerFilter)) {
@@ -132,10 +122,6 @@ public:
     template<typename T>
     void registerTypeForName(const std::string& name, const std::list<std::string>& layerFilter = {})
     {
-        if (!nameFactories.count(name)) {
-            nameFactories[name] = CallbackList();
-        }
-
         nameFactories[name].push_back([this, name, layerFilter](const Configuration& config)
         {
             if (isFiltered(config.layer, layerFilter)) {
