@@ -127,47 +127,58 @@ void Body::setScaleY(float scaleY)
 
 void Body::setPosition(const cocos2d::Point& pos)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    setPosition(pos.x, pos.y);
 };
 
 void Body::setPosition(float x, float y)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    auto pos = getBox2dContainer().convertToBox2d({x, y});
+    getBody().SetTransform(pos, getBody().GetAngle());
 };
 
 void Body::setPositionX(float x)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    setPosition(x, getPositionY());
 }
 
 void Body::setPositionY(float y)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    setPosition(getPositionX(), y);
+}
+
+float Body::getPositionX() const
+{
+    return position.x;
+}
+
+float Body::getPositionY() const
+{
+    return position.y;
 }
 
 void Body::setRotation(float rotation)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    getBody().SetTransform(getBody().GetPosition(), CC_DEGREES_TO_RADIANS(rotation));
 };
 
 void Body::setRotationX(float rotationX)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    throw std::invalid_argument("Not implemented yet!");
 };
 
 void Body::setRotationY(float rotationY)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    throw std::invalid_argument("Not implemented yet!");
 };
 
 void Body::setAnchorPoint(const cocos2d::Point& anchor)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    throw std::invalid_argument("Not allowed!");
 };
 
 void Body::ignoreAnchorPointForPosition(bool value)
 {
-    throw std::invalid_argument("NOT ALLOWERD");
+    throw std::invalid_argument("Not allowed!");
 };
 
 void Body::setPositionOffset(const cocos2d::Point& point)

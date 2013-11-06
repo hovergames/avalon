@@ -45,6 +45,9 @@ public:
     void setPosition(float x, float y);
     void setPositionX(float x);
     void setPositionY(float y);
+    float getPositionX() const;
+    float getPositionY() const;
+
 
     float getRotation();
     void setRotation(float rotation);
