@@ -22,6 +22,7 @@ public:
     struct Configuration {
         JsonLoader& loader;
         const std::string& filename;
+        const std::string& name;
         avalon::physics::Box2dContainer& box2dContainer;
         const SpriteList& sprites;
     };
@@ -61,7 +62,7 @@ public:
         }
 
         bodyNameFactories[name].push_back([this](const std::string& name){
-            Configuration configNoSprites{*this, filename, box2dContainer, SpriteList()};
+            Configuration configNoSprites{*this, filename, name, box2dContainer, SpriteList()};
             std::vector<b2Body*> bodies;
             getJson()->getBodiesByName(name, bodies);
 
@@ -72,7 +73,7 @@ public:
                 if (!bodySprites.count(body)) {
                     obj->onConfiguration(configNoSprites);
                 } else {
-                    Configuration config{*this, filename, box2dContainer, bodySprites[body]};
+                    Configuration config{*this, filename, name, box2dContainer, bodySprites[body]};
                     obj->onConfiguration(config);
                     bodySprites.erase(body);
                 }
