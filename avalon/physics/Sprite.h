@@ -14,10 +14,11 @@ namespace physics {
 class Sprite : public cocos2d::Sprite
 {
 private:
-    avalon::physics::Box2dContainer* box2dContainer = nullptr;
+    Box2dContainer* box2dContainer = nullptr;
     b2Body* body = nullptr;
     bool ownsBody = false;
-    cocos2d::Point center;
+    cocos2d::Point positionOffset;
+    float rotationOffset = 0;
 
     void createBody();
     void createBody(const std::map<std::string, boost::any>& settings);
@@ -64,8 +65,11 @@ public:
     bool hasBody() const;
     b2Body& getBody();
 
-    void setCenter(const cocos2d::Point& point);
-    const cocos2d::Point& getCenter();
+    void setPositionOffset(const cocos2d::Point& point);
+    const cocos2d::Point& getPositionOffset();
+
+    void setRotationOffset(float rotation);
+    float getRotationOffset();
 
     virtual void update(float delta) override;
     virtual void setPosition(const cocos2d::Point& pos) override;

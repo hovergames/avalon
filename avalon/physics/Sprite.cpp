@@ -281,7 +281,7 @@ void Sprite::update(float delta)
 
         auto size = getContentSize();
 
-        b2Vec2 localPos(center.x, center.y);
+        b2Vec2 localPos(positionOffset.x, positionOffset.y);
         b2Rot rot(body->GetAngle());
         localPos = b2Mul(rot, localPos) + body->GetPosition();
 
@@ -294,7 +294,7 @@ void Sprite::update(float delta)
         cocos2d::Sprite::setPosition({pos.x, pos.y});
 
         float rotation = body->GetAngle();
-        cocos2d::Sprite::setRotation(-CC_RADIANS_TO_DEGREES(rotation));
+        cocos2d::Sprite::setRotation(rotationOffset - CC_RADIANS_TO_DEGREES(rotation));
     }
 }
 
@@ -327,14 +327,24 @@ void Sprite::setRotation(float rotation)
     }
 }
 
-void Sprite::setCenter(const cocos2d::Point& point)
+void Sprite::setPositionOffset(const cocos2d::Point& point)
 {
-    center = point;
+    positionOffset = point;
 }
 
-const cocos2d::Point& Sprite::getCenter()
+const cocos2d::Point& Sprite::getPositionOffset()
 {
-    return center;
+    return positionOffset;
+}
+
+void Sprite::setRotationOffset(float rotation)
+{
+    rotationOffset = rotation;
+}
+
+float Sprite::getRotationOffset()
+{
+    return rotationOffset;
 }
 
 } // namespace physics
