@@ -17,6 +17,7 @@ class Sprite : public cocos2d::Sprite
 private:
     std::shared_ptr<Body> bodyImpl;
     bool ownsBody = false;
+    bool swallowSetAnchor = false;
 
     void syncBody();
     void resetBodyImpl(Box2dContainer& box2dContainer, b2Body& body);
@@ -63,6 +64,15 @@ public:
 
     virtual void update(float delta) override;
 
+    // Manage swallowSetAnchor flag for all init methods
+    virtual bool initWithTexture(cocos2d::Texture2D* texture) override;
+    virtual bool initWithTexture(cocos2d::Texture2D* texture, const cocos2d::Rect& rect) override;
+    virtual bool initWithTexture(cocos2d::Texture2D* texture, const cocos2d::Rect& rect, bool rotated) override;
+    virtual bool initWithSpriteFrame(cocos2d::SpriteFrame* pSpriteFrame) override;
+    virtual bool initWithSpriteFrameName(const std::string& spriteFrameName) override;
+    virtual bool initWithFile(const std::string& filename) override;
+    virtual bool initWithFile(const std::string& filename, const cocos2d::Rect& rect) override;
+
     // Redirect all important methods
     b2Body& getBody()                                                  { return bodyImpl->getBody(); }
     Box2dContainer& getBox2dContainer()                                { return bodyImpl->getBox2dContainer(); }
@@ -75,7 +85,7 @@ public:
     virtual void setRotation(float rotation) override                  { bodyImpl->setRotation(rotation); }
     virtual void setRotationX(float rotationX) override                { bodyImpl->setRotationX(rotationX); }
     virtual void setRotationY(float rotationY) override                { bodyImpl->setRotationY(rotationY); }
-    virtual void setAnchorPoint(const cocos2d::Point& anchor) override { /* silently ignored, called by cocos2d::Sprite */ }
+    virtual void setAnchorPoint(const cocos2d::Point& anchor) override { if (!swallowSetAnchor) bodyImpl->setAnchorPoint(anchor); }
     virtual void ignoreAnchorPointForPosition(bool value) override     { bodyImpl->ignoreAnchorPointForPosition(value); }
     void setPositionOffset(const cocos2d::Point& point)                { bodyImpl->setPositionOffset(point); }
     void setRotationOffset(float rotation)                             { bodyImpl->setRotationOffset(rotation); }

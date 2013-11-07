@@ -243,12 +243,71 @@ void Sprite::addTextureShapeFixture()
 
 bool Sprite::init()
 {
+    swallowSetAnchor = true;
     if (!cocos2d::Sprite::init()) {
+        swallowSetAnchor = false;
         return false;
     }
+    swallowSetAnchor = false;
 
     scheduleUpdate();
     return true;
+}
+
+bool Sprite::initWithTexture(cocos2d::Texture2D* texture)
+{
+    swallowSetAnchor = true;
+    auto result = cocos2d::Sprite::initWithTexture(texture);
+    swallowSetAnchor = false;
+    return result;
+}
+
+bool Sprite::initWithTexture(cocos2d::Texture2D* texture, const cocos2d::Rect& rect)
+{
+    swallowSetAnchor = true;
+    auto result = cocos2d::Sprite::initWithTexture(texture, rect);
+    swallowSetAnchor = false;
+    return result;
+}
+
+bool Sprite::initWithTexture(cocos2d::Texture2D* texture, const cocos2d::Rect& rect, bool rotated)
+{
+    swallowSetAnchor = true;
+    auto result = cocos2d::Sprite::initWithTexture(texture, rect, rotated);
+    swallowSetAnchor = false;
+    return result;
+}
+
+bool Sprite::initWithSpriteFrame(cocos2d::SpriteFrame* pSpriteFrame)
+{
+    swallowSetAnchor = true;
+    auto result = cocos2d::Sprite::initWithSpriteFrame(pSpriteFrame);
+    swallowSetAnchor = false;
+    return result;
+}
+
+bool Sprite::initWithSpriteFrameName(const std::string& spriteFrameName)
+{
+    swallowSetAnchor = true;
+    auto result = cocos2d::Sprite::initWithSpriteFrameName(spriteFrameName);
+    swallowSetAnchor = false;
+    return result;
+}
+
+bool Sprite::initWithFile(const std::string& filename)
+{
+    swallowSetAnchor = true;
+    auto result = cocos2d::Sprite::initWithFile(filename);
+    swallowSetAnchor = false;
+    return result;
+}
+
+bool Sprite::initWithFile(const std::string& filename, const cocos2d::Rect& rect)
+{
+    swallowSetAnchor = true;
+    auto result = cocos2d::Sprite::initWithFile(filename, rect);
+    swallowSetAnchor = false;
+    return result;
 }
 
 void Sprite::update(float delta)
