@@ -1,14 +1,12 @@
 # Avalon
 
+Productivity boost for cocos2d-x developers.
+
 [![Build Status](https://travis-ci.org/michaelcontento/avalon.png)](https://travis-ci.org/michaelcontento/avalon)
 
 Avalon provides various extension, helpers, libraries, classes, templates &
 functions on top of [cocos2d-x][]. It should speed up cross-platform development
 and automate annoying tasks.
-
-> Avalon is here to make the developers life easier
-> to produce more apps in less time (the key to get rich fast!!!).
-- [JoeManaco](https://bitbucket.org/joemanaco)
 
 # Installation
 
