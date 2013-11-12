@@ -140,11 +140,6 @@ void Sprite::cleanup()
 void Sprite::onConfiguration(const avalon::io::CCBLoader::Configuration& config)
 {
     createBody(*config.box2dContainer, config.settings);
-
-    float x = getPositionX();
-    float y = getPositionY();
-    setPosition({x, y});
-
     loadConfigurationSettings(config.settings);
 }
 
