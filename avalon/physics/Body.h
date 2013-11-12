@@ -31,6 +31,8 @@ public:
     Box2dContainer& getBox2dContainer();
     b2Body& getBody();
 
+    void clearFixtures();
+
     void sync(cocos2d::Node* parent);
 
     float getScaleX();

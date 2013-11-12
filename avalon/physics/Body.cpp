@@ -21,6 +21,13 @@ b2Body& Body::getBody()
     return body;
 }
 
+void Body::clearFixtures()
+{
+    for (auto f = getBody().GetFixtureList(); f; f = f->GetNext()) {
+        getBody().DestroyFixture(f);
+    }
+}
+
 void Body::sync(cocos2d::Node* node)
 {
     parent = node->getParent();
