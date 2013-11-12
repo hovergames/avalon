@@ -26,10 +26,11 @@ private:
     void addPESShapeFixture(const std::string& file, const std::string& shape);
     void addTextureShapeFixture();
     void loadConfigurationSettings(const std::map<std::string, boost::any>& settings);
-
-public:
+    
     CREATE_FUNC(Sprite);
     virtual bool init() override;
+
+public:
     virtual void cleanup() override;
 
     // delete "inherited" create methods
