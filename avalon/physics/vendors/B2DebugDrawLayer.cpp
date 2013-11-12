@@ -58,7 +58,7 @@ bool B2DebugDrawLayer::init()
 
 void B2DebugDrawLayer::draw()
 {
-  ccGLEnableVertexAttribs( kCCVertexAttribFlag_Position );
+  GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
   
   kmGLPushMatrix();
   
