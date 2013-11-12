@@ -14,7 +14,7 @@ namespace ccbloader {
 template<typename T, typename L>
 class GenericLoader : public L, public GenericLoaderInterface
 {
-private:
+protected:
     std::unordered_map<T*, Dictionary> nodeSettings;
 
     T* getTarget(cocos2d::Node* node)
