@@ -2,6 +2,7 @@
 
 #include "cocos2d.h"
 #include <avalon/utils/ObjectRetainer.h>
+#include <avalon/io/ccbloader/PhysicSpriteLoader.h>
 
 using namespace cocos2d;
 using namespace cocosbuilder;
@@ -28,6 +29,12 @@ void CCBLoader::setBox2dContainer(avalon::physics::Box2dContainer& container)
 cocos2d::Node* CCBLoader::load()
 {
     nodeLoaderLibrary->registerDefaultNodeLoaders();
+
+    if (box2dContainer) {
+        auto loader = ccbloader::PhysicSpriteLoader::loader();
+        genericLoaders.push_back(loader);
+        nodeLoaderLibrary->registerNodeLoader("PhysicsSprite", loader);
+    }
 
     CCBReader ccbReader(nodeLoaderLibrary.get(), this, nullptr);
     auto node = ccbReader.readNodeGraphFromFile(ccbFileName.c_str(), this);
