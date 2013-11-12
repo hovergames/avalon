@@ -58,7 +58,7 @@ void Body::sync(cocos2d::Node* node)
     }
 
     // -- Position offset
-    b2Vec2 positionB2d(positionOffset.x, positionOffset.y);
+    auto positionB2d = box2dContainer.convertToBox2d(positionOffset);
     b2Rot rotationB2d(body.GetAngle());
     positionB2d = b2Mul(rotationB2d, positionB2d) + body.GetPosition();
 
