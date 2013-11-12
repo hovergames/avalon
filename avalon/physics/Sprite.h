@@ -28,9 +28,9 @@ private:
     void loadConfigurationSettings(const std::map<std::string, boost::any>& settings);
     
     CREATE_FUNC(Sprite);
-    virtual bool init() override;
 
 public:
+    virtual bool init() override;
     virtual void cleanup() override;
 
     // delete "inherited" create methods
