@@ -32,6 +32,7 @@ private:
 public:
     virtual bool init() override;
     virtual void cleanup() override;
+    void scheduleUpdate();
 
     // delete "inherited" create methods
     static Sprite* create(const std::string& filename) = delete;

@@ -240,6 +240,12 @@ void Sprite::addTextureShapeFixture()
     getBody().CreateFixture(&fixtureDef);
 }
 
+void Sprite::scheduleUpdate()
+{
+    unscheduleUpdate();
+    cocos2d::Sprite::scheduleUpdate();
+}
+
 bool Sprite::init()
 {
     swallowSetAnchor = true;
