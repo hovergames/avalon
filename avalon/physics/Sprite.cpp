@@ -198,7 +198,11 @@ void Sprite::createBody(Box2dContainer& box2dContainer)
 
 void Sprite::createBody(Box2dContainer& box2dContainer, const std::map<std::string, boost::any>& settings)
 {
-    bodyImpl->clearFixtures();
+    if (bodyImpl) {
+        bodyImpl->clearFixtures();
+    } else {
+        createBody(box2dContainer);
+    }
 
     if (settings.count("pes.file")) {
         if (!settings.count("pes.shape")) {
