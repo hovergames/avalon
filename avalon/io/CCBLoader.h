@@ -49,6 +49,12 @@ public:
         });
     }
 
+    template<typename T>
+    void registerCustomClass(const std::string& className)
+    {
+        registerCustomClass<T, typename T::CCBLoader>(className);
+    }
+
     template<typename T, typename L>
     void registerCustomClass(const std::string& className)
     {

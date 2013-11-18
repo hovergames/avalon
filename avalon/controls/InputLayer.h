@@ -2,6 +2,7 @@
 #define AVALON_CONTROLS_INPUTLAYER_H
 
 #include "cocos2d.h"
+#include "editor-support/cocosbuilder/CocosBuilder.h"
 #include <avalon/io/CCBLoader.h>
 
 namespace avalon {
@@ -27,6 +28,8 @@ protected:
     virtual bool isFilteredCancelled(cocos2d::Touch* touch, cocos2d::Event* event) { return false; }
 
 public:
+    using CCBLoader = cocosbuilder::LayerGradientLoader;
+    
     std::function<bool(cocos2d::Touch*, cocos2d::Event*)> onTouchBegan;
     std::function<void(cocos2d::Touch*, cocos2d::Event*)> onTouchMoved;
     std::function<void(cocos2d::Touch*, cocos2d::Event*)> onTouchEnded;
