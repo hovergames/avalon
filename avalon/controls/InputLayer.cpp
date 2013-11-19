@@ -25,6 +25,12 @@ bool InputLayer::init()
     director->addEventListenerWithSceneGraphPriority(touchListener, this);
     director->addEventListenerWithSceneGraphPriority(keyboardListener, this);
 
+    // let the user configure the appearance and be fully transparent
+    // in the default configuration. LayerGradient's defaul is fully visible
+    // and both start- and endColor are black. Not the best defaults for our
+    // usecase as, most of the time, transparent touch layer ...
+    setOpacity(0);
+
     return true;
 }
 
