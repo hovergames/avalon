@@ -57,6 +57,16 @@ cocos2d::Node* CCBLoader::load()
     return node;
 }
 
+void CCBLoader::ensureAssignedObjects()
+{
+    for (auto& pair : nameAssigner) {
+        auto& name = pair.first;
+        if (!assignedNames.count(name)) {
+            throw new std::runtime_error(name + " not assigned!");
+        }
+    }
+}
+
 bool CCBLoader::onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node)
 {
     for (auto& pair : nameAssigner) {
@@ -64,6 +74,7 @@ bool CCBLoader::onAssignCCBMemberVariable(cocos2d::Object* target, const char* m
             for (auto& callback : pair.second) {
                 callback(node);
             }
+            assignedNames.insert(pair.first);
             return true;
         }
     }

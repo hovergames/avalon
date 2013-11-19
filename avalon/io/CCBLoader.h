@@ -24,6 +24,7 @@ private:
     using AssignerList = std::list<Assigner>;
 
     std::unordered_map<std::string, AssignerList> nameAssigner;
+    std::set<std::string> assignedNames;
     const std::string ccbFileName;
     std::shared_ptr<cocosbuilder::NodeLoaderLibrary> nodeLoaderLibrary;
     std::list<ccbloader::GenericLoaderInterface*> genericLoaders;
@@ -35,6 +36,7 @@ public:
     cocos2d::Node* load();
     void setBox2dContainer(avalon::physics::Box2dContainer& container);
     void assignAnimationManager(cocosbuilder::CCBAnimationManager** manager);
+    void ensureAssignedObjects();
 
     virtual bool onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node) override;
 
