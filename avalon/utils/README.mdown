@@ -1,0 +1,24 @@
+# labellocalizer
+
+```c++
+void localize(const cocos2d::Node& node);
+```
+
+Localize will scan recursivly over all nodes and translate the locakeys of cocos TTFLabels to the translated text. Make sure that you have initilized and loaded your loca files before you use this.
+
+Example:
+```c++
+avalon::i18n::Localization::getInstance().addLanguage("lang/en.ini");
+avalon::i18n::Localization::getInstance().setDefaultLanguage("lang/en.ini");
+
+[...]
+
+auto label = cocos2d::TTFLabel::create();
+label->setString("my/loca/key");
+addChild(label);
+
+[...]
+
+avalon::utils::labellocalizer::localize(*this);
+
+```
