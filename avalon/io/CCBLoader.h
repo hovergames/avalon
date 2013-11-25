@@ -26,7 +26,7 @@ private:
     std::unordered_map<std::string, AssignerList> nameAssigner;
     std::set<std::string> assignedNames;
     const std::string ccbFileName;
-    std::shared_ptr<cocosbuilder::NodeLoaderLibrary> nodeLoaderLibrary;
+    cocosbuilder::NodeLoaderLibrary* nodeLoaderLibrary;
     std::list<ccbloader::GenericLoaderInterface*> genericLoaders;
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
     cocosbuilder::CCBAnimationManager** managerReceiver = nullptr;

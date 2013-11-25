@@ -36,7 +36,7 @@ cocos2d::Node* CCBLoader::load()
         nodeLoaderLibrary->registerNodeLoader("PhysicsSprite", loader);
     }
 
-    CCBReader ccbReader(nodeLoaderLibrary.get(), this, nullptr);
+    CCBReader ccbReader(nodeLoaderLibrary, this, nullptr);
     auto node = ccbReader.readNodeGraphFromFile(ccbFileName.c_str(), this);
     auto animationManager = ccbReader.getAnimationManager();
 
