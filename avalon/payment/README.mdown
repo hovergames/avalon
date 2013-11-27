@@ -1,10 +1,10 @@
 # Cross Platform Payment
 
-Avalon has a build in cross platform payment module. We've implemented serveral backends, for example for Google Play, Amazon and iOS. The developer can easily configure the products in a extern ini file, then interacting through a Manager do call actions, receive products and information and registering a ManagerDelegate to react on changes of product states.
+Avalon has a build in cross platform payment module. We've implemented serveral backends, for example for Google Play, Amazon and iOS. The developer can easily configure the products in an external ini file, then interacting through a Manager to execute actions, receive products and information and registering a ManagerDelegate to get notified on product state changes.
 
 Here is a simple step-by-step guide how you can implement a in app product.
 
-## Create a resourcefile named payment.ini that looks like that:
+### Create a resourcefile named payment.ini that looks like that:
 
 ```ini
 [general]
