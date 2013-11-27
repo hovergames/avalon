@@ -63,7 +63,7 @@ class MainMenuScene : public cocos2d::Layer, public avalon::payment::ManagerDele
 }
 ```
 
-#### To start buying an item you can use the following code:
+#### To start buying an item you can use the following code. Please notice that you can get a product object by using the avalon identifier you specified in your ini file (the section name) and not the native product id from apple or google (it will be automatically rerouted interally to the id configured in your configuration file)
 
 ```cpp
 avalon::payment::Loader::globalManager->getProduct("unlockAll")->purchase();
