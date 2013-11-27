@@ -4,7 +4,7 @@ Avalon has a build in cross platform payment module. We've implemented serveral 
 
 Here is a simple step-by-step guide how you can implement a in app product.
 
-1. Create a resourcefile named payment.ini that looks like that:
+## Create a resourcefile named payment.ini that looks like that:
 
 ```ini
 [general]
@@ -19,7 +19,7 @@ amazonId = com.my.product.id
 macAppstoreId = com.my.product.id
 ```
 
-2. Load the configuration at app start using the following code:
+## Load the configuration at app start using the following code:
 
 ```cpp
 // load settings from ini file
@@ -36,7 +36,8 @@ if (!avalon::payment::Loader::globalManager->isStarted())
     avalon::payment::Loader::globalManager->startService();
 ```
 
-3. Implement ManagerDelegate to get noticed about the states:
+## Implement ManagerDelegate to get noticed about the states:
+
 ```cpp
 class MainMenuScene : public cocos2d::Layer, public avalon::payment::ManagerDelegate
 {
@@ -62,19 +63,19 @@ class MainMenuScene : public cocos2d::Layer, public avalon::payment::ManagerDele
 }
 ```
 
-4. To start buying an item you can use the following code:
+## To start buying an item you can use the following code:
 
 ```cpp
 avalon::payment::Loader::globalManager->getProduct("unlockAll")->purchase();
 ```
 
-5. To restore purchases use:
+## To restore purchases use:
 
 ```cpp
 avalon::payment::Loader::globalManager->restorePurchases();
 ```
 
-6.  To check if a product has been purchased you can do:
+## To check if a product has been purchased you can do:
 
 ```cpp
 if (avalon::payment::Loader::globalManager->getProduct("unlockAll")->hasBeenPurchased()) {
