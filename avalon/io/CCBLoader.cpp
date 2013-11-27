@@ -10,9 +10,10 @@ using namespace cocosbuilder;
 namespace avalon {
 namespace io {
 
-CCBLoader::CCBLoader(const std::string& ccbFileName)
+CCBLoader::CCBLoader(const std::string& ccbFileName, Node& pOwner)
 : ccbFileName(ccbFileName)
 , nodeLoaderLibrary(NodeLoaderLibrary::library())
+, owner(pOwner)
 {
 }
 
@@ -37,7 +38,7 @@ cocos2d::Node* CCBLoader::load()
     }
 
     CCBReader ccbReader(nodeLoaderLibrary, this, nullptr);
-    auto node = ccbReader.readNodeGraphFromFile(ccbFileName.c_str(), this);
+    auto node = ccbReader.readNodeGraphFromFile(ccbFileName.c_str(), &owner);
     auto animationManager = ccbReader.getAnimationManager();
 
     // Keep the AnimationManager alive, because with CCBLoader::Configuration we
