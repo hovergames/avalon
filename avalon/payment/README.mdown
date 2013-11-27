@@ -1,4 +1,4 @@
-# cross platform payment
+# Cross Platform Payment
 
 Avalon has a build in cross platform payment module. We've implemented serveral backends, for example for Google Play, Amazon and iOS. The developer can easily configure the products in a extern ini file, then interacting through a Manager do call actions, receive products and information and registering a ManagerDelegate to react on changes of product states.
 
