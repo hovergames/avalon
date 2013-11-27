@@ -17,13 +17,13 @@ class Manager;
 class Loader : boost::noncopyable
 {
 public:
-    static boost::shared_ptr<Manager> globalManager;
+    static std::shared_ptr<Manager> globalManager;
 
     explicit Loader(const char* iniFile);
-    boost::shared_ptr<Manager> getManager() const;
+    std::shared_ptr<Manager> getManager() const;
 
 private:
-    boost::shared_ptr<Manager> manager;
+    std::shared_ptr<Manager> manager;
     io::IniReader config;
 
     const char* detectProductId(const char* section);
