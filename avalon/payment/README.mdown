@@ -1,0 +1,85 @@
+# cross platform payment
+
+Avalon has a build in cross platform payment module. We've implemented serveral backends, for example for Google Play, Amazon and iOS. The developer can easily configure the products in a extern ini file, then interacting through a Manager do call actions, receive products and information and registering a ManagerDelegate to react on changes of product states.
+
+Here is a simple step-by-step guide how you can implement a in app product.
+
+1. Create a resourcefile named payment.ini that looks like that:
+
+```ini
+[general]
+iosBundleId = com.bundle.id.
+googlePlayPublicKey = xxxxxxxx
+
+[unlockAll]
+type = non-consumable
+iosId = com.my.product.id
+googlePlayId = com.my.product.id
+amazonId = com.my.product.id
+macAppstoreId = com.my.product.id
+```
+
+2. Load the configuration at app start using the following code:
+
+```cpp
+// load settings from ini file
+avalon::payment::Loader paymentLoader("config/payment.ini");
+
+// register global manager for easier access
+avalon::payment::Loader::globalManager = paymentLoader.getManager();
+
+// set receiver of payment callbacks
+avalon::payment::Loader::globalManager->delegate = this;
+
+// start service
+if (!avalon::payment::Loader::globalManager->isStarted())
+    avalon::payment::Loader::globalManager->startService();
+```
+
+3. Implement ManagerDelegate to get noticed about the states:
+```cpp
+class MainMenuScene : public cocos2d::Layer, public avalon::payment::ManagerDelegate
+{
+    void onPurchaseSucceed(avalon::payment::Manager* const manager, avalon::payment::Product* const product)
+    {
+        cocos2d::log("Purchase was successful!")
+    }
+    
+    void onPurchaseFail(avalon::payment::Manager* const manager)
+    {
+        cocos2d::log("Purchase failed!")
+    }
+
+    void onTransactionStart(avalon::payment::Manager* const manager) override
+    {
+        cocos2d::log("Start Payment transaction (this could be purchasing an item, or restoring one or receive product information!")
+    }
+   
+    void onTransactionEnd(avalon::payment::Manager* const manager) override
+    {
+        cocos2d::log("Transaction end!")
+    }
+}
+```
+
+4. To start buying an item you can use the following code:
+
+```cpp
+avalon::payment::Loader::globalManager->getProduct("unlockAll")->purchase();
+```
+
+5. To restore purchases use:
+
+```cpp
+avalon::payment::Loader::globalManager->restorePurchases();
+```
+
+6.  To check if a product has been purchased you can do:
+
+```cpp
+if (avalon::payment::Loader::globalManager->getProduct("unlockAll")->hasBeenPurchased()) {
+    doSomethingLikeUnlockLockedContent();
+}
+```
+
+The Product class also has some members like localizedPrice, localizedName and localizedDescription you can use to get information about the in app item.
