@@ -1,0 +1,12 @@
+# ClippingNodeRect
+
+With this simple class you can clip Child-Nodes to a rectangle area.
+
+It's as simple as that:
+
+```cpp
+    auto clipNode = avalon::graphics::ClippingNodeRect::create();
+    clipNode->setContentSize({200, 300});
+    clipNode->addChild(myLayerToClip);
+    addChild(clipNode);
+```
