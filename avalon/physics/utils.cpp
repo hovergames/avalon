@@ -7,7 +7,7 @@ namespace {
 
 std::shared_ptr<b2PolygonShape> initRectangleShape(float width, float height, float pixelsInMeter)
 {
-    auto shape = make_shared<b2PolygonShape>();
+    auto shape = std::make_shared<b2PolygonShape>();
     shape->SetAsBox((width / pixelsInMeter) * 0.5f, (height / pixelsInMeter) * 0.5f);
     return shape;
 }
@@ -22,7 +22,7 @@ std::shared_ptr<b2ChainShape> initChainShape(const std::list<cocos2d::Point>& po
     vecs.reserve(points.size());
     std::transform(points.begin(), points.end(), vecs.begin(), convert);
 
-    auto shape = make_shared<b2ChainShape>();
+    auto shape = std::make_shared<b2ChainShape>();
     if (loop) {
         shape->CreateLoop(&vecs[0], points.size());
     } else {
@@ -36,7 +36,7 @@ std::shared_ptr<b2EdgeShape> initEdgeShape(cocos2d::Point p1, cocos2d::Point p2,
 {
     p1 = p1 / pixelsInMeter;
     p2 = p2 / pixelsInMeter;
-    auto shape = make_shared<b2EdgeShape>();
+    auto shape = std::make_shared<b2EdgeShape>();
     shape->Set({p1.x, p1.y}, {p2.x, p2.y});
     return shape;
 }
