@@ -30,20 +30,19 @@ void AnimationManager::addAnimation(int animationId, const std::list<std::string
     }
 
     auto cache = SpriteFrameCache::getInstance();
-    auto frames = Array::createWithCapacity(frameNames.size());
 
+    Vector<SpriteFrame*> frames;
     for (auto& name : frameNames) {
         auto frame = cache->getSpriteFrameByName(name.c_str());
         if (!frame) {
             continue;
         }
-        frames->addObject(frame);
+        frames.pushBack(frame);
     }
 
     auto animation = Animate::create(Animation::createWithSpriteFrames(frames, speed));
     animation->setTag(actionTagId);
     animation->retain();
-
     if (!retainedSprites.count(&target)) {
         retainedSprites.insert(&target);
         target.retain();
