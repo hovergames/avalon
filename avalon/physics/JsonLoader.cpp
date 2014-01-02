@@ -125,7 +125,7 @@ void JsonLoader::moveAllBy(const b2Vec2& delta)
         throw new std::runtime_error("Nothing loaded yet");
     }
     
-    vector<b2Body*> bodies;
+    std::vector<b2Body*> bodies;
     getJson()->getAllBodies(bodies);
 
     for (auto& body : bodies) {
