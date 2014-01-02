@@ -14,8 +14,7 @@ void localize(const cocos2d::Node& node)
     using namespace avalon::utils::labellocalizer;
     using namespace avalon::i18n;
 
-    Object *object;
-    CCARRAY_FOREACH(node.getChildren(), object) {
+    for (auto& object : node.getChildren()) {
         auto ttfLabel = dynamic_cast<LabelTTF*>(object);
         if (ttfLabel ) {
             auto label = ttfLabel->getString();
