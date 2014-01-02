@@ -33,14 +33,18 @@ void Body::sync(cocos2d::Node* node)
     parent = node->getParent();
 
     // -- Base Transform
-    auto b = box2dContainer.getNodeToWorldTransform();
-    auto baseScaleX = sqrt(b.a * b.a + b.c * b.c);
-    auto baseScaleY = sqrt(b.b * b.b + b.d * b.d);
-    auto baseRotation = atan2(b.b, b.a);
+    auto transform = box2dContainer.getNodeToWorldTransform();
+    auto b_a = transform.mat[0];
+    auto b_b = transform.mat[1];
+    auto b_c = transform.mat[4];
+    auto b_d = transform.mat[5];
+
+    auto baseScaleX = sqrt(b_a * b_a + b_c * b_c);
+    auto baseScaleY = sqrt(b_b * b_b + b_d * b_d);
+    auto baseRotation = atan2(b_b, b_a);
 
     if (baseScaleX == 0) baseScaleX = 1;
     if (baseScaleY == 0) baseScaleY = 1;
-
 
     // -- Optional parent transform
     float parentScaleX = 0;
@@ -48,10 +52,15 @@ void Body::sync(cocos2d::Node* node)
     float parentRotation = 0;
 
     if (parent) {
-        auto p = parent->getNodeToWorldTransform();
-        parentScaleX = sqrt(p.a * p.a + p.c * p.c);
-        parentScaleY = sqrt(p.b * p.b + p.d * p.d);
-        parentRotation = atan2(p.b, p.a);
+        auto transform = parent->getNodeToWorldTransform();
+        auto p_a = transform.mat[0];
+        auto p_b = transform.mat[1];
+        auto p_c = transform.mat[4];
+        auto p_d = transform.mat[5];
+
+        parentScaleX = sqrt(p_a * p_a + p_c * p_c);
+        parentScaleY = sqrt(p_b * p_b + p_d * p_d);
+        parentRotation = atan2(p_b, p_a);
 
         if (parentScaleX == 0) parentScaleX = 1;
         if (parentScaleY == 0) parentScaleY = 1;
