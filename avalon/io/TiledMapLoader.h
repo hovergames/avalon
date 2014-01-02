@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include <boost/any.hpp>
+#include "avalon/io/CCBLoader.h"
 
 namespace avalon { namespace physics { class Box2dContainer; } }
 
@@ -12,7 +13,7 @@ namespace io {
 class TiledMapLoader
 {
 public:
-    using Dictionary = std::map<std::string, boost::any>;
+    using Dictionary = ccbloader::Dictionary;
     struct Configuration
     {
         const Dictionary& settings;
@@ -34,8 +35,6 @@ private:
     avalon::physics::Box2dContainer* box2dContainer = nullptr;
     const std::string mapFileName;
 
-    boost::any convertToFloat(boost::any& value);
-    std::list<cocos2d::Point> convertToPointList(const boost::any& original);
     bool isFiltered(const std::string& name, const std::list<std::string>& filter = {});
     void loadGidFactories(cocos2d::TMXTiledMap& map);
     void loadNamedFactories(cocos2d::TMXTiledMap& map);

@@ -22,10 +22,10 @@ private:
     void syncBody();
     void resetBodyImpl(Box2dContainer& box2dContainer, b2Body& body);
     void createBody(Box2dContainer& box2dContainer);
-    void createBody(Box2dContainer& box2dContainer, const std::map<std::string, boost::any>& settings);
+    void createBody(Box2dContainer& box2dContainer, const cocos2d::ValueMap& settings);
     void addPESShapeFixture(const std::string& file, const std::string& shape);
     void addTextureShapeFixture();
-    void loadConfigurationSettings(const std::map<std::string, boost::any>& settings);
+    void loadConfigurationSettings(const cocos2d::ValueMap& settings);
     
     CREATE_FUNC(Sprite);
 

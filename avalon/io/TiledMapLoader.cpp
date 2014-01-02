@@ -45,42 +45,9 @@ cocos2d::TMXTiledMap* TiledMapLoader::load()
     return map;
 }
 
-std::list<cocos2d::Point> TiledMapLoader::convertToPointList(const boost::any& original)
-{
-    using AnyList = std::list<boost::any>;
-    using AnyMap = std::map<std::string, boost::any>;
-
-    std::list<cocos2d::Point> result;
-    auto list = boost::any_cast<AnyList>(original);
-
-    for (auto& record : list) {
-        auto values = boost::any_cast<AnyMap>(record);
-        auto x = std::stof(boost::any_cast<std::string>(values["x"]));
-        auto y = std::stof(boost::any_cast<std::string>(values["y"]));
-        result.push_back(Point(x, y));
-    }
-
-    return result;
-}
-
-boost::any TiledMapLoader::convertToFloat(boost::any& value)
-{
-    if (value.type() == typeid(float)) {
-        return value;
-    } else {
-        auto valueString = boost::any_cast<std::string>(value);
-        if (valueString.empty()) {
-            return boost::any(0.0f);
-        } else {
-            auto valueFloat = std::stof(valueString);
-            return boost::any(valueFloat);
-        }
-    }
-}
-
 void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
 {
-    for (auto& child : *map.getChildren()) {
+    for (auto& child : map.getChildren()) {
         auto mapLayer = dynamic_cast<TMXLayer*>(child);
         if (!mapLayer) {
             continue;
@@ -95,6 +62,7 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
                 }
 
                 auto info = map.getPropertiesForGID(currentGID);
+                /*
                 auto data = avalon::utils::conversion::toMap<std::string>(*info);
 
                 if (!data.count("gid")) data["gid"] = currentGID;
@@ -107,6 +75,7 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
                 for (auto& callback : gidFactories.at(currentGID)) {
                     callback(config);
                 }
+                 */
             }
         }
     }
@@ -114,34 +83,27 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
 
 void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
 {
-    for (auto& arrayElement : *map.getObjectGroups()) {
+    for (auto& arrayElement : map.getObjectGroups()) {
         auto objectGroup = dynamic_cast<TMXObjectGroup*>(arrayElement);
         if (!objectGroup) {
             continue;
         }
 
-        for (auto& arrayElement : *objectGroup->getObjects()) {
-            auto objectDictonary = dynamic_cast<cocos2d::Dictionary*>(arrayElement);
-            if (!objectDictonary) {
+        for (auto& value : objectGroup->getObjects()) {
+            auto valueVector = value.asValueVector();
+            if (valueVector.empty())
                 continue;
-            }
 
-            auto data = avalon::utils::conversion::toMap<std::string>(*objectDictonary);
+            auto data = value.asValueMap();
+
             if (!data.count("name")) {
                 continue;
             }
 
-            auto name = boost::any_cast<std::string>(data["name"]);
+            auto name = data["name"].asString();
             if (!nameFactories.count(name)) {
                 continue;
             }
-
-            if (data.count("x")) data["x"] = convertToFloat(data["x"]);
-            if (data.count("y")) data["y"] = convertToFloat(data["y"]);
-            if (data.count("width")) data["width"] = convertToFloat(data["width"]);
-            if (data.count("height")) data["height"] = convertToFloat(data["height"]);
-            if (data.count("points")) data["points"] = convertToPointList(data["points"]);
-            if (data.count("polylinePoints")) data["polylinePoints"] = convertToPointList(data["polylinePoints"]);
 
             Configuration config{data, objectGroup->getGroupName(), map, box2dContainer};
             for (auto& callback : nameFactories.at(name)) {
