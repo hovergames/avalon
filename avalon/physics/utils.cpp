@@ -12,10 +12,10 @@ std::shared_ptr<b2PolygonShape> initRectangleShape(float width, float height, fl
     return shape;
 }
 
-std::shared_ptr<b2ChainShape> initChainShape(const std::list<cocos2d::Point>& points, float pixelsInMeter, bool loop = false)
+std::shared_ptr<b2ChainShape> initChainShape(const cocos2d::ValueVector& points, float pixelsInMeter, bool loop = false)
 {
-    auto convert = [&pixelsInMeter](const cocos2d::Point& p) -> b2Vec2 {
-        return {p.x / pixelsInMeter, (p.y / pixelsInMeter) * -1};
+    auto convert = [&pixelsInMeter](const cocos2d::Value& value) -> b2Vec2 {
+        return {value.asValueMap().at("x").asFloat() / pixelsInMeter, (value.asValueMap().at("y").asFloat() / pixelsInMeter) * -1};
     };
 
     std::vector<b2Vec2> vecs;
@@ -41,10 +41,12 @@ std::shared_ptr<b2EdgeShape> initEdgeShape(cocos2d::Point p1, cocos2d::Point p2,
     return shape;
 }
 
-std::shared_ptr<b2Shape> initShapeFromPoints(const std::list<cocos2d::Point>& points, float pixelsInMeter, bool loop = false)
+std::shared_ptr<b2Shape> initShapeFromPoints(const cocos2d::ValueVector& points, float pixelsInMeter, bool loop = false)
 {
     if (points.size() == 2) {
-        return initEdgeShape(points.front(), points.back(), pixelsInMeter);
+        cocos2d::Point p1 {points.front().asValueMap().at("x").asFloat(), points.front().asValueMap().at("y").asFloat()};
+        cocos2d::Point p2 {points.back().asValueMap().at("x").asFloat(), points.back().asValueMap().at("y").asFloat()};
+        return initEdgeShape(p1, p2, pixelsInMeter);
     } else {
         return initChainShape(points, pixelsInMeter, loop);
     }
@@ -68,31 +70,32 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
 {
     return [filterCategory, isSensor](const avalon::io::TiledMapLoader::Configuration& config)
     {
-        const float x = boost::any_cast<float>(config.settings.at("x"));
-        const float y = boost::any_cast<float>(config.settings.at("y"));
-        const float width = boost::any_cast<float>(config.settings.at("width"));
-        const float height = boost::any_cast<float>(config.settings.at("height"));
+        const float x = config.settings.at("x").asFloat();
+        const float y = config.settings.at("y").asFloat();
+        const float width = config.settings.at("width").asFloat();
+        const float height = config.settings.at("height").asFloat();
         const float pixelsInMeter = config.box2dContainer->pixelsInMeter;
-        const auto pos = config.box2dContainer->convertToBox2d({x, y});
+        const auto pos = config.box2dContainer->convertToBox2d({x + width * 0.5, y + height * 0.5});
 
         auto fixtureDef = config.box2dContainer->defaultFixtureDef;
         fixtureDef.isSensor = isSensor;
         fixtureDef.filter.categoryBits = filterCategory;
 
         std::string bodytype = "static";
-        if (config.settings.count("friction"))    fixtureDef.friction = boost::any_cast<float>(config.settings.at("friction"));
-        if (config.settings.count("density"))     fixtureDef.density = boost::any_cast<float>(config.settings.at("density"));
-        if (config.settings.count("restitution")) fixtureDef.restitution = boost::any_cast<float>(config.settings.at("restitution"));
-        if (config.settings.count("bodytype"))    bodytype = boost::any_cast<std::string>(config.settings.at("bodytype"));
+        if (config.settings.count("friction"))    fixtureDef.friction = config.settings.at("friction").asFloat();
+        if (config.settings.count("density"))     fixtureDef.density = config.settings.at("density").asFloat();
+        if (config.settings.count("restitution")) fixtureDef.restitution = config.settings.at("restitution").asFloat();
+        if (config.settings.count("bodytype"))    bodytype = config.settings.at("bodytype").asString();
 
         std::shared_ptr<b2Shape> shape;
         if (config.settings.count("polylinePoints")) {
-            auto points = boost::any_cast<std::list<cocos2d::Point>>(config.settings.at("polylinePoints"));
+            auto points = config.settings.at("polylinePoints").asValueVector();
             shape = initShapeFromPoints(points, pixelsInMeter);
         } else if (config.settings.count("points") > 0) {
-            auto points = boost::any_cast<std::list<cocos2d::Point>>(config.settings.at("points"));
+            auto points = config.settings.at("points").asValueVector();
             shape = initShapeFromPoints(points, pixelsInMeter, true);
         } else {
+            cocos2d::log("%f,%f,%f,%f",x,y,width,height);
             shape = initRectangleShape(width, height, pixelsInMeter);
         }
         fixtureDef.shape = shape.get();
