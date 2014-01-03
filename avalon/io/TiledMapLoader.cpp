@@ -52,30 +52,26 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
         if (!mapLayer) {
             continue;
         }
-
         for (int x = 0; x < map.getMapSize().width; ++x) {
             for (int y = 0; y < map.getMapSize().height; ++y) {
 
                 auto currentGID = mapLayer->getTileGIDAt({x, y});
+
                 if (!gidFactories.count(currentGID)) {
                     continue;
                 }
 
                 auto info = map.getPropertiesForGID(currentGID);
-                /*
-                auto data = avalon::utils::conversion::toMap<std::string>(*info);
+                auto data = info.asValueMap();
 
-                if (!data.count("gid")) data["gid"] = currentGID;
-                if (!data.count("x")) data["x"] = static_cast<float>(x);
-                if (!data.count("y")) data["y"] = static_cast<float>(y);
-                data["x"] = convertToFloat(data["x"]);
-                data["y"] = convertToFloat(data["y"]);
+                if (!data.count("gid")) data["gid"] = cocos2d::Value(currentGID);
+                if (!data.count("x")) data["x"] = cocos2d::Value(static_cast<float>(x));
+                if (!data.count("y")) data["y"] = cocos2d::Value(static_cast<float>(y));
 
                 Configuration config{data, mapLayer->getLayerName(), map, box2dContainer};
                 for (auto& callback : gidFactories.at(currentGID)) {
                     callback(config);
                 }
-                 */
             }
         }
     }
@@ -90,22 +86,20 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
         }
 
         for (auto& value : objectGroup->getObjects()) {
-            auto valueVector = value.asValueVector();
-            if (valueVector.empty())
+            auto valueMap = value.asValueMap();
+            if (valueMap.empty())
                 continue;
 
-            auto data = value.asValueMap();
-
-            if (!data.count("name")) {
+            if (!valueMap.count("name")) {
                 continue;
             }
 
-            auto name = data["name"].asString();
+            auto name = valueMap["name"].asString();
             if (!nameFactories.count(name)) {
                 continue;
             }
 
-            Configuration config{data, objectGroup->getGroupName(), map, box2dContainer};
+            Configuration config{valueMap, objectGroup->getGroupName(), map, box2dContainer};
             for (auto& callback : nameFactories.at(name)) {
                 callback(config);
             }
