@@ -13,10 +13,9 @@ namespace io {
 class TiledMapLoader
 {
 public:
-    using Dictionary = ccbloader::Dictionary;
     struct Configuration
     {
-        const Dictionary& settings;
+        const cocos2d::ValueMap& settings;
         const std::string& layer;
         cocos2d::TMXTiledMap& map;
         avalon::physics::Box2dContainer* box2dContainer;

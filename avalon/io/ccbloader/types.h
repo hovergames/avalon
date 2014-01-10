@@ -12,10 +12,9 @@ namespace avalon {
 namespace io {
 namespace ccbloader {
 
-using Dictionary = cocos2d::ValueMap;
 struct Configuration
 {
-    const Dictionary& settings;
+    const cocos2d::ValueMap& settings;
     cocosbuilder::CCBAnimationManager& animationManager;
     avalon::physics::Box2dContainer* box2dContainer;
 };

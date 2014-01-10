@@ -16,7 +16,6 @@ class CCBLoader
 , public cocos2d::Object
 {
 public:
-    using Dictionary = ccbloader::Dictionary;
     using Configuration = ccbloader::Configuration;
 
 private:

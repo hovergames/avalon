@@ -15,7 +15,7 @@ template<typename T, typename L>
 class GenericLoader : public L, public GenericLoaderInterface
 {
 protected:
-    std::unordered_map<T*, Dictionary> nodeSettings;
+    std::unordered_map<T*, cocos2d::ValueMap> nodeSettings;
 
     T* getTarget(cocos2d::Node* node)
     {
