@@ -1,7 +1,6 @@
 #include "TiledMapLoader.h"
 
 #include "cocos2d.h"
-#include <avalon/utils/conversion.h>
 
 using namespace cocos2d;
 
