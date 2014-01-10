@@ -32,7 +32,7 @@ private:
     cocosbuilder::CCBAnimationManager** managerReceiver = nullptr;
 
 public:
-    explicit CCBLoader(const std::string& ccbFileName, cocos2d::Node& owner);
+    CCBLoader(const std::string& ccbFileName, cocos2d::Node& owner);
     cocos2d::Node* load();
     void setBox2dContainer(avalon::physics::Box2dContainer& container);
     void assignAnimationManager(cocosbuilder::CCBAnimationManager** manager);
