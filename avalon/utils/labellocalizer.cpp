@@ -1,4 +1,5 @@
-#include "labellocalizer.h"
+#include <avalon/utils/labellocalizer.h>
+
 #include <boost/algorithm/string.hpp>
 #include <avalon/i18n/Localization.h>
 #include <avalon/i18n/LanguageKey.h>
@@ -16,7 +17,7 @@ void localize(const cocos2d::Node& node)
 
     for (auto& object : node.getChildren()) {
         auto ttfLabel = dynamic_cast<LabelTTF*>(object);
-        if (ttfLabel ) {
+        if (ttfLabel) {
             auto label = ttfLabel->getString();
             vector<string> elements;
             boost::split(elements, label, boost::is_any_of("/"));
@@ -26,8 +27,9 @@ void localize(const cocos2d::Node& node)
         }
 
         auto subNode = dynamic_cast<Node*>(object);
-        if (subNode)
+        if (subNode) {
             localize(*subNode);
+        }
     }
 }
 
