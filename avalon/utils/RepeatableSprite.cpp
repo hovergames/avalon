@@ -95,7 +95,8 @@ void RepeatableSprite::initTextureRectAndPosition()
     setAnchorPoint({0, 0});
     setPosition({0, 0});
 
-    auto size = cocos2d::EGLView::getInstance()->getDesignResolutionSize();
+    auto glView = cocos2d::Director::getInstance()->getOpenGLView();
+    auto size = glView->getDesignResolutionSize();
     setTextureRect({0, 0, size.width, size.height});
 
     auto tex = getTexture();

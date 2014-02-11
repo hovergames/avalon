@@ -154,8 +154,9 @@ void DynamicLight::draw()
 
 void DynamicLight::debugDraw()
 {
-    auto width = EGLView::getInstance()->getDesignResolutionSize().width;
-    auto height = EGLView::getInstance()->getDesignResolutionSize().height;
+    auto glView = Director::getInstance()->getOpenGLView();
+    auto width = glView->getDesignResolutionSize().width;
+    auto height = glView->getDesignResolutionSize().height;
 
     auto occlusionX = width - lightSize / 2 - getPositionX();
     auto occlusionY = height - lightSize / 2 - getPositionY();
