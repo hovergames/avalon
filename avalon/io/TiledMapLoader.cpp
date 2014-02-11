@@ -46,26 +46,28 @@ cocos2d::TMXTiledMap* TiledMapLoader::load()
 
 void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
 {
+    Value* info = nullptr;
+
     for (auto& child : map.getChildren()) {
         auto mapLayer = dynamic_cast<TMXLayer*>(child);
         if (!mapLayer) {
             continue;
         }
+
         for (int x = 0; x < map.getMapSize().width; ++x) {
             for (int y = 0; y < map.getMapSize().height; ++y) {
 
                 auto currentGID = mapLayer->getTileGIDAt({x, y});
-
                 if (!gidFactories.count(currentGID)) {
                     continue;
                 }
 
-                auto info = map.getPropertiesForGID(currentGID);
-                auto data = info.asValueMap();
+                map.getPropertiesForGID(currentGID, &info);
+                auto data = info->asValueMap();
 
-                if (!data.count("gid")) data["gid"] = cocos2d::Value(currentGID);
-                if (!data.count("x")) data["x"] = cocos2d::Value(static_cast<float>(x));
-                if (!data.count("y")) data["y"] = cocos2d::Value(static_cast<float>(y));
+                if (!data.count("gid")) data["gid"] = Value(static_cast<int>(currentGID));
+                if (!data.count("x")) data["x"] = Value(static_cast<float>(x));
+                if (!data.count("y")) data["y"] = Value(static_cast<float>(y));
 
                 Configuration config{data, mapLayer->getLayerName(), map, box2dContainer};
                 for (auto& callback : gidFactories.at(currentGID)) {
