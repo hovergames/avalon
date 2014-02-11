@@ -1,5 +1,4 @@
 #include "ClippingNodeRect.h"
-#include "cocos2d.h"
 
 namespace avalon {
 namespace graphics {
