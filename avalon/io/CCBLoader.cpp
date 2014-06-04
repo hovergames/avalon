@@ -68,7 +68,7 @@ void CCBLoader::ensureAssignedObjects()
     }
 }
 
-bool CCBLoader::onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node)
+bool CCBLoader::onAssignCCBMemberVariable(cocos2d::Ref* target, const char* memberVariableName, cocos2d::Node* node)
 {
     for (auto& pair : nameAssigner) {
         if (pair.first == memberVariableName) {

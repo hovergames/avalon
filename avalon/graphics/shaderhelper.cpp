@@ -20,13 +20,13 @@ using namespace cocos2d;
 
 GLProgram* loadShader(const GLchar* vertexShader, const GLchar* fragmentShader)
 {
-    auto shader = ShaderCache::getInstance()->getProgram(fragmentShader);
+    auto shader = ShaderCache::getInstance()->getGLProgram(fragmentShader);
     if (!shader) {
         shader = new GLProgram();
-        shader->initWithVertexShaderByteArray(vertexShader, fragmentShader);
-        shader->addAttribute(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_POSITION);
-        shader->addAttribute(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
-        shader->addAttribute(GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTRIB_COLOR);
+        shader->initWithByteArrays(vertexShader, fragmentShader);
+        shader->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_POSITION, GLProgram::VERTEX_ATTRIB_POSITION);
+        shader->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_TEX_COORD, GLProgram::VERTEX_ATTRIB_TEX_COORDS);
+        shader->bindAttribLocation(GLProgram::ATTRIBUTE_NAME_COLOR, GLProgram::VERTEX_ATTRIB_COLOR);
         shader->link();
         shader->updateUniforms();
         shader->use();
@@ -47,7 +47,7 @@ GLProgram* getGrassShader()
 
 GLProgram* getDefaultShader()
 {
-    return ShaderCache::getInstance()->getProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE);
+    return ShaderCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE);
 }
 
 } // namespace physics

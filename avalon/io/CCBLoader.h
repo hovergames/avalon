@@ -13,14 +13,14 @@ namespace io {
 
 class CCBLoader
 : public cocosbuilder::CCBMemberVariableAssigner
-, public cocos2d::Object
+, public cocos2d::Ref
 {
 public:
     using Configuration = ccbloader::Configuration;
 
 private:
     cocos2d::Node& owner;
-    using Assigner = std::function<void(cocos2d::Object*)>;
+    using Assigner = std::function<void(cocos2d::Ref*)>;
     using AssignerList = std::list<Assigner>;
 
     std::unordered_map<std::string, AssignerList> nameAssigner;
@@ -38,12 +38,12 @@ public:
     void assignAnimationManager(cocosbuilder::CCBAnimationManager** manager);
     void ensureAssignedObjects();
 
-    virtual bool onAssignCCBMemberVariable(cocos2d::Object* target, const char* memberVariableName, cocos2d::Node* node) override;
+    virtual bool onAssignCCBMemberVariable(cocos2d::Ref* target, const char* memberVariableName, cocos2d::Node* node) override;
 
     template<typename T>
     void assignObject(const std::string& name, T** destination)
     {
-        nameAssigner[name].push_back([destination](cocos2d::Object* object) {
+        nameAssigner[name].push_back([destination](cocos2d::Ref* object) {
             *destination = dynamic_cast<T*>(object);
             if (!*destination) {
                 throw std::invalid_argument("Wrong Object type");
