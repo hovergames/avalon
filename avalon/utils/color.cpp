@@ -43,13 +43,13 @@ cocos2d::extension::HSV toHSV(const cocos2d::Color4F& color)
 cocos2d::Color3B toRGB(const cocos2d::extension::HSV& color)
 {
     auto rgba = ControlUtils::RGBfromHSV(color);
-    return {rgba.r * 255, rgba.g * 255, rgba.b * 255};
+    return {static_cast<GLubyte>(rgba.r * 255), static_cast<GLubyte>(rgba.g * 255), static_cast<GLubyte>(rgba.b * 255)};
 }
 
 cocos2d::Color4F toRGBA(const cocos2d::extension::HSV& color)
 {
     auto rgba = ControlUtils::RGBfromHSV(color);
-    return {rgba.r, rgba.g, rgba.b, rgba.a};
+    return {static_cast<float>(rgba.r), static_cast<float>(rgba.g), static_cast<float>(rgba.b), static_cast<float>(rgba.a)};
 }
 
 } // namespace color

@@ -98,10 +98,10 @@ void DynamicLight::setShadowCasters(Node& casters)
     shadowCasters->retain();
 }
 
-void DynamicLight::updateShadowMap()
+void DynamicLight::updateShadowMap(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated)
 {
     createOcclusionMap();
-    createShadowMap();
+    createShadowMap(renderer, transform, transformUpdated);
 }
 
 void DynamicLight::setPosition(const Point& position)
@@ -119,13 +119,13 @@ void DynamicLight::setPosition(const Point& position)
     }
 }
 
-void DynamicLight::draw()
+void DynamicLight::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated)
 {
     if (!bakedMapIsValid) {
         bakedMapIsValid = true;
 
         updateUniforms();
-        updateShadowMap();
+        updateShadowMap(renderer, transform, transformUpdated);
 
         finalShadowMap->getSprite()->setColor({color.r, color.g, color.b});
         finalShadowMap->getSprite()->setShaderProgram(shadowRenderShader);
@@ -136,7 +136,7 @@ void DynamicLight::draw()
         bakedShadowMap->beginWithClear(0.0, 0.0, 0.0, 0.0);
         finalShadowMap->setAnchorPoint({0.5, 0.5});
         finalShadowMap->setPosition({0, 0});
-        finalShadowMap->visit();
+        finalShadowMap->visit(renderer, transform, transformUpdated);
         bakedShadowMap->end();
         bakedShadowMap->setPosition({0, 0});
 
@@ -145,14 +145,14 @@ void DynamicLight::draw()
         }
     }
 
-    bakedShadowMap->visit();
+    bakedShadowMap->visit(renderer, transform, transformUpdated);
 
     if (debugDrawEnabled) {
-        debugDraw();
+        debugDraw(renderer, transform, transformUpdated);
     }
 }
 
-void DynamicLight::debugDraw()
+void DynamicLight::debugDraw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated)
 {
     auto glView = Director::getInstance()->getOpenGLView();
     auto width = glView->getDesignResolutionSize().width;
@@ -167,12 +167,12 @@ void DynamicLight::debugDraw()
     occlusionMap->getSprite()->setColor(Color3B::RED);
     occlusionMap->setAnchorPoint({0, 0});
     occlusionMap->setPosition({occlusionX, occlusionY});
-    occlusionMap->visit();
+    occlusionMap->visit(renderer, transform, transformUpdated);
     occlusionMap->getSprite()->setColor(Color3B::WHITE);
 
     shadowMap1D->setAnchorPoint({0, 0});
     shadowMap1D->setPosition({shadowX, shadowY});
-    shadowMap1D->visit();
+    shadowMap1D->visit(renderer, transform, transformUpdated);
 }
 
 void DynamicLight::updateUniforms()
@@ -226,14 +226,14 @@ void DynamicLight::createOcclusionMap()
     shadowCasters->setPosition(p2);
 }
 
-void DynamicLight::createShadowMap()
+void DynamicLight::createShadowMap(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated)
 {
     // Build a 1D shadow map from occlude FBO
     occlusionMap->getSprite()->setShaderProgram(shadowMapShader);
     shadowMap1D->beginWithClear(0.0, 0.0, 0.0, 0.0);
     occlusionMap->setAnchorPoint({0.5, 0.5});
-    occlusionMap->setPosition({lightSize / 2.0, lightSize / 2.0});
-    occlusionMap->visit();
+    occlusionMap->setPosition({static_cast<float>(lightSize / 2.0), static_cast<float>(lightSize / 2.0)});
+    occlusionMap->visit(renderer, transform, transformUpdated);
     shadowMap1D->end();
 }
 

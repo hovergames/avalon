@@ -75,7 +75,7 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
         const float width = config.settings.at("width").asFloat();
         const float height = config.settings.at("height").asFloat();
         const float pixelsInMeter = config.box2dContainer->pixelsInMeter;
-        const auto pos = config.box2dContainer->convertToBox2d({x + width * 0.5, y + height * 0.5});
+        const auto pos = config.box2dContainer->convertToBox2d({static_cast<float>(x + width * 0.5), static_cast<float>(y + height * 0.5)});
 
         auto fixtureDef = config.box2dContainer->defaultFixtureDef;
         fixtureDef.isSensor = isSensor;

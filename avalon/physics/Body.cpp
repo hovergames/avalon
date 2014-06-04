@@ -34,10 +34,10 @@ void Body::sync(cocos2d::Node* node)
 
     // -- Base Transform
     auto transform = box2dContainer.getNodeToWorldTransform();
-    auto b_a = transform.mat[0];
-    auto b_b = transform.mat[1];
-    auto b_c = transform.mat[4];
-    auto b_d = transform.mat[5];
+    auto b_a = transform.m[0];
+    auto b_b = transform.m[1];
+    auto b_c = transform.m[4];
+    auto b_d = transform.m[5];
 
     auto baseScaleX = sqrt(b_a * b_a + b_c * b_c);
     auto baseScaleY = sqrt(b_b * b_b + b_d * b_d);
@@ -53,10 +53,10 @@ void Body::sync(cocos2d::Node* node)
 
     if (parent) {
         auto transform = parent->getNodeToWorldTransform();
-        auto p_a = transform.mat[0];
-        auto p_b = transform.mat[1];
-        auto p_c = transform.mat[4];
-        auto p_d = transform.mat[5];
+        auto p_a = transform.m[0];
+        auto p_b = transform.m[1];
+        auto p_c = transform.m[4];
+        auto p_d = transform.m[5];
 
         parentScaleX = sqrt(p_a * p_a + p_c * p_c);
         parentScaleY = sqrt(p_b * p_b + p_d * p_d);

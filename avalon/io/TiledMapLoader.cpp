@@ -57,7 +57,7 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
         for (int x = 0; x < map.getMapSize().width; ++x) {
             for (int y = 0; y < map.getMapSize().height; ++y) {
 
-                auto currentGID = mapLayer->getTileGIDAt({x, y});
+                auto currentGID = mapLayer->getTileGIDAt({static_cast<float>(x), static_cast<float>(y)});
                 if (!gidFactories.count(currentGID)) {
                     continue;
                 }

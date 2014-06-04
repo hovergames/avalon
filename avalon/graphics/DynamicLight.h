@@ -33,8 +33,8 @@ private:
     void initBakedShadowMap();
     void updateUniforms();
     void createOcclusionMap();
-    void createShadowMap();
-    void updateShadowMap();
+    void createShadowMap(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated);
+    void updateShadowMap(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated);
 
 public:
     int updateFrequency = 0;
@@ -45,8 +45,8 @@ public:
     bool init() override;
     ~DynamicLight();
 
-    void draw() override;
-    void debugDraw();
+    void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated) override;
+    void debugDraw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated);
 
     void setPosition(const cocos2d::Point& position) override;
     void setSoftShadows(bool shadows);

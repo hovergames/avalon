@@ -99,7 +99,7 @@ cocos2d::Sprite& JsonLoader::createStaticSprites(b2dJsonImage& def)
 void JsonLoader::applyCommonSettings(b2dJsonImage& def, cocos2d::Sprite& sprite)
 {
     sprite.setFlippedX(def.flip);
-    sprite.setColor({def.colorTint[0], def.colorTint[1], def.colorTint[2]});
+    sprite.setColor({static_cast<GLubyte>(def.colorTint[0]), static_cast<GLubyte>(def.colorTint[1]), static_cast<GLubyte>(def.colorTint[2])});
     sprite.setOpacity(def.colorTint[3]);
 
     auto size = sprite.getContentSize();

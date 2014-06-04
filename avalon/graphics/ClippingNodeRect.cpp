@@ -3,9 +3,9 @@
 namespace avalon {
 namespace graphics {
 
-void ClippingNodeRect::visit()
+void ClippingNodeRect::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated)
 {
-    kmGLPushMatrix();
+    cocos2d::kmGLPushMatrix();
     glEnable(GL_SCISSOR_TEST);
 
 
@@ -17,7 +17,7 @@ void ClippingNodeRect::visit()
     Node::visit();
 
     glDisable(GL_SCISSOR_TEST);
-    kmGLPopMatrix();
+    cocos2d::kmGLPopMatrix();
 }
 
 } // graphics

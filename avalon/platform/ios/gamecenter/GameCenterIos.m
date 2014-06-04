@@ -67,9 +67,9 @@ static GameCenterIos* instance = nil;
     AppController* appController = (AppController*) [UIApplication sharedApplication].delegate;
 
     GKAchievementViewController* gkController = [[[GKAchievementViewController alloc] init] autorelease];
-    gkController.achievementDelegate = appController->viewController;
+    gkController.achievementDelegate = appController.viewController;
 
-    [appController->viewController presentModalViewController:gkController animated:YES];
+    [appController.viewController presentModalViewController:gkController animated:YES];
     return YES;
 }
 
@@ -120,9 +120,9 @@ static GameCenterIos* instance = nil;
 
     GKLeaderboardViewController* gkController = [[[GKLeaderboardViewController alloc] init] autorelease];
     gkController.timeScope = GKLeaderboardTimeScopeAllTime;
-    gkController.leaderboardDelegate = appController->viewController;
+    gkController.leaderboardDelegate = appController.viewController;
 
-    [appController->viewController presentModalViewController:gkController animated:YES];
+    [appController.viewController presentModalViewController:gkController animated:YES];
     return YES;
 }
 

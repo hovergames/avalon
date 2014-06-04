@@ -24,7 +24,7 @@ public:
   B2DebugDrawLayer(b2World* pB2World, float pPtmRatio);
   static B2DebugDrawLayer* create(b2World* pB2World, float pPtmRatio);
   bool init() override;
-  void draw() override;
+  void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated) override;
 };
 
 #endif // __B2_DEBUG_DRAW_LAYER_H__

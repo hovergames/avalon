@@ -11,7 +11,7 @@ class ClippingNodeRect : public cocos2d::Node
 public:
     CREATE_FUNC(ClippingNodeRect);
     
-    void visit() override;
+    void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated) override;
 };
 
 } // graphics

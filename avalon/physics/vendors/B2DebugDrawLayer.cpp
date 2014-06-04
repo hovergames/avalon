@@ -56,7 +56,7 @@ bool B2DebugDrawLayer::init()
 }
 
 
-void B2DebugDrawLayer::draw()
+void B2DebugDrawLayer::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated)
 {
   GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
   
