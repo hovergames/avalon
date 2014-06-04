@@ -9,4 +9,4 @@
 	url = https://github.com/arashpayan/appirater.git
 [submodule "vendors/b2dJson"]
 	path = vendors/b2dJson
-	url = https://github.com/michaelcontento/b2dJson.git
+	url = https://github.com/JochenHeizmann/b2dJson.git
