@@ -5,7 +5,20 @@ using namespace cocos2d;
 namespace avalon {
 namespace graphics {
 
-cocos2d::Node* SpriteRepeater::createSprite()
+SpriteRepeater::SpriteRepeater()
+{
+    resetToDefaults();
+}
+
+void SpriteRepeater::resetToDefaults()
+{
+    width = height = 0;
+    paddingX = paddingY = -1;
+    flipHorizontal = flipVertical = false;
+    repeatHorizontal = repeatVertical = true;
+}
+
+cocos2d::Node* SpriteRepeater::createSprites()
 {
     auto rootNode = cocos2d::Node::create();
 

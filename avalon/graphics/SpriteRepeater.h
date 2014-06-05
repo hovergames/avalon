@@ -11,19 +11,23 @@ class SpriteRepeater
 public:
     std::string fileName;
 
-    float width = 0;
-    float height = 0;
+    float width;
+    float height;
 
-    float paddingX = -1;
-    float paddingY = -1;
+    float paddingX;
+    float paddingY;
 
-    bool flipHorizontal = false;
-    bool flipVertical = false;
+    bool flipHorizontal;
+    bool flipVertical;
 
-    bool repeatHorizontal = true;
-    bool repeatVertical = true;
+    bool repeatHorizontal;
+    bool repeatVertical;
 
-    cocos2d::Node* createSprite();
+    SpriteRepeater();
+
+    cocos2d::Node* createSprites();
+
+    void resetToDefaults();
 };
 
 } // namespace graphics

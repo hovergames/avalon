@@ -51,5 +51,5 @@ Example:
     bg.repeatVertical = false;      // repeat the sprite vertically
     bg.paddingX = 10;               // horizontal padding between each sprite
     bg.paddingY = 10;               // vertical padding between each sprite
-    auto layer = bg.createSprite(); // create and return a node with the batched sprites
+    auto layer = createSprites(); // create and return a node with the batched sprites
 ```
