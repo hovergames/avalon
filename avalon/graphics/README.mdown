@@ -30,3 +30,23 @@ Example:
     
     parallaxNode->setPosition(x, y);
 ```
+
+# SpriteRepeater
+
+With this class you can easily create a batch of a sprite that is repeated
+horizontally and/or vertically.
+
+Example:
+
+```cpp
+    avalon::graphics::SpriteRepeater bg;
+
+    bg.fileName = "01_clouds.png";  // set the filename of the image / frame
+    bg.width = 10000;               // set the minimum width in pixels
+    bg.height = 512;                // set the minimum height in pixels
+    bg.flipHorizontal = true;       // flip every second sprite horizontally
+    bg.flipVertical = false;        // flip every second sprite vertically
+    bg.repeatHorizontal = true;     // repeat the sprite horizontally
+    bg.repeatVertical = false;      // repeat the sprite vertically
+    auto layer = bg.createSprite(); // create and return a node with the batched sprites
+```
