@@ -91,16 +91,14 @@ void ParallaxContainer::removeAllChildrenWithCleanup(bool cleanup)
 
 void ParallaxContainer::visit(Renderer *renderer, const Mat4 &parentTransform, bool parentTransformUpdated)
 {
-    Vec2 pos = this->getPosition();
-    pos = this->getParent()->convertToWorldSpace(pos);
+    Vec2 pos = parallaxPosition;
 
     if (!pos.equals(_lastPosition)) {
         for( int i=0; i < _parallaxArray->num; i++ ) {
             PointObject *point = (PointObject*)_parallaxArray->arr[i];
             float x = pos.x * point->getRatio().x + point->getOffset().x;
             float y = pos.y * point->getRatio().y + point->getOffset().y;
-            auto childPos = this->convertToNodeSpace({x, y});
-            point->getChild()->setPosition(childPos);
+            point->getChild()->setPosition({x, y});
         }
         _lastPosition = pos;
     }

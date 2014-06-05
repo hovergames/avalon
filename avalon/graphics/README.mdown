@@ -16,8 +16,8 @@ It's as simple as that:
 This class is very similar to cocos2d::ParallaxNode except that it also
 works when parent Nodes are scaled.
 
-One main difference is that the parallax factor is calculated on top
-of the world coordinate not on the relative coordinate.
+The main difference is that you can set the Parallax-Offset and the position
+of the container seperatly.
 
 Example:
 
@@ -25,10 +25,11 @@ Example:
     auto parallaxNode = avalon::graphics::ParallaxContainer::create();
     parallaxNode->addChild(sprite1, 0, {1.0, 1.0}, {0.0, 0.0});
     parallaxNode->addChild(sprite2, 0, {1.2, 1.2}, {-20.0, 230.0});
+    parallaxNode->setPosition(0, 0);    // move container to fix position
 
     [...]
     
-    parallaxNode->setPosition(x, y);
+    parallaxNode->setParallaxPosition(x, y); // only scroll the child-layers
 ```
 
 # SpriteRepeater
