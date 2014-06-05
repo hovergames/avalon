@@ -27,7 +27,7 @@ cocos2d::Node* SpriteRepeater::createSprite()
     for (int x = 0; x <= countX; ++x) {
         for (int y = 0; y <= countY; ++y) {
             node = cocos2d::Sprite::createWithSpriteFrameName(fileName);
-            node->setPosition({x * (textureWidth + paddingX), y * (textureHeight + paddingY)});
+            node->setPosition({x * (textureWidth + paddingX), -y * (textureHeight + paddingY)});
 
             cocos2d::Vec2 anchorPoint(0.0, 0.0);
             if (flipHorizontal && x % 2 == 1) {
