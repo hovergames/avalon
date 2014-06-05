@@ -10,3 +10,23 @@ It's as simple as that:
     clipNode->addChild(myLayerToClip);
     addChild(clipNode);
 ```
+
+# ParallaxContainer
+
+This class is very similar to cocos2d::ParallaxNode except that it also
+works when parent Nodes are scaled.
+
+One main difference is that the parallax factor is calculated on top
+of the world coordinate not on the relative coordinate.
+
+Example:
+
+```cpp
+    auto parallaxNode = avalon::graphics::ParallaxContainer::create();
+    parallaxNode->addChild(sprite1, 0, {1.0, 1.0}, {0.0, 0.0});
+    parallaxNode->addChild(sprite2, 0, {1.2, 1.2}, {-20.0, 230.0});
+
+    [...]
+    
+    parallaxNode->setPosition(x, y);
+```
