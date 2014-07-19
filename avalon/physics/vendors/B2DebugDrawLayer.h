@@ -16,15 +16,15 @@
 
 class B2DebugDrawLayer : public cocos2d::Layer
 {
-  b2World* mB2World;
-  GLESDebugDraw* mB2DebugDraw;
-  const float mPtmRatio;
+    b2World* mB2World;
+    GLESDebugDraw* mB2DebugDraw;
+    const float mPtmRatio;
  
 public:
-  B2DebugDrawLayer(b2World* pB2World, float pPtmRatio);
-  static B2DebugDrawLayer* create(b2World* pB2World, float pPtmRatio);
-  bool init() override;
-  void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated) override;
+    B2DebugDrawLayer(b2World* pB2World, float pPtmRatio);
+    static B2DebugDrawLayer* create(b2World* pB2World, float pPtmRatio);
+    bool init() override;
+    void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags) override;
 };
 
 #endif // __B2_DEBUG_DRAW_LAYER_H__

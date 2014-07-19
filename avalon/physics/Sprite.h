@@ -61,8 +61,8 @@ public:
     // custom create methods
     static Sprite* createWithPESShape(avalon::physics::Box2dContainer& box2dContainer, const std::string& filename, const std::string& pesFile, const std::string& pesShape);
 
-    void onConfiguration(const avalon::io::CCBLoader::Configuration& config);
-    void onConfiguration(const avalon::io::TiledMapLoader::Configuration& config);
+    virtual void onConfiguration(const avalon::io::CCBLoader::Configuration& config);
+    virtual void onConfiguration(const avalon::io::TiledMapLoader::Configuration& config);
 
     virtual void update(float delta) override;
 

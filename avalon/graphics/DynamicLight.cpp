@@ -119,13 +119,13 @@ void DynamicLight::setPosition(const Point& position)
     }
 }
 
-void DynamicLight::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated)
+void DynamicLight::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags)
 {
     if (!bakedMapIsValid) {
         bakedMapIsValid = true;
 
         updateUniforms();
-        updateShadowMap(renderer, transform, transformUpdated);
+        updateShadowMap(renderer, transform, flags);
 
         finalShadowMap->getSprite()->setColor({color.r, color.g, color.b});
         finalShadowMap->getSprite()->setGLProgram(shadowRenderShader);
@@ -136,7 +136,7 @@ void DynamicLight::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transf
         bakedShadowMap->beginWithClear(0.0, 0.0, 0.0, 0.0);
         finalShadowMap->setAnchorPoint({0.5, 0.5});
         finalShadowMap->setPosition({0, 0});
-        finalShadowMap->visit(renderer, transform, transformUpdated);
+        finalShadowMap->visit(renderer, transform, flags);
         bakedShadowMap->end();
         bakedShadowMap->setPosition({0, 0});
 
@@ -145,10 +145,10 @@ void DynamicLight::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transf
         }
     }
 
-    bakedShadowMap->visit(renderer, transform, transformUpdated);
+    bakedShadowMap->visit(renderer, transform, flags);
 
     if (debugDrawEnabled) {
-        debugDraw(renderer, transform, transformUpdated);
+        debugDraw(renderer, transform, flags);
     }
 }
 

@@ -3,7 +3,7 @@
 namespace avalon {
 namespace graphics {
 
-void ClippingNodeRect::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated)
+void ClippingNodeRect::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags)
 {
     cocos2d::kmGLPushMatrix();
     glEnable(GL_SCISSOR_TEST);

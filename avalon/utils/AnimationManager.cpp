@@ -18,7 +18,7 @@ void AnimationManager::addAnimation(int animationId, const std::string& spriteFr
 {
     auto cache = SpriteFrameCache::getInstance();
     cache->addSpriteFramesWithFile(spriteFramesFile.c_str());
-    
+
     addAnimation(animationId, frameNames, target, speed);
 }
 
@@ -41,6 +41,7 @@ void AnimationManager::addAnimation(int animationId, const std::list<std::string
     }
 
     auto animation = Animate::create(Animation::createWithSpriteFrames(frames, speed));
+    ++actionTagId;
     animation->setTag(actionTagId);
     animation->retain();
     if (!retainedSprites.count(&target)) {
@@ -48,8 +49,7 @@ void AnimationManager::addAnimation(int animationId, const std::list<std::string
         target.retain();
         addReleaseOnCleanup(target);
     }
-
-    animations[animationId] = {animation, &target};
+    animations[animationId] = {animation, &target, actionTagId};
 }
 
 void AnimationManager::addReleaseOnCleanup(cocos2d::Sprite& target)
@@ -90,11 +90,12 @@ void AnimationManager::start(int animationId, bool loop)
     }
 
     auto sequence = &animations[animationId];
-    sequence->target->stopActionByTag(actionTagId);
+    sequence->target->stopActionByTag(sequence->actionTagId);
 
+    lastAnimationId = animationId;
     if (loop) {
         auto action = RepeatForever::create(sequence->animation);
-        action->setTag(actionTagId);
+        action->setTag(sequence->actionTagId);
         sequence->target->runAction(action);
     } else {
         sequence->target->runAction(sequence->animation);
@@ -108,7 +109,14 @@ void AnimationManager::stop(int animationId)
     }
 
     auto sequence = &animations[animationId];
-    sequence->target->stopActionByTag(actionTagId);
+    sequence->target->stopActionByTag(sequence->actionTagId);
+}
+
+void AnimationManager::stopAll()
+{
+    for (auto& animation : animations) {
+        stop(animation.first);
+    }
 }
 
 bool AnimationManager::isRunning(int animationId)
@@ -116,9 +124,9 @@ bool AnimationManager::isRunning(int animationId)
     if (!animations.count(animationId)) {
         throw new std::runtime_error("No animation found");
     }
-
+    
     auto sequence = &animations[animationId];
-    return !!sequence->target->getActionByTag(actionTagId);
+    return !!sequence->target->getActionByTag(sequence->actionTagId);
 }
 
 cocos2d::Animate& AnimationManager::getAnimation(int animationId)
@@ -126,8 +134,13 @@ cocos2d::Animate& AnimationManager::getAnimation(int animationId)
     if (!animations.count(animationId)) {
         throw new std::runtime_error("No animation found");
     }
-
+    
     return *animations[animationId].animation;
+}
+
+int AnimationManager::getLastAnimationId()
+{
+    return lastAnimationId;
 }
 
 } // namespace utils

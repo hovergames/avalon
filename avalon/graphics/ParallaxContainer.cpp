@@ -89,7 +89,7 @@ void ParallaxContainer::removeAllChildrenWithCleanup(bool cleanup)
     Node::removeAllChildrenWithCleanup(cleanup);
 }
 
-void ParallaxContainer::visit(Renderer *renderer, const Mat4 &parentTransform, bool parentTransformUpdated)
+void ParallaxContainer::visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags)
 {
     Vec2 pos = parallaxPosition;
 
@@ -102,7 +102,7 @@ void ParallaxContainer::visit(Renderer *renderer, const Mat4 &parentTransform, b
         }
         _lastPosition = pos;
     }
-    Node::visit(renderer, parentTransform, parentTransformUpdated);
+    Node::visit(renderer, parentTransform, parentFlags);
 }
 
 } // namespace graphics

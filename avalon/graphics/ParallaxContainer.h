@@ -18,7 +18,7 @@ public:
     void addChild(Node * child, int zOrder, int tag) override;
     void removeChild(Node* child, bool cleanup) override;
     void removeAllChildrenWithCleanup(bool cleanup) override;
-    void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4 &parentTransform, bool parentTransformUpdated) override;
+    void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) override;
 
     inline void setParallaxX(float x) { parallaxPosition.x = x; }
     inline void setParallaxY(float y) { parallaxPosition.y = y; }

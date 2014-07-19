@@ -45,7 +45,7 @@ public:
     bool init() override;
     ~DynamicLight();
 
-    void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated) override;
+    void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, uint32_t flags) override;
     void debugDraw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &transform, bool transformUpdated);
 
     void setPosition(const cocos2d::Point& position) override;
