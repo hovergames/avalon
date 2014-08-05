@@ -60,9 +60,9 @@ void B2DebugDrawLayer::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4 &tr
 {
   GL::enableVertexAttribs( GL::VERTEX_ATTRIB_FLAG_POSITION );
   
-  kmGLPushMatrix();
+  Director::getInstance()->pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
   
   mB2World->DrawDebugData();
   
-  kmGLPopMatrix();
+  Director::getInstance()->popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);
 }
