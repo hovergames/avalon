@@ -13,7 +13,7 @@ public:
 
     cocos2d::Vec2 parallaxPosition = {0.0, 0.0};
 
-    void addChild(Node * child, int z, const cocos2d::Vec2& parallaxRatio, const cocos2d::Vec2& positionOffset);
+    void addChild(Node * child, int z, const cocos2d::Vec2& parallaxRatio, const cocos2d::Vec2& positionOffset, const cocos2d::Vec2& autoScroll);
 
     void addChild(Node * child, int zOrder, int tag) override;
     void removeChild(Node* child, bool cleanup) override;
