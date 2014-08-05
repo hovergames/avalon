@@ -63,7 +63,11 @@ void TiledMapLoader::loadGidFactories(cocos2d::TMXTiledMap& map)
                 }
 
                 map.getPropertiesForGID(currentGID, &info);
-                auto data = info->asValueMap();
+                ValueMap data;
+
+                if (info) {
+                    data = info->asValueMap();
+                }
 
                 if (!data.count("gid")) data["gid"] = Value(static_cast<int>(currentGID));
                 if (!data.count("x")) data["x"] = Value(static_cast<float>(x));
