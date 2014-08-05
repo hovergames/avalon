@@ -66,6 +66,48 @@ b2BodyType getBodyTypeFromString(const std::string& type)
     else                          throw new std::invalid_argument("Unknown box2d type");
 }
 
+avalon::io::TiledMapLoader::Callback rectLoader(b2Filter filter, bool isSensor, float rectWidth, float rectHeight)
+{
+    return [filter, isSensor, rectWidth, rectHeight](const avalon::io::TiledMapLoader::Configuration& config)
+    {
+        auto rWidth = rectWidth;
+        auto rHeight = rectHeight;
+
+        if (rWidth == 0) rWidth = config.map.getTileSize().width;
+
+        if (rHeight == 0) rHeight = config.map.getTileSize().height;
+
+        auto fixtureDef = config.box2dContainer->defaultFixtureDef;
+
+        fixtureDef.isSensor = isSensor;
+        fixtureDef.filter = filter;
+
+        float x = config.settings.at("x").asFloat();
+        float y = config.settings.at("y").asFloat();
+        const float width = rWidth / config.box2dContainer->pixelsInMeter;
+        const float height = rHeight / config.box2dContainer->pixelsInMeter;
+
+        y = (config.map.getMapSize().height - (y));
+
+        x = (x + 0.5) * config.map.getTileSize().width;
+        y = y * config.map.getTileSize().height - config.map.getTileSize().height / 2.f;
+
+        const auto pos = config.box2dContainer->convertToBox2d({static_cast<float>(x), static_cast<float>(y)});
+
+        std::shared_ptr<b2PolygonShape> polygonShape = std::make_shared<b2PolygonShape>();
+        polygonShape->SetAsBox(width / 2.f, height / 2.f);
+
+        b2BodyDef bodyDef;
+        bodyDef.type = b2_staticBody;
+        bodyDef.position.Set(pos.x, pos.y);
+
+        fixtureDef.shape = polygonShape.get();
+
+        auto body = config.box2dContainer->getWorld().CreateBody(&bodyDef);
+        body->CreateFixture(&fixtureDef);
+    };
+}
+
 avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSensor)
 {
     return [filterCategory, isSensor](const avalon::io::TiledMapLoader::Configuration& config)
@@ -82,10 +124,11 @@ avalon::io::TiledMapLoader::Callback shapeLoader(int filterCategory, bool isSens
         fixtureDef.filter.categoryBits = filterCategory;
 
         std::string bodytype = "static";
-        if (config.settings.count("friction"))    fixtureDef.friction = config.settings.at("friction").asFloat();
-        if (config.settings.count("density"))     fixtureDef.density = config.settings.at("density").asFloat();
-        if (config.settings.count("restitution")) fixtureDef.restitution = config.settings.at("restitution").asFloat();
-        if (config.settings.count("bodytype"))    bodytype = config.settings.at("bodytype").asString();
+        if (config.settings.count("friction"))          fixtureDef.friction = config.settings.at("friction").asFloat();
+        if (config.settings.count("density"))           fixtureDef.density = config.settings.at("density").asFloat();
+        if (config.settings.count("restitution"))       fixtureDef.restitution = config.settings.at("restitution").asFloat();
+        if (config.settings.count("bodytype"))          bodytype = config.settings.at("bodytype").asString();
+        if (config.settings.count("filterCategory"))    fixtureDef.filter.categoryBits = config.settings.at("filterCategory").asInt();
 
         std::shared_ptr<b2Shape> shape;
         if (config.settings.count("polylinePoints")) {
