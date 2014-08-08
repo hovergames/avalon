@@ -22,3 +22,46 @@ addChild(label);
 avalon::utils::labellocalizer::localize(*this);
 
 ```
+
+# AnimationManager
+
+The AnimationManager is an easy way to animate sprites.
+
+Example:
+```c++
+class MySprie : public avalon::physics::Sprite
+{
+public:
+    struct Sequence {
+        enum {
+            WALK,
+            JUMP
+        };
+    };
+
+    avalon::utils::AnimationManager animationManager;
+
+    bool init() override {
+        if (!avalon::physics::Sprite::init()) return false;
+
+        animationManager.addAnimation(Sequence::WALK, {"frame1.png", "frame2.png", "frame3.png"}, *this, 1.0 / 5.0);
+        animationManager.addAnimation(Sequence::JUMP, {"frame4.png", "frame5.png", "frame6.png"}, *this, 1.0 / 5.0);
+
+        // start walk animation and loop it
+        animationManager.start(Sequence::WALK, true);
+    }
+    
+    void jump() {
+        animationManager.stopAll();
+
+        // start jump animation, dont loop it, and execute callback when animation
+        // is finished
+        animationManager.start(Sequence::JUMP, false, [this]() {
+            // do stuff when animation is finished
+        });
+    }
+
+    CREATE_FUNC(Walker);
+};
+```
+
