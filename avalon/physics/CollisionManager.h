@@ -55,6 +55,25 @@ private:
         return true;
     }
 
+    template<typename A>
+    bool lookup(ContactContainer& contact, A** a)
+    {
+        auto& fixtureA = *contact.getContact().GetFixtureA();
+        auto& fixtureB = *contact.getContact().GetFixtureB();
+
+        *a = box2dContainer.getNode<A>(fixtureA, true);
+        contactContainer.iAmInFixtureA = true;
+        if (!*a) {
+            *a = box2dContainer.getNode<A>(fixtureB, true);
+            contactContainer.iAmInFixtureA = false;
+        }
+        if (!*a) {
+            return false;
+        }
+
+        return true;
+    }
+
 public:
     CollisionManagerFallback* fallback = nullptr;
 
@@ -64,6 +83,46 @@ public:
     virtual void EndContact(b2Contact* contact);
     virtual void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
     virtual void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
+
+    template<typename A>
+    void registerClass()
+    {
+        listBeginContact.push_back([this](ContactContainer& contact) {
+            A* a = nullptr;
+            if (lookup(contact, &a)) {
+                a->onBeginContact(contact);
+                return true;
+            }
+            return false;
+        });
+
+        listEndContact.push_back([this](ContactContainer& contact) {
+            A* a = nullptr;
+            if (lookup(contact, &a)) {
+                a->onEndContact(contact);
+                return true;
+            }
+            return false;
+        });
+
+        listPreSolve.push_back([this](ContactContainer& contact, const b2Manifold& oldManifold) {
+            A* a = nullptr;
+            if (lookup(contact, &a)) {
+                a->onPreSolve(contact, oldManifold);
+                return true;
+            }
+            return false;
+        });
+
+        listPostSolve.push_back([this](ContactContainer& contact, const b2ContactImpulse& impulse) {
+            A* a = nullptr;
+            if (lookup(contact, &a)) {
+                a->onPostSolve(contact, impulse);
+                return true;
+            }
+            return false;
+        });
+    }
 
     template<typename A, typename B>
     void registerPair()
