@@ -83,7 +83,7 @@ void AnimationManager::addReleaseOnCleanup(cocos2d::Sprite& target)
     });
 }
 
-void AnimationManager::start(int animationId, bool loop)
+void AnimationManager::start(int animationId, bool loop, Callback callback)
 {
     if (!animations.count(animationId)) {
         throw new std::runtime_error("No animation found");
@@ -98,7 +98,12 @@ void AnimationManager::start(int animationId, bool loop)
         action->setTag(sequence->actionTagId);
         sequence->target->runAction(action);
     } else {
-        sequence->target->runAction(sequence->animation);
+        if (callback) {
+            auto callbackAction = cocos2d::CallFunc::create(callback);
+            sequence->target->runAction(cocos2d::Sequence::createWithTwoActions(sequence->animation, callbackAction));
+        } else {
+            sequence->target->runAction(sequence->animation);
+        }
     }
 }
 
@@ -126,6 +131,7 @@ bool AnimationManager::isRunning(int animationId)
     }
     
     auto sequence = &animations[animationId];
+
     return !!sequence->target->getActionByTag(sequence->actionTagId);
 }
 

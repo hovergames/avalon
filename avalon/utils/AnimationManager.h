@@ -10,6 +10,8 @@ namespace utils {
 class AnimationManager
 {
 private:
+    typedef std::function<void()> Callback;
+
     struct AnimationSequence
     {
         cocos2d::Animate* animation;
@@ -33,7 +35,7 @@ public:
     void addAnimation(int animationId, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed = 1.0);
     void addAnimation(int animationId, const std::string& spriteFramesFile, const std::list<std::string>& frameNames, cocos2d::Sprite& target, float speed = 1.0);
 
-    void start(int animationId, bool loop = false);
+    void start(int animationId, bool loop = false, Callback callback = nullptr);
     void stop(int animationId);
     void stopAll();
     bool isRunning(int animationId);
