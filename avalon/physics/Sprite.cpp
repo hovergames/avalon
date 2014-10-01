@@ -219,9 +219,19 @@ void Sprite::createBody(Box2dContainer& box2dContainer, const cocos2d::ValueMap&
 
 void Sprite::addPESShapeFixture(const std::string& file, const std::string& shape)
 {
-    auto cache = cocos2d::GB2ShapeCache::sharedGB2ShapeCache();
+    auto cache = gbox2d::GB2ShapeCache::getInstance();
     cache->addShapesWithFile(file);
     cache->addFixturesToBody(&getBody(), shape);
+}
+
+void Sprite::destroyAllFixtures()
+{
+    auto fixture = getBody().GetFixtureList();
+    while (fixture) {
+        auto next = fixture->GetNext();
+        getBody().DestroyFixture(fixture);
+        fixture = next;
+    }
 }
 
 void Sprite::addTextureShapeFixture()

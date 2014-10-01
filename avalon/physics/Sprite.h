@@ -34,6 +34,7 @@ public:
 
     void createBody(Box2dContainer& box2dContainer);
     void addPESShapeFixture(const std::string& file, const std::string& shape);
+    void destroyAllFixtures();
 
     // delete "inherited" create methods
     static Sprite* create(const std::string& filename) = delete;
@@ -83,8 +84,8 @@ public:
     virtual void setScaleY(float scaleY) override                      { bodyImpl->setScaleY(scaleY); }
     virtual void setScale(float scaleX, float scaleY) override         { bodyImpl->setScale(scaleX, scaleY); }
     virtual void setScale(float scale) override                        { bodyImpl->setScale(scale); }
-    virtual void setPosition(const cocos2d::Point& pos) override       { bodyImpl->setPosition(pos); }
-    virtual void setPosition(float x, float y) override                { bodyImpl->setPosition(x, y); }
+    virtual void setPosition(const cocos2d::Point& pos) override       { cocos2d::Sprite::setPosition(pos); bodyImpl->setPosition(pos); }
+    virtual void setPosition(float x, float y) override                { cocos2d::Sprite::setPosition(x, y); bodyImpl->setPosition(x, y); }
     virtual void setRotation(float rotation) override                  { bodyImpl->setRotation(rotation); }
     virtual void setRotationX(float rotationX) override                { bodyImpl->setRotationX(rotationX); }
     virtual void setRotationY(float rotationY) override                { bodyImpl->setRotationY(rotationY); }
