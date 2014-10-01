@@ -12,6 +12,9 @@
 //      http://texturepacker.com
 //      http://www.code-and-web.de
 //
+//    Copyright (c) 2012 Chris Hannon / channon.us
+//    Copyright (c) 2013 Tomoaki Shimizu / tks2.net
+//
 //  All rights reserved.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,6 +40,7 @@
 #include "Box2D/Box2D.h"
 
 using namespace cocos2d;
+using namespace gbox2d;
 
 /**
  * Internal class to hold the fixtures
@@ -44,7 +48,7 @@ using namespace cocos2d;
 class FixtureDef {
 public:
     FixtureDef()
-    : next(NULL) {}
+    : next(nullptr) {}
 
     ~FixtureDef() {
         delete next;
@@ -58,48 +62,48 @@ public:
 
 class BodyDef {
 public:
-	BodyDef()
-	: fixtures(NULL) {}
+    BodyDef()
+    : fixtures(nullptr) {}
 
-	~BodyDef() {
-		if (fixtures)
-			delete fixtures;
-	}
+    ~BodyDef() {
+        if (fixtures)
+            delete fixtures;
+    }
 
-	FixtureDef *fixtures;
-	Point anchorPoint;
+    FixtureDef *fixtures;
+    Point anchorPoint;
 };
 
-static GB2ShapeCache *_sharedGB2ShapeCache = NULL;
+static GB2ShapeCache *_sharedGB2ShapeCache = nullptr;
 
-GB2ShapeCache* GB2ShapeCache::sharedGB2ShapeCache(void) {
-	if (!_sharedGB2ShapeCache) {
-		_sharedGB2ShapeCache = new GB2ShapeCache();
+GB2ShapeCache* GB2ShapeCache::getInstance(void) {
+    if (!_sharedGB2ShapeCache) {
+        _sharedGB2ShapeCache = new GB2ShapeCache();
         _sharedGB2ShapeCache->init();
-	}
+    }
 
-	return _sharedGB2ShapeCache;
+    return _sharedGB2ShapeCache;
 }
 
 bool GB2ShapeCache::init() {
-	return true;
+    return true;
 }
 
 void GB2ShapeCache::reset() {
-	std::map<std::string, BodyDef *>::iterator iter;
-	for (iter = shapeObjects.begin() ; iter != shapeObjects.end() ; ++iter) {
-		delete iter->second;
-	}
-	shapeObjects.clear();
+    std::map<std::string, BodyDef *>::iterator iter;
+    for (iter = shapeObjects.begin() ; iter != shapeObjects.end() ; ++iter) {
+        delete iter->second;
+    }
+    shapeObjects.clear();
 }
 
 void GB2ShapeCache::addFixturesToBody(b2Body *body, const std::string &shape) {
-	std::map<std::string, BodyDef *>::iterator pos = shapeObjects.find(shape);
-	assert(pos != shapeObjects.end());
+    std::map<std::string, BodyDef *>::iterator pos = shapeObjects.find(shape);
+    assert(pos != shapeObjects.end());
 
-	BodyDef *so = (*pos).second;
+    auto so = (*pos).second;
 
-	FixtureDef *fix = so->fixtures;
+    auto fix = so->fixtures;
     while (fix) {
         body->CreateFixture(&fix->fixture);
         fix = fix->next;
@@ -107,127 +111,112 @@ void GB2ShapeCache::addFixturesToBody(b2Body *body, const std::string &shape) {
 }
 
 cocos2d::Point GB2ShapeCache::anchorPointForShape(const std::string &shape) {
-	std::map<std::string, BodyDef *>::iterator pos = shapeObjects.find(shape);
-	assert(pos != shapeObjects.end());
+    auto pos = shapeObjects.find(shape);
+    assert(pos != shapeObjects.end());
 
-	BodyDef *bd = (*pos).second;
-	return bd->anchorPoint;
+    auto bd = (*pos).second;
+    return bd->anchorPoint;
 }
-
 
 void GB2ShapeCache::addShapesWithFile(const std::string &plist) {
 
-	//const char *fullName = CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str()).c_str();
-
-    Dictionary *dict = Dictionary::createWithContentsOfFile(plist.c_str());
-    // not triggered - cocos2dx delivers empty dict if non was found
-
-	CCAssert(dict != NULL, "Shape-file not found");
-
+    auto dict = Dictionary::createWithContentsOfFileThreadSafe(plist.c_str());
+    CCAssert(dict != nullptr, "Shape-file not found"); // not triggered - cocos2dx delivers empty dict if non was found
     CCAssert(dict->count() != 0, "plist file empty or not existing");
 
-	Dictionary *metadataDict = (Dictionary *)dict->objectForKey("metadata");
+    auto metadataDict = (Dictionary*)dict->objectForKey("metadata");
+    auto format = static_cast<String*>(metadataDict->objectForKey("format"))->intValue();
+    ptmRatio = static_cast<String*>(metadataDict->objectForKey("ptm_ratio"))->floatValue();
+    CCAssert(format == 1, "Format not supported");
 
-    int format = static_cast<String *>(metadataDict->objectForKey("format"))->intValue();
-    ptmRatio = static_cast<String *>(metadataDict->objectForKey("ptm_ratio"))->floatValue();
-	CCAssert(format == 1, "Format not supported");
-
-
-	Dictionary *bodyDict = (Dictionary *)dict->objectForKey("bodies");
+    auto bodyDict = (Dictionary*)dict->objectForKey("bodies");
 
     b2Vec2 vertices[b2_maxPolygonVertices];
 
-    DictElement *dictElem;
-    std::string bodyName;
-	Dictionary *bodyData;
-    //iterate body list
-    CCDICT_FOREACH(bodyDict,dictElem )
+    DictElement* pElement = nullptr;
+    CCDICT_FOREACH(bodyDict, pElement)
     {
-        bodyData = (Dictionary*)dictElem->getObject();
-        bodyName = dictElem->getStrKey();
+        auto bodyDef = new BodyDef();
 
+        auto bodyName = ccs(pElement->getStrKey());
 
-        BodyDef *bodyDef = new BodyDef();
-        bodyDef->anchorPoint = PointFromString(static_cast<String *>(bodyData->objectForKey("anchorpoint"))->getCString());
-        Array *fixtureList = (Array*)(bodyData->objectForKey("fixtures"));
-        FixtureDef **nextFixtureDef = &(bodyDef->fixtures);
+        auto bodyData = (Dictionary*)pElement->getObject();
+        bodyDef->anchorPoint = PointFromString(static_cast<String*>(bodyData->objectForKey("anchorpoint"))->getCString());
 
-        //iterate fixture list
-        Object *arrayElem;
-        CCARRAY_FOREACH(fixtureList, arrayElem)
+        auto fixtureList = (Array*)bodyData->objectForKey("fixtures");
+        auto nextFixtureDef = &(bodyDef->fixtures);
+
+        Object* fixture = nullptr;
+        CCARRAY_FOREACH(fixtureList, fixture)
         {
+
             b2FixtureDef basicData;
-            Dictionary* fixtureData = (Dictionary*)arrayElem;
+            auto fixtureData = (Dictionary*)fixture;
+            int callbackData = 0;
 
             basicData.filter.categoryBits = static_cast<String *>(fixtureData->objectForKey("filter_categoryBits"))->intValue();
-
             basicData.filter.maskBits = static_cast<String *>(fixtureData->objectForKey("filter_maskBits"))->intValue();
             basicData.filter.groupIndex = static_cast<String *>(fixtureData->objectForKey("filter_groupIndex"))->intValue();
             basicData.friction = static_cast<String *>(fixtureData->objectForKey("friction"))->floatValue();
-
             basicData.density = static_cast<String *>(fixtureData->objectForKey("density"))->floatValue();
-
             basicData.restitution = static_cast<String *>(fixtureData->objectForKey("restitution"))->floatValue();
-
             basicData.isSensor = (bool)static_cast<String *>(fixtureData->objectForKey("isSensor"))->intValue();
 
-            String *cb = static_cast<String *>(fixtureData->objectForKey("userdataCbValue"));
+            std::string fixtureType = static_cast<String *>(fixtureData->objectForKey("fixture_type"))->getCString();
 
-            int callbackData = 0;
-
-			if (cb)
-				callbackData = cb->intValue();
-
-			std::string fixtureType = static_cast<String *>(fixtureData->objectForKey("fixture_type"))->_string;
-
-			if (fixtureType == "POLYGON") {
-				Array *polygonsArray = (Array *)(fixtureData->objectForKey("polygons"));
-
-                Object *dicArrayElem;
-                CCARRAY_FOREACH(polygonsArray, dicArrayElem)
+            if (fixtureType == "POLYGON") {
+                //CCDictionary *polygons = (CCDictionary *)fixtureData->objectForKey("polygons");
+                auto polygons = (Array *)fixtureData->objectForKey("polygons");
+                //CCDictElement *polygon = nullptr;
+                Object *polygon = nullptr;
+                //CCDICT_FOREACH(polygons, polygon)
+                CCARRAY_FOREACH(polygons, polygon)
                 {
-                    FixtureDef *fix = new FixtureDef();
+                    auto fix = new FixtureDef();
                     fix->fixture = basicData; // copy basic data
                     fix->callbackData = callbackData;
 
                     b2PolygonShape *polyshape = new b2PolygonShape();
                     int vindex = 0;
 
-                    Array *polygonArray = (Array*)dicArrayElem;
+                    //CCDictionary *polygonData = (CCDictionary *)polygon->getObject();
+                    auto polygonData = (Array *)polygon;
 
-                    assert(polygonArray->count() <= b2_maxPolygonVertices);
+                    assert(polygonData->count() <= b2_maxPolygonVertices);
 
-                    Object *piter;
-                    CCARRAY_FOREACH(polygonArray, piter)
+                    //CCDictElement *offset = nullptr;
+                    Object *offset = nullptr;
+                    //CCDICT_FOREACH(polygonData, offset)
+                    CCARRAY_FOREACH(polygonData, offset)
                     {
-                        String *verStr = (String*)piter;
-                        Point offset = PointFromString(verStr->getCString());
-                        vertices[vindex].x = (offset.x / ptmRatio) ;
-                        vertices[vindex].y = (offset.y / ptmRatio) ;
+
+                        auto pStr = (String *)offset;
+                        auto p = PointFromString(pStr->getCString());
+
+                        vertices[vindex].x = (p.x / ptmRatio) ;
+                        vertices[vindex].y = (p.y / ptmRatio) ;
                         vindex++;
+
                     }
 
                     polyshape->Set(vertices, vindex);
                     fix->fixture.shape = polyshape;
 
-                    // create a list
                     *nextFixtureDef = fix;
                     nextFixtureDef = &(fix->next);
                 }
 
-
-			}
-            else if (fixtureType == "CIRCLE") {
-				FixtureDef *fix = new FixtureDef();
+            } else if (fixtureType == "CIRCLE") {
+                auto fix = new FixtureDef();
                 fix->fixture = basicData; // copy basic data
                 fix->callbackData = callbackData;
 
-                Dictionary *circleData = (Dictionary *)fixtureData->objectForKey("circle");
+                auto circleData = (Dictionary *)fixtureData->objectForKey("circle");
 
-                b2CircleShape *circleShape = new b2CircleShape();
+                auto circleShape = new b2CircleShape();
 
                 circleShape->m_radius = static_cast<String *>(circleData->objectForKey("radius"))->floatValue() / ptmRatio;
-				Point p = PointFromString(static_cast<String *>(circleData->objectForKey("position"))->getCString());
+                auto p = PointFromString(static_cast<String *>(circleData->objectForKey("position"))->getCString());
                 circleShape->m_p = b2Vec2(p.x / ptmRatio, p.y / ptmRatio);
                 fix->fixture.shape = circleShape;
 
@@ -235,14 +224,15 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist) {
                 *nextFixtureDef = fix;
                 nextFixtureDef = &(fix->next);
 
-			}
-            else {
-				CCAssert(0, "Unknown fixtureType");
-			}
-		}
-        // add the body element to the hash
-        shapeObjects[bodyName] = bodyDef;
-        
+            } else {
+                CCAssert(0, "Unknown fixtureType");
+            }
+
+            // add the body element to the hash
+            shapeObjects[bodyName->getCString()] = bodyDef;
+
+        }
+
     }
-    
+
 }
