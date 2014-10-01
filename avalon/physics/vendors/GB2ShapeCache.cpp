@@ -162,6 +162,11 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist) {
             basicData.restitution = static_cast<String *>(fixtureData->objectForKey("restitution"))->floatValue();
             basicData.isSensor = (bool)static_cast<String *>(fixtureData->objectForKey("isSensor"))->intValue();
 
+            // hotfix for ios
+            if (static_cast<String *>(fixtureData->objectForKey("isSensor"))->compare("true") == 0) {
+                basicData.isSensor = true;
+            }
+
             std::string fixtureType = static_cast<String *>(fixtureData->objectForKey("fixture_type"))->getCString();
 
             if (fixtureType == "POLYGON") {
