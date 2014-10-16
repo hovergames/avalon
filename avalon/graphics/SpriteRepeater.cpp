@@ -16,6 +16,7 @@ void SpriteRepeater::resetToDefaults()
     paddingX = paddingY = -1;
     flipHorizontal = flipVertical = false;
     repeatHorizontal = repeatVertical = true;
+    vertexZ = 0;
 }
 
 cocos2d::Node* SpriteRepeater::createSprites()
@@ -58,6 +59,7 @@ cocos2d::Node* SpriteRepeater::createSprites()
             }
 
             node->setAnchorPoint(anchorPoint);
+            node->setVertexZ(vertexZ);
 
             rootNode->addChild(node);
         }

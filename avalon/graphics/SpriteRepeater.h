@@ -23,6 +23,8 @@ public:
     bool repeatHorizontal;
     bool repeatVertical;
 
+    int vertexZ;
+
     SpriteRepeater();
 
     cocos2d::Node* createSprites();
