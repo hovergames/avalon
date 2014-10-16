@@ -1,14 +1,14 @@
 #include <avalon/graphics/shaderhelper.h>
 
+#define STRINGIFY(A) #A
+
 namespace {
 
-const GLchar* whiteShader =
-#include <avalon/graphics/shaders/white.fsh>
+#include "shaders/white.fsh"
 
-const GLchar* vertexShader =
-#include <avalon/graphics/shaders/pass.vsh>
+#include "shaders/fullWhite.fsh"
 
-const GLchar* grassShader =
+const char* grassShader =
 #include <avalon/graphics/shaders/grass.fsh>
 
 } // namespace
@@ -35,19 +35,24 @@ GLProgram* loadShader(const GLchar* vertexShader, const GLchar* fragmentShader)
     return shader;
 }
 
+GLProgram* getFullWhiteShader()
+{
+    return loadShader(cocos2d::ccPositionTextureColor_noMVP_vert, fullWhiteShader);
+}
+
 GLProgram* getWhiteShader()
 {
-    return loadShader(vertexShader, whiteShader);
+    return loadShader(cocos2d::ccPositionTextureColor_noMVP_vert, whiteShader);
 }
 
 GLProgram* getGrassShader()
 {
-    return loadShader(vertexShader, grassShader);
+    return loadShader(cocos2d::ccPositionTextureColor_noMVP_vert, grassShader);
 }
 
 GLProgram* getDefaultShader()
 {
-    return ShaderCache::getInstance()->getGLProgram(GLProgram::SHADER_NAME_POSITION_TEXTURE);
+    return GLProgramCache::getInstance()->getGLProgram(cocos2d::GLProgram::SHADER_NAME_POSITION_TEXTURE_COLOR_NO_MVP);
 }
 
 } // namespace physics
