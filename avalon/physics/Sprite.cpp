@@ -10,6 +10,14 @@
 namespace avalon {
 namespace physics {
 
+Sprite::~Sprite()
+{
+    if (ownsBody) {
+        getBody().GetWorld()->DestroyBody(&getBody());
+        ownsBody = nullptr;
+    }
+}
+
 Sprite* Sprite::create(avalon::physics::Box2dContainer& box2dContainer, const std::string& filename)
 {
     auto sprite = Sprite::create();
@@ -130,7 +138,7 @@ Sprite* Sprite::createWithSpriteFrameName(avalon::physics::Box2dContainer& box2d
 void Sprite::cleanup()
 {
     if (ownsBody) {
-        getBody().GetWorld()->DestroyBody(&getBody());
+        getBody().SetActive(false);
     }
     getBox2dContainer().removeNode(*this);
 

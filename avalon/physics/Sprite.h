@@ -28,9 +28,13 @@ private:
     CREATE_FUNC(Sprite);
 
 public:
+    ~Sprite();
+
     virtual bool init() override;
     virtual void cleanup() override;
     void scheduleUpdate();
+
+    inline bool hasBody() { return ownsBody; }
 
     void createBody(Box2dContainer& box2dContainer);
     void addPESShapeFixture(const std::string& file, const std::string& shape);
