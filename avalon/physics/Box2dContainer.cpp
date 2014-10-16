@@ -36,6 +36,11 @@ public:
 namespace avalon {
 namespace physics {
 
+void Box2dContainer::onExit() {
+    cocos2d::Node::onExit();
+    removeAllChildren();
+};
+
 bool Box2dContainer::init()
 {
     if (!Node::init()) {

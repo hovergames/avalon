@@ -30,6 +30,8 @@ private:
     void executePendingDeletes();
 
 public:
+    void onExit() override;
+    
     float32 timeStep = 1.0f / 60.0f;
     int32 velocityIterations = 8;
     int32 positionIterations = 3;
