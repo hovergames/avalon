@@ -49,14 +49,27 @@ void InputLayer::onKeyPressed(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::
     }
 
     pressed = true;
+    bool result = false;
+
     if (onTouchBegan) {
-        onTouchBegan(nullptr, event);
+        result = onTouchBegan(nullptr, event);
+    }
+
+    if (result) {
+        pressed = true;
+    } else {
+        pressed = false;
+        activeKeys.erase(keyCode);
     }
 }
 
 void InputLayer::onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event)
 {
     if (!listenKeys.count(keyCode)) {
+        return;
+    }
+
+    if (!activeKeys.count(keyCode)) {
         return;
     }
 
@@ -78,15 +91,24 @@ bool InputLayer::onTouchLayerBegan(cocos2d::Touch* touch, cocos2d::Event* event)
     }
 
     activeTouchIds.insert(touch->getID());
+
     if (pressed) {
         return true;
     }
 
-    pressed = true;
+    bool result = true;
+
     if (onTouchBegan) {
-        return onTouchBegan(touch, event);
-    } else {
+        result = onTouchBegan(touch, event);
+    }
+
+    if (result) {
+        pressed = true;
         return true;
+    } else {
+        pressed = false;
+        activeTouchIds.erase(touch->getID());
+        return false;
     }
 }
 
