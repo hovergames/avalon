@@ -8,8 +8,7 @@ using namespace avalon::utils::color;
 
 namespace  {
 
-const GLchar* vertexShader =
-#include <avalon/graphics/shaders/pass.vsh>
+const char* vertexShader = cocos2d::ccPositionTextureColor_noMVP_vert;
 
 const GLchar* shadowMapFragmentShader =
 #include <avalon/graphics/shaders/shadowMap.fsh>
