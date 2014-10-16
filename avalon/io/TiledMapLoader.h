@@ -4,8 +4,8 @@
 #include "cocos2d.h"
 #include <boost/any.hpp>
 #include "avalon/io/CCBLoader.h"
+#include <avalon/physics/Box2dContainer.h>
 
-namespace avalon { namespace physics { class Box2dContainer; } }
 
 namespace avalon {
 namespace io {
@@ -138,6 +138,13 @@ public:
                 callback(*newObject);
             }
         });
+    }
+
+    template<typename T>
+    void registerTypeForName(int gId, const std::list<std::string>& layerFilter = {})
+    {
+        auto name = std::to_string(gId);
+        registerTypeForName<T>(name, layerFilter);
     }
 };
 

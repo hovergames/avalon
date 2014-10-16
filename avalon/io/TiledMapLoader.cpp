@@ -100,9 +100,24 @@ void TiledMapLoader::loadNamedFactories(cocos2d::TMXTiledMap& map)
             }
 
             auto name = valueMap["name"].asString();
+            if (name.empty()) name = valueMap.at("gid").asString();
+
             if (!nameFactories.count(name)) {
                 continue;
             }
+
+            if (valueMap.count("gid")) {
+                if (!map.getPropertiesForGID(valueMap.at("gid").asInt()).isNull()) {
+                    auto gidProperties = map.getPropertiesForGID(valueMap.at("gid").asInt()).asValueMap();
+                    for (auto& entry : gidProperties) {
+                        if (!valueMap.count(entry.first)) {
+                            valueMap.insert(std::make_pair(entry.first, entry.second));
+                        }
+                    }
+                }
+            }
+
+            valueMap.insert(std::make_pair("objectType", Value("tmxObject")));
 
             Configuration config{valueMap, objectGroup->getGroupName(), map, box2dContainer};
             for (auto& callback : nameFactories.at(name)) {
