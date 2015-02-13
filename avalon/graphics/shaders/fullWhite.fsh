@@ -23,7 +23,7 @@
  * THE SOFTWARE.
  */
 
-const char* whiteShader = STRINGIFY(
+const char* fullWhiteShader = STRINGIFY(
     \n#ifdef GL_ES\n
     precision lowp float;
     \n#endif\n
@@ -34,7 +34,6 @@ const char* whiteShader = STRINGIFY(
     void main()
     {
         vec4 texColor = texture2D(CC_Texture0, v_texCoord);
-        float grey = (0.21 * texColor.r + 0.71 * texColor.g + 0.07 * texColor.b) * 2.0;
-        gl_FragColor = v_fragmentColor * vec4(grey, grey, grey, texColor.a);
+        gl_FragColor = v_fragmentColor * vec4(texColor.a, texColor.a, texColor.a, texColor.a);
     }
 );
